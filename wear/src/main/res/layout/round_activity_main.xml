@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity"
+    tools:deviceIds="wear_round"
+    android:background="@color/md_white_1000">
+
+    <android.support.wearable.view.GridViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--This is the main layout-->
+
+        <RelativeLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_launcher"
+                android:layout_marginTop="46dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/imgcloudfit" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 entrenamientos disponibles"
+                android:layout_below="@id/imgcloudfit"
+                android:layout_marginTop="12sp"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/md_black_1000"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings_black_24dp"
+                android:id="@+id/settingsImg"
+                android:layout_alignTop="@+id/imgsync"
+                android:layout_toEndOf="@+id/imgcloudfit" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sync_black_24dp"
+                android:id="@+id/imgsync"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/imgcloudfit"
+                android:layout_marginBottom="41dp" />
+
+        </RelativeLayout>
+
+        <!--Layout for start training action-->
+
+        <RelativeLayout
+            android:id="@+id/startActionLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <ImageView
+                android:id="@+id/startActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_av_play_action" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startActionImg"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Comenzar entrenamiento"
+                android:textSize="14sp"
+                android:textColor="@color/md_black_1000"/>
+
+        </RelativeLayout>
+
+        <!--Layout for previous practices action-->
+
+        <RelativeLayout
+            android:id="@+id/previousPracticesLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <ImageView
+                android:id="@+id/previousPracticesImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_content_save"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/previousPracticesImg"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Sesiones anteriores"
+                android:textSize="14sp"
+                android:textColor="@color/md_black_1000"/>
+
+        </RelativeLayout>
+
+    </android.support.wearable.view.GridViewPager>
+
+    <android.support.wearable.view.DotsPageIndicator
+        android:id="@+id/page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+    </android.support.wearable.view.DotsPageIndicator>
+
+
+</RelativeLayout>

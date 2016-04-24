@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <CheckBoxPreference
+        android:key="pref_zephyr_sensor_enabled"
+        android:title="Sensor Zephyr"
+        app:wear_iconOn="@drawable/ic_action_heart_white"
+        app:wear_iconOff="@drawable/ic_action_heart_white"
+        android:defaultValue="true" />
+
+</PreferenceScreen>
