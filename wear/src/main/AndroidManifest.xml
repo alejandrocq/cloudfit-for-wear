@@ -44,7 +44,8 @@
         <activity android:name=".activities.SettingsActivity" />
         <activity
             android:name=".activities.PracticeActivity"
-            android:label="@string/title_activity_practice">
+            android:label="@string/title_activity_practice"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
