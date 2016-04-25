@@ -19,8 +19,8 @@ public class PracticeJSONParser {
 
     public String writeToJSON() {
         try {
-            JSONObject mainObj = new JSONObject();
             JSONObject sessionJSONObj = new JSONObject();
+            sessionJSONObj.put("time", practiceSession.getDate());
             sessionJSONObj.put("elapsed_time", practiceSession.getElapsedTime());
 
             JSONObject heartRateJSONObj = new JSONObject();
@@ -37,9 +37,7 @@ public class PracticeJSONParser {
 
             sessionJSONObj.put("heart_rate", heartRateJSONObj);
 
-            mainObj.put("session", sessionJSONObj);
-
-            return mainObj.toString();
+            return sessionJSONObj.toString();
 
         } catch (JSONException e) {
             e.printStackTrace();

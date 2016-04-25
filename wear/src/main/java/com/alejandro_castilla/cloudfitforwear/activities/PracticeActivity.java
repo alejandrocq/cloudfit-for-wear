@@ -37,7 +37,9 @@ import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class PracticeActivity extends WearableActivity implements View.OnClickListener,
         SensorEventListener {
@@ -57,8 +59,14 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
 
     /* Preferences fields */
 
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor sharedPrefEditor;
+
     private final String KEY_PREF_ZEPHYR_ENABLED = "pref_zephyr_sensor_enabled";
     private boolean zephyrEnabled;
+
+    private final String KEY_PREF_SESSIONS_JSON = "pref_sessions_json";
+    private String sessionsJSONString;
 
     /* Status fields */
 
@@ -133,6 +141,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 case MessageType.ZEPHYR_HEART_RATE:
                     startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false;
+                    pauseActionImgView.setOnClickListener(PracticeActivity.this);
                     if (!sessionPaused) {
                         String heartRateString = msg.getData().getString("heartratestring");
                         timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -169,7 +178,6 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 exitActionImgView = (ImageView) findViewById(R.id.practiceExitActionImg);
 
                 resumeActionImgView.setOnClickListener(PracticeActivity.this);
-                pauseActionImgView.setOnClickListener(PracticeActivity.this);
                 exitActionImgView.setOnClickListener(PracticeActivity.this);
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.practicePager);
@@ -182,6 +190,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 checkSharedPreferences();
                 practiceSession = new PracticeSession();
                 heartRateList = new ArrayList<HeartRate>();
+                saveCurrentDate();
 
                 if (zephyrEnabled) {
 
@@ -223,9 +232,10 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int resId = v.getId();
+        long timeElapsed;
         switch (resId) {
             case R.id.practicePauseActionImg:
-                timeWhenPaused = chronometer.getBase() - SystemClock.elapsedRealtime();
+                timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
                 chronometer.stop();
                 sessionPaused = true;
                 pauseActionImgView.setVisibility(View.GONE);
@@ -234,7 +244,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 resumeActionTextView.setVisibility(View.VISIBLE);
                 break;
             case R.id.practiceResumeActionImg:
-                startChronometer(true, SystemClock.elapsedRealtime() + timeWhenPaused);
+                startChronometer(true, SystemClock.elapsedRealtime() - timeWhenPaused);
                 sessionPaused = false;
                 pauseActionImgView.setVisibility(View.VISIBLE);
                 resumeActionImgView.setVisibility(View.GONE);
@@ -242,12 +252,19 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 resumeActionTextView.setVisibility(View.GONE);
                 break;
             case R.id.practiceExitActionImg:
-                long timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
+                if (sessionPaused) {
+                    timeElapsed = timeWhenPaused;
+                } else {
+                    timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
+                }
+
                 practiceSession.setElapsedTime(timeElapsed);
                 practiceSession.setHeartRateList(heartRateList);
                 // TODO This should be an Async Task
                 PracticeJSONParser parser = new PracticeJSONParser(practiceSession);
                 String json = parser.writeToJSON();
+                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
+                sharedPrefEditor.commit();
                 Log.d(TAG, json);
                 finish();
                 break;
@@ -275,8 +292,11 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
 
     private void checkSharedPreferences() {
         //Check if the user wants to use Zephyr Sensor
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPrefEditor = sharedPref.edit();
         zephyrEnabled = sharedPref.getBoolean(KEY_PREF_ZEPHYR_ENABLED, false);
+        sessionsJSONString = sharedPref.getString(KEY_PREF_SESSIONS_JSON, "");
+        Log.d(TAG, "Sessions from SharedPreferences: " + sessionsJSONString);
     }
 
     private void startChronometer(boolean allowed , long baseTime) {
@@ -293,6 +313,13 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
         heartRateList.add(heartRateObj);
     }
 
+    private void saveCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
+        String date = sdf.format(calendar.getTime());
+        practiceSession.setDate(date);
+    }
+
     /* Methods for internal heart rate sensor */
 
     @Override
@@ -300,6 +327,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
 
         startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
         chronoAllowedToStart = false;
+        pauseActionImgView.setOnClickListener(PracticeActivity.this);
 
         if (!sessionPaused) {
             float heartRateFloat = event.values[0];

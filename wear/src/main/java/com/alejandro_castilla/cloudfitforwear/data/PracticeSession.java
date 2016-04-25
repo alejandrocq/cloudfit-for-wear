@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class PracticeSession {
 
     /* Data fields */
+    private String date;
     private long elapsedTime;
     private ArrayList<HeartRate> heartRateList;
 
@@ -39,6 +40,10 @@ public class PracticeSession {
 
     /* Get methods */
 
+    public String getDate() {
+        return date;
+    }
+
     public long getElapsedTime() {
         return elapsedTime;
     }
@@ -48,6 +53,10 @@ public class PracticeSession {
     }
 
     /* Set methods */
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
