@@ -7,10 +7,34 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.alejandro_castilla.cloudfitforwear.activities.MainActivity">
+    tools:context=".activities.LoginActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Login test"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"/>
+    <EditText
+        android:id="@+id/userEditText"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Usuario..."
+        android:layout_marginTop="30sp" />
+    <EditText
+        android:id="@+id/passEditText"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña..."
+        android:layout_below="@id/userEditText"/>
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesión"
+        android:layout_below="@id/passEditText"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

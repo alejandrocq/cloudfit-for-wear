@@ -1,4 +1,4 @@
-package com.alejandro_castilla.cloudfitforwear.layouts;
+package com.alejandro_castilla.cloudfitforwear.activities.adapters;
 
 import android.support.wearable.view.GridPagerAdapter;
 import android.view.View;

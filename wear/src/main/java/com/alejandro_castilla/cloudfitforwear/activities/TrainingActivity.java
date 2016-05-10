@@ -29,10 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.data.PracticeJSONParser;
-import com.alejandro_castilla.cloudfitforwear.data.PracticeSession;
-import com.alejandro_castilla.cloudfitforwear.data.PracticeSession.HeartRate;
-import com.alejandro_castilla.cloudfitforwear.layouts.PracticeActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
@@ -41,10 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class PracticeActivity extends WearableActivity implements View.OnClickListener,
+public class TrainingActivity extends WearableActivity implements View.OnClickListener,
         SensorEventListener {
 
-    private final String TAG = PracticeActivity.class.getSimpleName();
+    private final String TAG = TrainingActivity.class.getSimpleName();
 
     /*Fields for the views used on the layout*/
 
@@ -84,7 +83,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
 
     /* Data fields */
 
-    private PracticeSession practiceSession;
+    private Training training;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
@@ -141,7 +140,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 case MessageType.ZEPHYR_HEART_RATE:
                     startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false;
-                    pauseActionImgView.setOnClickListener(PracticeActivity.this);
+                    pauseActionImgView.setOnClickListener(TrainingActivity.this);
                     if (!sessionPaused) {
                         String heartRateString = msg.getData().getString("heartratestring");
                         timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -151,7 +150,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                     }
                     break;
                 case MessageType.DEVICE_NOT_FOUND:
-                    Toast.makeText(PracticeActivity.this, "Device not found", Toast.LENGTH_SHORT)
+                    Toast.makeText(TrainingActivity.this, "Device not found", Toast.LENGTH_SHORT)
                             .show();
                     finish();
             }
@@ -177,8 +176,8 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 resumeActionTextView = (TextView) findViewById(R.id.practiceResumeActionText);
                 exitActionImgView = (ImageView) findViewById(R.id.practiceExitActionImg);
 
-                resumeActionImgView.setOnClickListener(PracticeActivity.this);
-                exitActionImgView.setOnClickListener(PracticeActivity.this);
+                resumeActionImgView.setOnClickListener(TrainingActivity.this);
+                exitActionImgView.setOnClickListener(TrainingActivity.this);
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.practicePager);
                 gridViewPager.setAdapter(new PracticeActivityGridPagerAdapter());
@@ -188,21 +187,21 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                 dotsPageIndicator.setPager(gridViewPager);
 
                 checkSharedPreferences();
-                practiceSession = new PracticeSession();
+                training = new Training();
                 heartRateList = new ArrayList<HeartRate>();
                 saveCurrentDate();
 
                 if (zephyrEnabled) {
 
                     // Start bluetooth and Zephyr sensor services
-                    Intent bluetoothServiceIntent = new Intent(PracticeActivity.this,
+                    Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
                             BluetoothService.class);
                     bluetoothServiceIntent.putExtra("messenger", practiceActivityMessenger);
                     bindService(bluetoothServiceIntent, bluetoothServiceConnection,
                             Context.BIND_AUTO_CREATE);
                     bluetoothServiceBinded = true;
 
-                    Intent zephyrServiceIntent = new Intent(PracticeActivity.this,
+                    Intent zephyrServiceIntent = new Intent(TrainingActivity.this,
                             ZephyrService.class);
                     zephyrServiceIntent.putExtra("messenger", practiceActivityMessenger);
                     bindService(zephyrServiceIntent, zephyrServiceConnection,
@@ -215,7 +214,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                     sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
                     heartRateInternalSensor = sensorManager
                             .getDefaultSensor(Sensor.TYPE_HEART_RATE);
-                    sensorManager.registerListener(PracticeActivity.this, heartRateInternalSensor,
+                    sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
                             SensorManager.SENSOR_DELAY_UI);
 
                 }
@@ -258,14 +257,14 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
                     timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
                 }
 
-                practiceSession.setElapsedTime(timeElapsed);
-                practiceSession.setHeartRateList(heartRateList);
+                training.setElapsedTime(timeElapsed);
+                training.setHeartRateList(heartRateList);
                 // TODO This should be an Async Task
-                PracticeJSONParser parser = new PracticeJSONParser(practiceSession);
-                String json = parser.writeToJSON();
-                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
-                sharedPrefEditor.commit();
-                Log.d(TAG, json);
+//                TrainingJSONParser parser = new TrainingJSONParser(training);
+//                String json = parser.writeToJSON();
+//                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
+//                sharedPrefEditor.commit();
+//                Log.d(TAG, json);
                 finish();
                 break;
         }
@@ -307,7 +306,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveHeartRate(long timeMark, int heartRate) {
-        HeartRate heartRateObj = practiceSession.new HeartRate();
+        HeartRate heartRateObj = training.new HeartRate();
         heartRateObj.setHeartRateValue(heartRate);
         heartRateObj.setTimeMark(timeMark);
         heartRateList.add(heartRateObj);
@@ -317,7 +316,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
         String date = sdf.format(calendar.getTime());
-        practiceSession.setDate(date);
+        training.setDate(date);
     }
 
     /* Methods for internal heart rate sensor */
@@ -327,7 +326,7 @@ public class PracticeActivity extends WearableActivity implements View.OnClickLi
 
         startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
         chronoAllowedToStart = false;
-        pauseActionImgView.setOnClickListener(PracticeActivity.this);
+        pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
         if (!sessionPaused) {
             float heartRateFloat = event.values[0];

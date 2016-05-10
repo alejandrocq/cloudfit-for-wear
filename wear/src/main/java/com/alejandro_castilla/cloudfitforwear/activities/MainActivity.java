@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.layouts.MainActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.activities.adapters.MainActivityGridPagerAdapter;
 
 public class MainActivity extends WearableActivity {
 
@@ -61,7 +61,7 @@ public class MainActivity extends WearableActivity {
             switch (resId) {
                 case R.id.startActionImg:
                     Intent startPracticeActivityIntent = new Intent(MainActivity.this,
-                            PracticeActivity.class);
+                            TrainingActivity.class);
                     startActivity(startPracticeActivityIntent);
                     break;
                 case R.id.previousPracticesImg:

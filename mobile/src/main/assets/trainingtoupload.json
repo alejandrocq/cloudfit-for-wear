@@ -1,0 +1,60 @@
+{"trainID": "22", "starttime": "1441901594501", "endtime": "1442333304678", "elements": [
+    {
+        "id": "112",
+        "selected": "1",
+        "typeelement": "2",
+        "type": "unique"
+    },
+    {
+        "id": "113",
+        "typeelement": "2",
+        "type": "multiple",
+        "selected": ["1"]
+    },
+    {
+        "id": "114",
+        "typeelement": "2",
+        "type": "grid",
+        "selected": [
+            {
+                "row": "0",
+                "selected": "1"
+            },
+            {
+                "row": "1",
+                "selected": "2"
+            },
+            {
+                "row": "2",
+                "selected": "1"
+            }
+        ]
+    },
+    {
+        "id": "115",
+        "selected": "1",
+        "typeelement": "2",
+        "type": "scale"
+    },
+    {
+        "id": "116",
+        "answer": "juhh",
+        "typeelement":"2","type":"open"},
+    {"id":"16","name":"Cuestionario 1","typeelement":"0","numquestions":"3",
+        "questions":[{"id":"117","selected":"1","typeelement":"2","type":"unique"},
+            {"id":"118","selected":"2","typeelement":"2","type":"scale"},{"id":"119","selected":"1","typeelement":"2","type":"unique"}]},
+    {"id":"88","numserieR":"3","typeelement":"3","group":"group4","type":"serie1",
+        "series":[{"timeR":" - 1","serieID":"0","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"},
+        {"timeR":"-1","serieID":"1","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"},
+            {"timeR":"-1","serieID":"2","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"}],
+        "summary":[{"accsummary":[]},{"gpssummary":{"avgspeed":"-1.0","totaldistance":"-1.0","totaltime":"-1.0"}},
+            {"hrsummary":[]}],"values":[{"acc":[]},{"hr":[]},{"gps":[]}]},
+    {"numseriesr":"3","id":"89","typeelement":"3","group":"group2","starttime":"0","endtime":"0","type":"benchpress",
+        "series":[{"weight":"100.0","repetitionsdone":"11","serieID":"0","starttime":"0","endtime":"0"},{"weight":"100.0",
+            "repetitionsdone":"4","serieID":"1","starttime":"0","endtime":"0"},{"weight":"100.0",
+            "repetitionsdone":"7","serieID":"2","starttime":"0","endtime":"0"}],
+        "summary":[{"accsummary":[]},{"gpssummary":{"avgspeed":"-1.0",
+            "totaldistance":"-1.0","totaltime":"-1.0"}},{"hrsummary":[]}]},{"time":"-1","distance":"0.0","id":"90","typeelement":"3","group":"group1","starttime":"0","endtime":"1442333299943","type":"running",
+        "summary":[{"accsummary":[]},{"gpssummary":{"avgspeed":"-1.0","totaldistance":"-1.0","totaltime":"-1.0"}},{"hrsummary":[]}],
+        "values":[{"acc":[]},{"hr":[]},{"gps":[]}]},{"id":"91","type":"rest","typeelement":"3","group":"group5","restR":"3",
+        "summary":[{"accsummary":[]},{"hr":[]}]},{"id":"17","typeelement":"1","name":"Grupo 1","exercises":[{"id":"92","numserieR":"3","typeelement":"3","group":"group4","type":"serie1","series":[{"timeR":" - 1","serieID":"0","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"},{"timeR":"-1","serieID":"1","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"},{"timeR":"-1","serieID":"2","starttime":"0","endtime":"0","starttimerest":"0","endtimerest":"0","distanceR":"-1"}],"summary":[{"accsummary":[]},{"gpssummary":{"avgspeed":"-1.0","totaldistance":"-1.0","totaltime":"-1.0"}},{"hrsummary":[]}],"values":[{"acc":[]},{"hr":[]},{"gps":[]}]},{"numseriesr":"3","id":"93","typeelement":"3","group":"group2","starttime":"0","endtime":"0","type":"benchpress","series":[{"weight":"100.0","repetitionsdone":"15","serieID":"0","starttime":"0","endtime":"0"},{"weight":"100.0","repetitionsdone":"12","serieID":"1","starttime":"0","endtime":"0"},{"weight":"100.0","repetitionsdone":"10","serieID":"2","starttime":"0","endtime":"0"}],"summary":[{"accsummary":[]},{"gpssummary":{"avgspeed":"-1.0","totaldistance":"-1.0","totaltime":"-1.0"}},{"hrsummary":[]}]}]}]}

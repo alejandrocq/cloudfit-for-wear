@@ -1,0 +1,319 @@
+//Get todas las preguntas
+[
+  {
+    "title": "grid",
+    "questionID": "3",
+    "typ": "grid"
+  },
+  {
+    "title": "multiple",
+    "questionID": "5",
+    "typ": "multiple"
+  },
+  {
+    "title": "openabiertapregunta",
+    "questionID": "4",
+    "typ": "open"
+  },
+  {
+    "title": "scala",
+    "questionID": "2",
+    "typ": "scale"
+  },
+  {
+    "title": "aaaa",
+    "questionID": "1",
+    "typ": "unique"
+  },
+  {
+    "title": "Pregunta1New",
+    "questionID": "18",
+    "typ": "unique"
+  }
+]
+-----------
+get info user (myself)
+
+[
+  {
+    "username": "bihut",
+    "phone": "123456789",
+    "email": "aaa@gmail.com",
+    "name": "Angel",
+    "birthdate": "969660000000",
+    "gender": "0",
+    "lastname": "Ruiz Zafra",
+    "rol": "0",
+    "language": "1",
+    "photo": "http://www.centrofeldenkraiscsm.it/problematiche/images/sport.jpg",
+    "country": "1"
+  }
+]
+-----
+get all exercises
+
+[
+  {
+    "groupID": "group2",
+    "customIDExercise": "benchpress",
+    "name": "qqq",
+    "exerciseID": "9"
+  },
+  {
+    "groupID": "group4",
+    "customIDExercise": "serie1",
+    "name": "ejercicio intervalico amateur",
+    "exerciseID": "12"
+  },
+  {
+    "groupID": "group1",
+    "customIDExercise": "running",
+    "name": "cardio 1",
+    "exerciseID": "28"
+  }
+]
+------
+get 2 exercise
+
+{
+  "group": "group2",
+  "type": "benchpress",
+  "exerciseID": "9",
+  "numseriesP": "2",
+  "rest": "1",
+  "name": "qqq",
+  "weight": "1.0",
+  "numrepetitions": "2",
+  "optional": "false",
+  "reps": [
+    {
+      "rep": "1"
+    },
+    {
+      "rep": "2"
+    }
+  ]
+}
+
+---
+
+get 4 exercise
+{
+    "group": "group4",
+    "type": "serie1",
+    "exerciseID": "12",
+    "seriedistance": "0.0",
+    "name": "ejercicio intervalico amateur",
+    "numserieP": "3",
+    "restserie": "60.0",
+    "optional": "false",
+    "dists": [
+        {
+            "dist": "100.0"
+        },
+        {
+            "dist": "100.0"
+        },
+        {
+            "dist": "100.0"
+        }
+    ]
+}
+
+--
+ get 1 exercise
+{
+    "group": "group1",
+    "type": "running",
+    "exerciseID": "28",
+    "distanceP": "20.0",
+    "timeP": "10",
+    "name": "cardio 1",
+    "optional": "true",
+    "opt": {
+        "hrmin": "60",
+        "hrmax": "140",
+        "saveall": "true"
+    }
+}
+ --
+
+get one question grid
+
+{
+    "type": "grid",
+    "questionID": "3",
+    "title": "grid",
+    "disable": "false",
+    "min": "1",
+    "max": "3",
+    "numatt": "3",
+    "rowvalues": [
+        {
+            "ord": "0",
+            "text": "row1"
+        },
+        {
+            "ord": "1",
+            "text": "row2"
+        },
+        {
+            "ord": "2",
+            "text": "row3"
+        }
+    ],
+    "headervalues": [
+        {
+            "value": "1",
+            "text": "col1"
+        },
+        {
+            "value": "2",
+            "text": "col2"
+        },
+        {
+            "value": "3",
+            "text": "col3"
+        }
+    ],
+    "notallowed": [
+        {
+            "ord": "0",
+            "value": "1,3"
+        },
+        {
+            "ord": "1",
+            "value": "2"
+        },
+        {
+            "ord": "2",
+            "value": "3"
+        }
+    ]
+}
+
+---
+
+get one question unique
+{
+    "type": "unique",
+    "questionID": "1",
+    "title": "aaaa",
+    "disable": "false",
+    "info": [
+        {
+            "ord": "0",
+            "answer": "bbb",
+            "checked": "false"
+        },
+        {
+            "ord": "1",
+            "answer": "ccc",
+            "checked": "false"
+        },
+        {
+            "ord": "2",
+            "answer": "ddd",
+            "checked": "false"
+        }
+    ]
+}
+
+get one question multiple
+{
+    "type": "multiple",
+    "questionID": "5",
+    "title": "multiple",
+    "disable": "false",
+    "info": [
+        {
+            "ord": "0",
+            "answer": "aaaa",
+            "checked": "false"
+        },
+        {
+            "ord": "1",
+            "answer": "bbbb",
+            "checked": "false"
+        },
+        {
+            "ord": "2",
+            "answer": "cccc",
+            "checked": "false"
+        }
+    ]
+}
+
+get scale
+
+{
+    "type": "scale",
+    "questionID": "2",
+    "title": "scala",
+    "disable": "false",
+    "min": "1",
+    "max": "3",
+    "info": [
+        {
+            "value": "1",
+            "text": "aaaa"
+        },
+        {
+            "value": "2",
+            "text": "bbbb"
+        },
+        {
+            "value": "3",
+            "text": "ccccc"
+        }
+    ]
+}
+
+// poll
+{
+    "id": "1",
+    "title": "titulo cuestionario",
+    "laniso": "es",
+    "lanid": "1",
+    "questions": [
+        {
+            "id": "6",
+            "type": "unique",
+            "title": "aaaa",
+            "lanid": "1",
+            "laniso": "es"
+        },
+        {
+            "id": "7",
+            "type": "scale",
+            "title": "scala",
+            "lanid": "1",
+            "laniso": "es"
+        }
+    ]
+}
+
+//groupexercises
+
+{
+    "id": "2",
+    "title": "titulo grupo",
+    "creationdate": "0",
+    "exercises": [
+        {
+            "id": "17",
+            "order": "0",
+            "group": "group2",
+            "title":"prueba1",
+            "type":"running"
+        },
+        {
+            "id": "18",
+            "order": "1",
+            "group": "group4",
+            "title":"prueba2",
+            "type":"benchpress"
+
+        }
+    ]
+}

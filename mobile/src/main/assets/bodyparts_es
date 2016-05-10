@@ -1,0 +1,99 @@
+Sien Derecha,1,255,0,0
+Sien Izquierda,2,235,0,0
+Ojo Derecho,3,200,3,3
+Ojo Izquierdo,4,155,7,7
+Faz,5,215,10,10
+Boca,6,128,2,2
+Cuello anterior derecho,7,175,0,0
+Cuello anterior izquierdo,8,128,0,0
+Nuca,9,225,0,0
+Cuello posterior derecha,10,145,0,0
+Cuello posterior izquierda,11,155,0,0
+Pecho derecho,12,255,10,0
+Pecho izquierdo,13,255,1,120
+Costillas anterior derecha,14,255,85,1
+Costillas anterior izquierda,15,240,75,0
+Abdomen anterior derecha,16,225,90,11
+Abdomen anterior izquierda,17,255,110,0
+Periné,18,230,151,0
+Ingle derecha,19,255,160,0
+Ingle izquierda,20,255,170,0
+Homóplato derecho,21,255,90,0
+Homóplato izquierdo,22,255,70,0
+Columna torácica,23,200,60,5
+Abdomen posterior derecho,24,255,140,0
+Abdomen posterior izquierdo,25,255,120,0
+Columna abdominal,26,220,112,0
+Sacro,27,220,151,0
+Glúteo derecho,28,255,200,0
+Glúteo izquierdo,29,255,180,0
+Hombro anterior derecho,30,230,110,95
+Hombro anterior izquierdo,31,230,110,75
+Hombro posterior derecho,32,210,100,75
+Hombro posterior izquierdo,33,210,100,55
+Brazo bíceps derecho,34,255,210,0
+Brazo bíceps izquierdo,35,255,220,0
+Brazo tríceps derecho,36,255,220,10
+Brazo tríceps izquierdo,37,255,220,5
+Codo lateral derecho,38,230,210,3
+Codo lateral izquierdo,39,210,210,7
+Codo medial derecho,40,255,245,0
+Codo medial izquierdo,41,255,252,0
+Antebrazo derecho,42,220,255,0
+Antebrazo izquierdo,43,220,240,0
+Muñeca derecha,44,190,190,7
+Muñeca izquierda,45,190,190,25
+Pulgar mano derecho,46,150,180,2
+Pulgar mano izquierda,47,160,190,8
+Dedos mano derecha,48,200,230,0
+Dedos mano izquierda,49,180,230,0
+Cuádriceps recto femoral derecho,50,180,200,100
+Cuádriceps recto femoral izquierdo,51,180,180,100
+Cuádriceps vasto lateral derecho,52,150,200,100
+Cuádriceps vasto lateral izquierdo,53,140,170,100
+Cuádriceps vasto medial derecho,54,150,190,100
+Cuádriceps vasto medial izquierdo,55,140,190,100
+Rótula derecho,56,105,140,130
+Rótula izquierda,57,91,120,170
+Rodilla lateral derecha,58,140,150,130
+Rodilla lateral izquierda,59,120,120,170
+Rodilla medial derecha,60,140,130,130
+Rodilla medial izquierda,61,130,130,170
+Tibia anterio derecha,62,31,31,251
+Tibia anterior izquierda,63,50,50,235
+Muslo poterior lateral derecho,64,100,140,111
+Muslo poterior lateral izquierda,65,130,180,81
+Muslo posterior medial derecho,66,130,150,110
+Muslo posterior medial izquierdo,67,130,160,110
+Popliteo lateral derecho,68,130,130,160
+Popliteo lateral izquierdo,69,130,130,130
+Popliteo medial derecho,70,170,170,171
+Popliteo medial izquierdo,71,170,170,175
+Gemelo lateral derecho,72,120,100,171
+Gemelo lateral izquierdo,73,130,90,181
+Gemelo medial derecho,74,100,110,170
+Gemelo medial izquierdo,75,100,100,170
+Aquiles derecho,76,70,70,180
+Aquiles izquierdo,77,80,80,180
+Empeine derecho,78,60,60,180
+Empeine izquierdo,79,50,60,180
+Maléolo lateral derecho,80,110,50,190
+Maléolo lateral izquierdo,81,130,50,200
+Maléolo medial derecho,82,120,50,190
+Maléolo medial izquierdo,83,130,50,190
+Arco lateral interno derecho,84,120,120,241
+Arco lateral interno izquierdo,85,120,120,231
+Dedo hallux derecho,86,150,50,210
+Dedo hallux izquierdo,87,140,50,220
+Dedos 2 y 3 derecho,88,181,100,200
+Dedos 2 y 3 izquierdo,89,191,100,200
+Dedos 4 y 5 derecho,90,140,20,230
+Dedos 4 y 5 izquierdo,91,140,0,240
+Retropie derecho,92,50,50,190
+Retropie izquierdo,93,50,50,180
+Arco externo derecho,94,120,120,255
+Arco externo izquierdo,95,120,120,250
+Cabeza,201,128,251,251
+Cuello y torax,202,255,57,52
+Abdomen,203,5,255,7
+Periné,204,255,255,14

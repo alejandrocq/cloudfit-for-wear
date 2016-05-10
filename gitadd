@@ -1,0 +1,115 @@
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	modified:   build.gradle
+	new file:   gitadd
+	modified:   gradle.properties
+	modified:   mobile/build.gradle
+	new file:   mobile/libs/achartengine-1.2.0.jar
+	new file:   mobile/libs/commons-cli-1.2.jar
+	new file:   mobile/libs/commons-io-2.4.jar
+	new file:   mobile/libs/commons-logging-1.2.jar
+	new file:   mobile/libs/fluent-hc-4.5.2.jar
+	new file:   mobile/libs/httpclient-4.5.2.jar
+	new file:   mobile/libs/httpclient-cache-4.5.2.jar
+	new file:   mobile/libs/httpclient-win-4.5.2.jar
+	new file:   mobile/libs/httpcore-4.4.4.jar
+	new file:   mobile/libs/httpcore-ab-4.4.4.jar
+	new file:   mobile/libs/httpcore-nio-4.4.4.jar
+	new file:   mobile/libs/httpmime-4.5.2.jar
+	new file:   mobile/libs/jna-4.1.0.jar
+	new file:   mobile/libs/jna-platform-4.1.0.jar
+	new file:   mobile/libs/mint-4.3.0.jar
+	new file:   mobile/libs/zHTTP.jar
+	modified:   mobile/src/main/AndroidManifest.xml
+	new file:   mobile/src/main/assets/bodyparts_es
+	new file:   mobile/src/main/assets/cloudfitforwear.sqlite
+	new file:   mobile/src/main/assets/ejemplosjson
+	new file:   mobile/src/main/assets/training.json
+	new file:   mobile/src/main/assets/training13done.json
+	new file:   mobile/src/main/assets/trainingtoupload.json
+	deleted:    mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/MainActivity.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/LoginActivity.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/asynctask/LoginTask.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup1.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup2.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup3.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup4.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup5.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/ExerciseGroup6.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/GYMExercise.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/GYMSerie.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/GroupExercises.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/OptionalGroup1.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/OptionalGroup2.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/OptionalGroup3.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/OptionalGroup4.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/OptionalGroup6.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/exercises/serieRun.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/process/processDataACC.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/process/processDataGPS.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/process/processDataHR.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/BodyPart.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/GridQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/MultipleQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/OpenQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/PainQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/Poll.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/Question.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/ScaleQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/questions/UniqueQuestion.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/trainings/Element.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/trainings/Training.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/ACCModel.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/Aes.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/GPSModel.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/HRModel.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/RequestTrainer.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/Setting.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/User.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/calendarEvent.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/dataHR.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/userInfo.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFit.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFitHandler.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFitService.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/AesUtil.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/CloudFitCloud.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Content.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Encryption.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/StaticReferences.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Utils.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/processData.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zDB.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zDBFunctions.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zJSON.java
+	modified:   mobile/src/main/res/layout/activity_main.xml
+	new file:   status
+	modified:   wear/src/main/AndroidManifest.xml
+	modified:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/MainActivity.java
+	renamed:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/PracticeActivity.java -> wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/TrainingActivity.java
+	renamed:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/layouts/MainActivityGridPagerAdapter.java -> wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/adapters/MainActivityGridPagerAdapter.java
+	renamed:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/layouts/PracticeActivityGridPagerAdapter.java -> wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/adapters/PracticeActivityGridPagerAdapter.java
+	new file:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Element.java
+	deleted:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/PracticeJSONParser.java
+	renamed:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/PracticeSession.java -> wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Training.java
+	new file:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/StaticReferences.java
+	modified:   wear/src/main/res/layout/activity_practice.xml
+	modified:   wear/src/main/res/layout/rect_activity_practice.xml
+	modified:   wear/src/main/res/layout/round_activity_practice.xml
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	.gitignore
+	.idea/.name
+	.idea/compiler.xml
+	.idea/copyright/
+	.idea/encodings.xml
+	.idea/gradle.xml
+	.idea/misc.xml
+	.idea/modules.xml
+	.idea/runConfigurations.xml
+

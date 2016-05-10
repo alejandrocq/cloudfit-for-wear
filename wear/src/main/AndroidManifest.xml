@@ -43,7 +43,7 @@
         </activity>
         <activity android:name=".activities.SettingsActivity" />
         <activity
-            android:name=".activities.PracticeActivity"
+            android:name=".activities.TrainingActivity"
             android:label="@string/title_activity_practice"
             android:theme="@style/AppTheme">
             <intent-filter>
