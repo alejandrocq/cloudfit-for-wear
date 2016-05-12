@@ -39,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "Connected to CloudFit service");
             CloudFitService.MyBinder cloudFitServiceBinder = (CloudFitService.MyBinder) service;
             cloudFitService = cloudFitServiceBinder.getService();
+
+//            Setting cloudFitSetting = zDBFunctions.getSetting(db);
+//            cloudFitService.getFit().setSetting(cloudFitSetting);
+
         }
 
         @Override
@@ -50,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         userTextField = (EditText) findViewById(R.id.userEditText);
         passTextField = (EditText) findViewById(R.id.passEditText);
@@ -65,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 username = userTextField.getText().toString();
                 password = passTextField.getText().toString();
-                new LoginTask(LoginActivity.this, cloudFitService, username, password, db)
+                new LoginTask(LoginActivity.this, cloudFitService, username, password)
                         .execute();
 
             }
@@ -87,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         unbindService(cloudFitServiceConnection);
+        db.close();
         super.onDestroy();
     }
 }
