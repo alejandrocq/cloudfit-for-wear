@@ -6,9 +6,10 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import java.util.ArrayList;
 
 /**
- * Interface created to save user info obtained from GetUserInfoTask on MainActivity.
+ * Interface created to communicate with
+ * activities when using AsyncTasks.
  */
-public interface GetUserInfoInterface {
+public interface TaskToActivityInterface {
 
     void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> request);
 

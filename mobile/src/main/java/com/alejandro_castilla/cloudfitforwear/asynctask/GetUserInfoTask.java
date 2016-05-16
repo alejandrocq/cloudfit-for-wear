@@ -7,7 +7,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
-import com.alejandro_castilla.cloudfitforwear.interfaces.GetUserInfoInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
 
 import java.util.ArrayList;
 
@@ -21,13 +21,13 @@ public class GetUserInfoTask extends AsyncTask<Void, String, Void> {
 
     private ArrayList<RequestTrainer> requests;
     private User cloudFitUser;
-    private GetUserInfoInterface getUserInfoInterface;
+    private TaskToActivityInterface taskToActivityInterface;
 
     public GetUserInfoTask(Activity context, CloudFitService cloudFitService,
-                           GetUserInfoInterface getUserInfoInterface) {
+                           TaskToActivityInterface taskToActivityInterface) {
         this.context = context;
         this.cloudFitService = cloudFitService;
-        this.getUserInfoInterface = getUserInfoInterface;
+        this.taskToActivityInterface = taskToActivityInterface;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GetUserInfoTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        getUserInfoInterface.saveUserInfo(cloudFitUser, requests);
+        taskToActivityInterface.saveUserInfo(cloudFitUser, requests);
         super.onPostExecute(aVoid);
     }
 }

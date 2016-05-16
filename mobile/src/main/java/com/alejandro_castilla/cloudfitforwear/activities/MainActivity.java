@@ -13,18 +13,19 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.asynctask.GetAllTrainingsTask;
+import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.GetUserInfoInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements GetUserInfoInterface {
+public class MainActivity extends AppCompatActivity implements TaskToActivityInterface {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -99,12 +100,12 @@ public class MainActivity extends AppCompatActivity implements GetUserInfoInterf
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Get all trainings
 //                new ReplyToRequestTask(MainActivity.this, cloudFitService,
 //                        Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
 //                        requests.get(0).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
 //                        .execute();
-                new GetAllTrainingsTask(MainActivity.this, cloudFitService).execute();
+                new GetTrainingsTask(MainActivity.this, cloudFitService, MainActivity.this, -1,
+                        StaticVariables.GET_ALL_TRAININGS).execute();
             }
         });
 
