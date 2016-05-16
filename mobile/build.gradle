@@ -23,16 +23,18 @@ android {
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
     }
+
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.0.0-alpha2'
+//    compile 'com.android.support:appcompat-v7:23.0.0-alpha2'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.blunderer:materialdesignlibrary:2.0.4'
 }

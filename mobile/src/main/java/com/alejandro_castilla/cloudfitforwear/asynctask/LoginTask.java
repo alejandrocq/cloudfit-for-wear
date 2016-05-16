@@ -1,8 +1,8 @@
 package com.alejandro_castilla.cloudfitforwear.asynctask;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.activities.MainActivity;
@@ -18,13 +18,13 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
  */
 public class LoginTask extends AsyncTask<Void, String, Boolean> {
 
-    private AppCompatActivity context;
+    private Activity context;
     private CloudFitService cloudFitService;
     private boolean userFound;
     private String username, password;
     private zDB db;
 
-    public LoginTask(AppCompatActivity context,
+    public LoginTask(Activity context,
                      CloudFitService cloudFitService, String username, String password) {
         this.context = context;
         this.cloudFitService = cloudFitService;

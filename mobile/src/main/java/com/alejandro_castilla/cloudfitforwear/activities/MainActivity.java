@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
+import com.alejandro_castilla.cloudfitforwear.services.WearableService;
+import com.alejandro_castilla.cloudfitforwear.activities.fragments.ExercisesFragment;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
@@ -21,11 +21,19 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
 import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
-import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.blunderer.materialdesignlibrary.activities.NavigationDrawerActivity;
+import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
+import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
+import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerAccountsHandler;
+import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerAccountsMenuHandler;
+import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerBottomHandler;
+import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerStyleHandler;
+import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerTopHandler;
+import com.blunderer.materialdesignlibrary.models.Account;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements TaskToActivityInterface {
+public class MainActivity extends NavigationDrawerActivity implements TaskToActivityInterface {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -34,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements TaskToActivityInt
     private CloudFitService cloudFitService;
     private User cloudFitUser;
     private ArrayList<RequestTrainer> requests;
+
+    private Intent wearableServiceIntent;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements TaskToActivityInt
     /**
      * Saves user info obtained from GetUserInfoTask on this activity.
      * @param cloudFitUser User data from CloudFit platform.
-     * @param requests Requests from trainers sent from the platform.
+     * @param requests Requests from trainers sent by the platform.
      */
     @Override
     public void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> requests) {
@@ -90,26 +100,27 @@ public class MainActivity extends AppCompatActivity implements TaskToActivityInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
         downloadButton = (Button) findViewById(R.id.downloadButton);
 
         Intent cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                new ReplyToRequestTask(MainActivity.this, cloudFitService,
-//                        Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
-//                        requests.get(0).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
-//                        .execute();
-                new GetTrainingsTask(MainActivity.this, cloudFitService, MainActivity.this, -1,
-                        StaticVariables.GET_ALL_TRAININGS).execute();
-            }
-        });
+        wearableServiceIntent = new Intent (MainActivity.this, WearableService.class);
+        startService(wearableServiceIntent);
 
-
+//        downloadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                new ReplyToRequestTask(MainActivity.this, cloudFitService,
+////                        Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
+////                        requests.get(0).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
+////                        .execute();
+//                new GetTrainingsTask(MainActivity.this, cloudFitService, MainActivity.this, 6,
+//                        StaticVariables.GET_SINGLE_TRAINING).execute();
+//            }
+//        });
     }
 
     @Override
@@ -125,6 +136,73 @@ public class MainActivity extends AppCompatActivity implements TaskToActivityInt
     @Override
     protected void onDestroy() {
         unbindService(cloudFitServiceConnection);
+        stopService(wearableServiceIntent);
         super.onDestroy();
+    }
+
+    /* Material Desing Library methods */
+
+    @Override
+    protected ActionBarHandler getActionBarHandler() {
+        return new ActionBarDefaultHandler(this);
+    }
+
+    @Override
+    public NavigationDrawerAccountsHandler getNavigationDrawerAccountsHandler() {
+        return new NavigationDrawerAccountsHandler(this)
+                .addAccount("Alejandro", "acastillaquesada@gmail.com",
+                        R.drawable.ic_user, R.drawable.ic_running_background);
+    }
+
+    @Override
+    public NavigationDrawerStyleHandler getNavigationDrawerStyleHandler() {
+        return null;
+    }
+
+    @Override
+    public NavigationDrawerAccountsMenuHandler getNavigationDrawerAccountsMenuHandler() {
+        return null;
+    }
+
+    @Override
+    public void onNavigationDrawerAccountChange(Account account) {
+
+    }
+
+    @Override
+    public NavigationDrawerTopHandler getNavigationDrawerTopHandler() {
+        return new NavigationDrawerTopHandler(this).addItem(R.string.exercises_menu_name,
+                new ExercisesFragment());
+    }
+
+    @Override
+    public NavigationDrawerBottomHandler getNavigationDrawerBottomHandler() {
+        return new NavigationDrawerBottomHandler(this)
+                .addSettings(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+    }
+
+    @Override
+    public int defaultNavigationDrawerItemSelectedPosition() {
+        return 1;
+    }
+
+    @Override
+    public boolean overlayActionBar() {
+        return false;
+    }
+
+    @Override
+    public boolean replaceActionBarTitleByNavigationDrawerItemTitle() {
+        return true;
+    }
+
+    @Override
+    protected boolean enableActionBarShadow() {
+        return false;
     }
 }

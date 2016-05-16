@@ -29,8 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
-import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.TrainingData;
+import com.alejandro_castilla.cloudfitforwear.data.TrainingData.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
@@ -83,7 +83,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     /* Data fields */
 
-    private Training training;
+    private TrainingData trainingData;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
@@ -187,7 +187,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 dotsPageIndicator.setPager(gridViewPager);
 
                 checkSharedPreferences();
-                training = new Training();
+                trainingData = new TrainingData();
                 heartRateList = new ArrayList<HeartRate>();
                 saveCurrentDate();
 
@@ -257,10 +257,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
                 }
 
-                training.setElapsedTime(timeElapsed);
-                training.setHeartRateList(heartRateList);
+                trainingData.setElapsedTime(timeElapsed);
+                trainingData.setHeartRateList(heartRateList);
                 // TODO This should be an Async Task
-//                TrainingJSONParser parser = new TrainingJSONParser(training);
+//                TrainingJSONParser parser = new TrainingJSONParser(trainingData);
 //                String json = parser.writeToJSON();
 //                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
 //                sharedPrefEditor.commit();
@@ -306,7 +306,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveHeartRate(long timeMark, int heartRate) {
-        HeartRate heartRateObj = training.new HeartRate();
+        HeartRate heartRateObj = trainingData.new HeartRate();
         heartRateObj.setHeartRateValue(heartRate);
         heartRateObj.setTimeMark(timeMark);
         heartRateList.add(heartRateObj);
@@ -316,7 +316,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
         String date = sdf.format(calendar.getTime());
-        training.setDate(date);
+        trainingData.setDate(date);
     }
 
     /* Methods for internal heart rate sensor */

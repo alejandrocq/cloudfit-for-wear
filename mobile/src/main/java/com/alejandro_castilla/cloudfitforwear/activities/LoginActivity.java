@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,8 +16,10 @@ import com.alejandro_castilla.cloudfitforwear.asynctask.LoginTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.Utils;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDB;
+import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
+import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends com.blunderer.materialdesignlibrary.activities.Activity {
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
@@ -51,10 +52,20 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Checks if directory and databases are created. If not, creates all of them.
+     */
+    private void checkDatabaseAndDirectory() {
+        Utils.checkDataBaseTimestamp();
+        Utils.checkDirectory();
+        db = new zDB(this);
+        db.open();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+//        setContentView(R.layout.activity_login);
 
         userTextField = (EditText) findViewById(R.id.userEditText);
         passTextField = (EditText) findViewById(R.id.passEditText);
@@ -78,20 +89,27 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Checks if directory and databases are created. If not, creates all of them.
-     */
-    private void checkDatabaseAndDirectory() {
-        Utils.checkDataBaseTimestamp();
-        Utils.checkDirectory();
-        db = new zDB(this);
-        db.open();
-    }
-
     @Override
     protected void onDestroy() {
         unbindService(cloudFitServiceConnection);
         db.close();
         super.onDestroy();
+    }
+
+    /* Material Design Library methods */
+
+    @Override
+    protected int getContentView() {
+        return R.layout.activity_login;
+    }
+
+    @Override
+    protected ActionBarHandler getActionBarHandler() {
+        return new ActionBarDefaultHandler(this);
+    }
+
+    @Override
+    protected boolean enableActionBarShadow() {
+        return false;
     }
 }

@@ -97,6 +97,19 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
             case StaticVariables.GET_SINGLE_TRAINING:
                 Toast.makeText(context, "Nombre del entrenamiento: " + training.getTitle(),
                         Toast.LENGTH_SHORT).show();
+
+//                ArrayList<Element> elements = training.getElements();
+//
+//                for (Element element : elements) {
+//                    Toast.makeText(context, "Nombre del ejercicio: " + element.getTitle(),
+//                            Toast.LENGTH_SHORT).show();
+//                    ExerciseGroup1 exercise = (ExerciseGroup1) element;
+//                    OptionalGroup1 optional = exercise.getOptional();
+//                    Toast.makeText(context, "Frec. cardíaca máx: " + optional.getHrmax(),
+//                            Toast.LENGTH_SHORT).show();
+//                }
+
+
                 break;
             case StaticVariables.GET_TRAINING_NOT_DONE:
                 // TODO do something here

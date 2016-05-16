@@ -19,8 +19,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <service
             android:name=".cloudfit.services.CloudFitService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.WearableService"
+            android:enabled="true"
             android:exported="false" />
 
         <activity android:name=".activities.LoginActivity">
@@ -30,7 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name=".activities.MainActivity" />
     </application>
 
 </manifest>
