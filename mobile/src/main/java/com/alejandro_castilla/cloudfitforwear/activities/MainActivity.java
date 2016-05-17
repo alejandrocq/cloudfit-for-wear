@@ -201,7 +201,7 @@ public class MainActivity extends NavigationDrawerActivity implements TaskToActi
 
     @Override
     public int defaultNavigationDrawerItemSelectedPosition() {
-        return 1;
+        return 0;
     }
 
     @Override
