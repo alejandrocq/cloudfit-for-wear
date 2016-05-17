@@ -4,6 +4,7 @@
 
     <string name="exercises_menu_name">Ejercicios</string>
     <string name="settings_menu_name">Configuración</string>
+    <string name="requests_menu_name">Peticiones</string>
 
 
 </resources>
