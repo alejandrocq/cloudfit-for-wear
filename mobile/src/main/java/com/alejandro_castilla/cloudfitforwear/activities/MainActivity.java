@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.activities.fragments.ExercisesFragment;
+import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
@@ -20,6 +20,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
+import com.alejandro_castilla.cloudfitforwear.interfaces.FragmentToActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.blunderer.materialdesignlibrary.activities.NavigationDrawerActivity;
@@ -35,7 +36,7 @@ import com.blunderer.materialdesignlibrary.models.Account;
 import java.util.ArrayList;
 
 public class MainActivity extends NavigationDrawerActivity implements TaskToActivityInterface,
-        RequestsFragment.RequestFragmentInterface {
+        FragmentToActivityInterface {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -102,11 +103,6 @@ public class MainActivity extends NavigationDrawerActivity implements TaskToActi
     @Override
     public CloudFitService getCloudFitService() {
         return cloudFitService;
-    }
-
-    @Override
-    public ArrayList<RequestTrainer> getRequests() {
-        return requests;
     }
 
     @Override
@@ -184,7 +180,7 @@ public class MainActivity extends NavigationDrawerActivity implements TaskToActi
     @Override
     public NavigationDrawerTopHandler getNavigationDrawerTopHandler() {
         return new NavigationDrawerTopHandler(this)
-                .addItem(R.string.exercises_menu_name, new ExercisesFragment())
+                .addItem(R.string.exercises_menu_name, new TrainingsFragment())
                 .addItem(R.string.requests_menu_name, new RequestsFragment());
     }
 

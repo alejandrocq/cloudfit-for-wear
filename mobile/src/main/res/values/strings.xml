@@ -2,7 +2,7 @@
     <string name="app_name">CloudFit for Wear</string>
     <string name="google_app_id">188562439527</string>
 
-    <string name="exercises_menu_name">Ejercicios</string>
+    <string name="exercises_menu_name">Entrenamientos</string>
     <string name="settings_menu_name">Configuración</string>
     <string name="requests_menu_name">Peticiones</string>
 

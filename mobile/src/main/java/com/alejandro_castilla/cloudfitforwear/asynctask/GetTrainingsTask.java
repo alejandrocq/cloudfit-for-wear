@@ -5,12 +5,12 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.alejandro_castilla.cloudfitforwear.cloudfit.models.calendarEvent;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToFragmentInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
@@ -22,24 +22,23 @@ import java.util.ArrayList;
 public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
+    private TaskToFragmentInterface taskToFragmentInterface;
     private ProgressDialog progressDialog;
     private CloudFitService cloudFitService;
-    private TaskToActivityInterface taskToActivityInterface;
     private short taskType;
 
     private Training training;
     private long trainingid;
     private String trainingString;
 
-    private ArrayList<calendarEvent> calendarEvents;
+    private ArrayList<CalendarEvent> calendarEvents;
 
-    public GetTrainingsTask(Activity context, CloudFitService cloudFitService,
-                            TaskToActivityInterface taskToActivityInterface, long trainingid,
-                            short taskType) {
+    public GetTrainingsTask(Activity context, TaskToFragmentInterface taskToFragmentInterface,
+                            CloudFitService cloudFitService, long trainingid, short taskType) {
 
         this.context = context;
+        this.taskToFragmentInterface = taskToFragmentInterface;
         this.cloudFitService = cloudFitService;
-        this.taskToActivityInterface = taskToActivityInterface;
         this.trainingid = trainingid;
         this.taskType = taskType;
 
@@ -53,7 +52,7 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
         progressDialog.setMessage("Descargando entrenamientos...");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
+//        progressDialog.show();
         super.onPreExecute();
     }
 
@@ -83,16 +82,11 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        progressDialog.dismiss();
+//        progressDialog.dismiss();
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
-                if (calendarEvents.size()>0) {
-                    Toast.makeText(context, "Nombre del entrenamiento: "
-                            + calendarEvents.get(0).getText(), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, "ID del entrenamiento: " +
-                            calendarEvents.get(0).getId(),
-                            Toast.LENGTH_SHORT).show();
-                }
+                    taskToFragmentInterface.stopRefreshing();
+                    taskToFragmentInterface.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
                 Toast.makeText(context, "Nombre del entrenamiento: " + training.getTitle(),
