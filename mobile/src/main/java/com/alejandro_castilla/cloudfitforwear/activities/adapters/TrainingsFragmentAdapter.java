@@ -1,14 +1,17 @@
 package com.alejandro_castilla.cloudfitforwear.activities.adapters;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.activities.TrainingDetailsActivity;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.blunderer.materialdesignlibrary.views.CardView;
 
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ public class TrainingsFragmentAdapter extends
 
     private final String TAG = TrainingsFragmentAdapter.class.getSimpleName();
 
+    private Activity context;
     private ArrayList<CalendarEvent> calendarEvents;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +36,8 @@ public class TrainingsFragmentAdapter extends
         }
     }
 
-    public TrainingsFragmentAdapter(ArrayList<CalendarEvent> calendarEvents) {
+    public TrainingsFragmentAdapter(Activity context, ArrayList<CalendarEvent> calendarEvents) {
+        this.context = context;
         this.calendarEvents = calendarEvents;
     }
 
@@ -53,7 +58,10 @@ public class TrainingsFragmentAdapter extends
             String trainingDescription = "Fecha: " + calendarEvents.get(position).getDate() + "\n"
                     + "Tipo de entrenamiento: " + calendarEvents.get(position).getType();
             holder.cardView.setDescription(trainingDescription);
-            holder.cardView.setOnNormalButtonClickListener(new ButtonClickListener(position));
+            holder.cardView.setOnNormalButtonClickListener(new
+                    ButtonClickListener(StaticVariables.NORMAL_BUTTON,position));
+            holder.cardView.setOnHighlightButtonClickListener(new
+                    ButtonClickListener(StaticVariables.HIGHLIGHT_BUTTON, position));
         }
     }
 
@@ -79,15 +87,29 @@ public class TrainingsFragmentAdapter extends
     private class ButtonClickListener implements View.OnClickListener {
 
         private int position;
+        private short buttonType;
 
-        public ButtonClickListener(int position) {
+        public ButtonClickListener(short buttonType ,int position) {
+            this.buttonType = buttonType;
             this.position = position;
         }
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Botón detalles pulsado para: "
-                    + calendarEvents.get(position).getText(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(v.getContext(), "Botón detalles pulsado para: "
+//                    + calendarEvents.get(position).getText(), Toast.LENGTH_LONG).show();
+            switch (buttonType) {
+                case StaticVariables.NORMAL_BUTTON:
+                    Intent startTrainingDetailsIntent = new Intent(context,
+                            TrainingDetailsActivity.class);
+                    startTrainingDetailsIntent.putExtra("trainingid",
+                            calendarEvents.get(position).getId());
+                    context.startActivity(startTrainingDetailsIntent);
+                    break;
+                case StaticVariables.HIGHLIGHT_BUTTON:
+
+                    break;
+            }
         }
     }
 

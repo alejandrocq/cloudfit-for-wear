@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.interfaces.FragmentToActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
 /**
@@ -15,7 +15,7 @@ import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
  */
 public class RequestsFragment extends ScrollViewFragment {
 
-    private FragmentToActivityInterface fragmentToActivityInterface;
+    private ActivityInterface activityInterface;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class RequestsFragment extends ScrollViewFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        fragmentToActivityInterface = (FragmentToActivityInterface) activity;
+        activityInterface = (ActivityInterface) activity;
         super.onAttach(activity);
     }
 

@@ -10,7 +10,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToFragmentInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
-    private TaskToFragmentInterface taskToFragmentInterface;
+    private ActivityInterface activityInterface;
     private ProgressDialog progressDialog;
     private CloudFitService cloudFitService;
     private short taskType;
@@ -33,11 +33,11 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private ArrayList<CalendarEvent> calendarEvents;
 
-    public GetTrainingsTask(Activity context, TaskToFragmentInterface taskToFragmentInterface,
+    public GetTrainingsTask(Activity context, ActivityInterface activityInterface,
                             CloudFitService cloudFitService, long trainingid, short taskType) {
 
         this.context = context;
-        this.taskToFragmentInterface = taskToFragmentInterface;
+        this.activityInterface = activityInterface;
         this.cloudFitService = cloudFitService;
         this.trainingid = trainingid;
         this.taskType = taskType;
@@ -85,12 +85,13 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 //        progressDialog.dismiss();
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
-                    taskToFragmentInterface.stopRefreshing();
-                    taskToFragmentInterface.updateTrainingsList(calendarEvents);
+                    activityInterface.stopRefreshing();
+                    activityInterface.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
                 Toast.makeText(context, "Nombre del entrenamiento: " + training.getTitle(),
                         Toast.LENGTH_SHORT).show();
+                activityInterface.saveAndParseTraining(training);
 
 //                ArrayList<Element> elements = training.getElements();
 //

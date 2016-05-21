@@ -9,7 +9,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 
 /**
@@ -19,17 +19,17 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
     private CloudFitService cloudFitService;
-    private TaskToActivityInterface taskToActivityInterface;
+    private ActivityInterface activityInterface;
 
     private Training training;
     private boolean trainingSavedAndUploaded = true;
 
     public SaveAndUploadTrainingTask(Activity context, CloudFitService cloudFitService,
-                                     TaskToActivityInterface taskToActivityInterface,
+                                     ActivityInterface activityInterface,
                                      Training training) {
         this.context = context;
         this.cloudFitService = cloudFitService;
-        this.taskToActivityInterface = taskToActivityInterface;
+        this.activityInterface = activityInterface;
         this.training = training;
     }
 

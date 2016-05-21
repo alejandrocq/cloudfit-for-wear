@@ -14,15 +14,18 @@ import android.widget.Toast;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
+import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.FragmentToActivityInterface;
-import com.alejandro_castilla.cloudfitforwear.interfaces.TaskToActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.blunderer.materialdesignlibrary.activities.NavigationDrawerActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
@@ -35,16 +38,17 @@ import com.blunderer.materialdesignlibrary.models.Account;
 
 import java.util.ArrayList;
 
-public class MainActivity extends NavigationDrawerActivity implements TaskToActivityInterface,
-        FragmentToActivityInterface {
+public class MainActivity extends NavigationDrawerActivity implements ActivityInterface {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
     private Button downloadButton;
+    private TrainingsFragment trainingsFragment;
 
     private CloudFitService cloudFitService;
     private User cloudFitUser;
     private ArrayList<RequestTrainer> requests;
+    private ArrayList<CalendarEvent> calendarEvents;
 
     private Intent wearableServiceIntent;
 
@@ -97,8 +101,28 @@ public class MainActivity extends NavigationDrawerActivity implements TaskToActi
             } else {
                 Toast.makeText(this, "No hay solicitudes.", Toast.LENGTH_SHORT).show();
             }
+            new GetTrainingsTask(this, this, cloudFitService, -1, StaticVariables.GET_ALL_TRAININGS)
+                    .execute();
         }
     }
+
+    @Override
+    public void stopRefreshing() {
+        //Not needed.
+    }
+
+    @Override
+    public void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents) {
+        this.calendarEvents = calendarEvents;
+        trainingsFragment.setCalendarEvents(calendarEvents);
+    }
+
+    @Override
+    public void saveAndParseTraining(Training training) {
+        //Not needed.
+    }
+
+
 
     @Override
     public CloudFitService getCloudFitService() {
@@ -179,8 +203,9 @@ public class MainActivity extends NavigationDrawerActivity implements TaskToActi
 
     @Override
     public NavigationDrawerTopHandler getNavigationDrawerTopHandler() {
+        trainingsFragment = new TrainingsFragment();
         return new NavigationDrawerTopHandler(this)
-                .addItem(R.string.exercises_menu_name, new TrainingsFragment())
+                .addItem(R.string.exercises_menu_name, trainingsFragment)
                 .addItem(R.string.requests_menu_name, new RequestsFragment());
     }
 
