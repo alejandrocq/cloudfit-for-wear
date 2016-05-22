@@ -71,7 +71,7 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
 
         trainingsFragmentAdapter =
                 new TrainingsFragmentAdapter(getActivity(), calendarEvents);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.trRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(trainingsFragmentAdapter);
         recyclerView.setHasFixedSize(true);

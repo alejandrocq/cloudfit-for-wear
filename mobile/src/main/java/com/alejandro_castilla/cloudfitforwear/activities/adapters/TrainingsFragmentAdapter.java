@@ -12,6 +12,7 @@ import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.TrainingDetailsActivity;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.views.CardView;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class TrainingsFragmentAdapter extends
 
         public ViewHolder (View view) {
             super(view);
-            this.cardView = (CardView) view.findViewById(R.id.cardView);
+            this.cardView = (CardView) view.findViewById(R.id.trainingsCardView);
         }
     }
 
@@ -55,8 +56,9 @@ public class TrainingsFragmentAdapter extends
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (calendarEvents != null && calendarEvents.size()>0) {
             holder.cardView.setTitle(calendarEvents.get(position).getText());
-            String trainingDescription = "Fecha: " + calendarEvents.get(position).getDate() + "\n"
-                    + "Tipo de entrenamiento: " + calendarEvents.get(position).getType();
+            String dateString = Utilities
+                    .dateOnMillisToString(calendarEvents.get(position).getDate());
+            String trainingDescription = "Fecha: " + dateString;
             holder.cardView.setDescription(trainingDescription);
             holder.cardView.setOnNormalButtonClickListener(new
                     ButtonClickListener(StaticVariables.NORMAL_BUTTON,position));
@@ -104,6 +106,8 @@ public class TrainingsFragmentAdapter extends
                             TrainingDetailsActivity.class);
                     startTrainingDetailsIntent.putExtra("trainingid",
                             calendarEvents.get(position).getId());
+                    startTrainingDetailsIntent.putExtra("trainingname",
+                            calendarEvents.get(position).getText());
                     context.startActivity(startTrainingDetailsIntent);
                     break;
                 case StaticVariables.HIGHLIGHT_BUTTON:

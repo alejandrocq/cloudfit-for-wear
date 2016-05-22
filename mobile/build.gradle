@@ -44,4 +44,5 @@ dependencies {
     compile 'com.github.florent37:materialtextfield:1.0.4'
     compile 'com.github.navasmdc:MaterialDesign:1.5@aar'
     compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
 }

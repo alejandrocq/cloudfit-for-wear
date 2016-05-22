@@ -5,30 +5,39 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.activities.adapters.ExercisesListAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
-import com.blunderer.materialdesignlibrary.activities.ViewPagerActivity;
+import com.blunderer.materialdesignlibrary.activities.ScrollViewActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
-import com.blunderer.materialdesignlibrary.handlers.ViewPagerHandler;
 
 import java.util.ArrayList;
 
-public class TrainingDetailsActivity extends ViewPagerActivity implements ActivityInterface {
+public class TrainingDetailsActivity extends ScrollViewActivity implements ActivityInterface {
 
     private final String TAG = TrainingDetailsActivity.class.getSimpleName();
 
     private long trainingID;
     private Training training;
+    private ArrayList<ExerciseGroup> exercises = new ArrayList<>();
+
+    private ExercisesListAdapter exercisesListAdapter;
+    private RecyclerView recyclerView;
 
     private CloudFitService cloudFitService;
 
@@ -54,8 +63,8 @@ public class TrainingDetailsActivity extends ViewPagerActivity implements Activi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("");
 //        setContentView(R.layout.activity_training_details);
+        setTitle(getIntent().getStringExtra("trainingname"));
         trainingID = getIntent().getLongExtra("trainingid", -1);
         if (trainingID == -1) {
             Toast.makeText(this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
@@ -65,6 +74,13 @@ public class TrainingDetailsActivity extends ViewPagerActivity implements Activi
             Intent startCloudFitServiceIntent = new Intent (this, CloudFitService.class);
             bindService(startCloudFitServiceIntent, cloudFitServiceConnection, BIND_AUTO_CREATE);
         }
+
+        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
+        recyclerView = (RecyclerView) findViewById(R.id.trDetailsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(exercisesListAdapter);
+        recyclerView.setHasFixedSize(true);
+
     }
 
     @Override
@@ -78,7 +94,20 @@ public class TrainingDetailsActivity extends ViewPagerActivity implements Activi
     @Override
     public void saveAndParseTraining(Training training) {
         Log.d(TAG, "Training title: "+ training.getTitle());
-        setTitle(training.getTitle());
+        this.training = training;
+        ArrayList<Element> elements = training.getElements();
+
+        for (Element element : elements) {
+            if (element instanceof ExerciseGroup) {
+                ExerciseGroup exerciseGroup = (ExerciseGroup) element;
+                Log.d(TAG, "Nombre ejercicio: "+exerciseGroup.getTitle());
+                exercises.add(exerciseGroup);
+            }
+        }
+
+        exercisesListAdapter.setExercises(exercises);
+        exercisesListAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -104,23 +133,23 @@ public class TrainingDetailsActivity extends ViewPagerActivity implements Activi
     /* Material design library methods */
 
     @Override
-    public ViewPagerHandler getViewPagerHandler() {
-        return null;
+    public int getContentView() {
+        return R.layout.activity_training_details;
     }
 
     @Override
-    public boolean showViewPagerIndicator() {
+    public boolean pullToRefreshEnabled() {
         return false;
     }
 
     @Override
-    public boolean replaceActionBarTitleByViewPagerPageTitle() {
-        return false;
+    public int[] getPullToRefreshColorResources() {
+        return new int[0];
     }
 
     @Override
-    protected boolean enableActionBarShadow() {
-        return false;
+    public void onRefresh() {
+        setRefreshing(false);
     }
 
     @Override
@@ -129,7 +158,7 @@ public class TrainingDetailsActivity extends ViewPagerActivity implements Activi
     }
 
     @Override
-    public int defaultViewPagerPageSelectedPosition() {
-        return 0;
+    protected boolean enableActionBarShadow() {
+        return false;
     }
 }
