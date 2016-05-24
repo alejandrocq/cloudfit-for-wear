@@ -56,7 +56,6 @@ public class LoginTask extends AsyncTask<Void, String, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            Toast.makeText(context, "Sesión iniciada correctamente", Toast.LENGTH_SHORT).show();
             Intent startMainActivityIntent = new Intent(context, MainActivity.class);
             context.startActivity(startMainActivityIntent);
             context.finish();

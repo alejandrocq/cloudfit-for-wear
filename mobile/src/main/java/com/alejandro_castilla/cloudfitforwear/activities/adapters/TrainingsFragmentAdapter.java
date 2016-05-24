@@ -60,20 +60,15 @@ public class TrainingsFragmentAdapter extends
                     .dateOnMillisToString(calendarEvents.get(position).getDate());
             String trainingDescription = "Fecha: " + dateString;
             holder.cardView.setDescription(trainingDescription);
-            holder.cardView.setOnNormalButtonClickListener(new
-                    ButtonClickListener(StaticVariables.NORMAL_BUTTON,position));
-            holder.cardView.setOnHighlightButtonClickListener(new
-                    ButtonClickListener(StaticVariables.HIGHLIGHT_BUTTON, position));
+            holder.cardView.setOnNormalButtonClickListener(new ButtonClickListener(context,
+                    StaticVariables.NORMAL_BUTTON, position, calendarEvents));
+            holder.cardView.setOnHighlightButtonClickListener(new ButtonClickListener(context,
+                    StaticVariables.HIGHLIGHT_BUTTON, position, calendarEvents));
         }
     }
 
     @Override
     public int getItemCount() {
-//        if (calendarEvents != null) {
-//            return calendarEvents.size();
-//        } else {
-//            return 0;
-//        }
         return calendarEvents.size();
     }
 
@@ -86,20 +81,23 @@ public class TrainingsFragmentAdapter extends
      * Listener for CardView's buttons.
      */
 
-    private class ButtonClickListener implements View.OnClickListener {
+    private static class ButtonClickListener implements View.OnClickListener {
 
+        private Activity context;
         private int position;
         private short buttonType;
+        private ArrayList<CalendarEvent> calendarEvents;
 
-        public ButtonClickListener(short buttonType ,int position) {
+        public ButtonClickListener(Activity context ,short buttonType ,int position,
+                                   ArrayList<CalendarEvent> calendarEvents) {
+            this.context = context;
             this.buttonType = buttonType;
             this.position = position;
+            this.calendarEvents = calendarEvents;
         }
 
         @Override
         public void onClick(View v) {
-//            Toast.makeText(v.getContext(), "Botón detalles pulsado para: "
-//                    + calendarEvents.get(position).getText(), Toast.LENGTH_LONG).show();
             switch (buttonType) {
                 case StaticVariables.NORMAL_BUTTON:
                     Intent startTrainingDetailsIntent = new Intent(context,

@@ -31,7 +31,7 @@ public class Utilities {
     public static String dateOnMillisToString(long dateOnMillis) {
         String dateString;
         Date date = new Date(dateOnMillis);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMMM-yyyy");
         dateString = simpleDateFormat.format(date);
 
         return dateString;

@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10sp"
         app:mdl_normalButton="Detalles"
-        app:mdl_highlightButton="Sincronizar" />
+        app:mdl_highlightButton="Enviar al reloj"
+        app:mdl_imagePosition="top"
+        app:mdl_image="@drawable/training"/>
 
 </LinearLayout>

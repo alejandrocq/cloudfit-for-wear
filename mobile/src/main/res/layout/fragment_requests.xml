@@ -18,11 +18,12 @@
             android:id="@+id/requestsCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mdl_title="Prueba"
-            app:mdl_description="Descarga de entrenamientos"
-            app:mdl_normalButton="Rechazar"
-            app:mdl_highlightButton="Aceptar"/>
-
+            app:mdl_title="Petición de prueba"
+            app:mdl_description="Nombre del entrenador: Pedro"
+            app:mdl_normalButton="Aceptar"
+            app:mdl_highlightButton="Rechazar"
+            app:mdl_imagePosition="left"
+            app:mdl_image="@drawable/trainer"/>
 
     </RelativeLayout>
 

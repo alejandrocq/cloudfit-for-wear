@@ -24,4 +24,28 @@ public class StaticVariables {
     public static final short NORMAL_BUTTON = 1;
     public static final short HIGHLIGHT_BUTTON = 2;
 
+    /**
+     * Message types
+     */
+
+    public static final short MSG_WEARABLESERVICE_MESSENGER = 1;
+
+    public static final short MSG_REQUEST_WEARABLE_STATE = 2;
+    public static final short MSG_WEARABLE_STATE = 3;
+
+    public static final short MSG_SEND_TRAINING_TO_WEARABLE = 4;
+    public static final short MSG_SEND_TRAINING_TO_WEARABLE_ACK = 5;
+
+    public static final short MSG_TRAINING_RECEIVED_FROM_WEARABLE = 6;
+    public static final short MSG_TRAINING_RECEIVED_FROM_WEARABLE_ACK = 7;
+
+    /**
+     * Bundle strings
+     */
+
+    public static final String BUNDLE_WEARABLE_STATE = "wearablestate";
+
+
+
+
 }

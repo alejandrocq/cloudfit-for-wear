@@ -130,7 +130,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         int heartRateInt;
 
         @Override
-        public void handleMessage(Message msg) {timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+        public void handleMessage(Message msg) {
+            timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
             switch (msg.what) {
                 case MessageType.DEVICE_FOUND:
                     Log.d(TAG, "Device received on " + TAG);

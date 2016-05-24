@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -65,6 +67,12 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_training_details);
         setTitle(getIntent().getStringExtra("trainingname"));
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         trainingID = getIntent().getLongExtra("trainingid", -1);
         if (trainingID == -1) {
             Toast.makeText(this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
@@ -81,6 +89,17 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
         recyclerView.setAdapter(exercisesListAdapter);
         recyclerView.setHasFixedSize(true);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
