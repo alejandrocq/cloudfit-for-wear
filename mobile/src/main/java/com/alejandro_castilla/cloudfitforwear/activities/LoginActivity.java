@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.asynctask.LoginTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.Utils;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDB;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.github.florent37.materialtextfield.MaterialTextField;
@@ -84,11 +86,22 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username = userTextField.getText().toString();
-                password = passTextField.getText().toString();
-                new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
-                        .execute(); //Temporary trick to skip typing user and password
+                String noInternetConnectionDescription = "Parece ser que no está conectado " +
+                        "a Internet. Compruebe su conexión e inténtelo de nuevo.";
 
+                if (Utilities.checkInternetConnection(LoginActivity.this)) {
+                    username = userTextField.getText().toString();
+                    password = passTextField.getText().toString();
+                    new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
+                            .execute(); //Temporary trick to skip typing user and password
+                } else {
+                    MaterialDialog.Builder noConnectionDialog = new
+                            MaterialDialog.Builder(LoginActivity.this)
+                            .title("Sin conexión a Internet")
+                            .content(noInternetConnectionDescription)
+                            .positiveText("Entendido");
+                    noConnectionDialog.show();
+                }
             }
         });
 

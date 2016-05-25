@@ -3,8 +3,8 @@ package com.alejandro_castilla.cloudfitforwear.asynctask;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.activities.MainActivity;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.userInfo;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
@@ -19,6 +19,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
 public class LoginTask extends AsyncTask<Void, String, Boolean> {
 
     private Activity context;
+    private MaterialDialog progressDialog;
     private CloudFitService cloudFitService;
     private boolean userFound;
     private String username, password;
@@ -32,6 +33,16 @@ public class LoginTask extends AsyncTask<Void, String, Boolean> {
         this.password = password;
         db = new zDB (context);
         db.open();
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressDialog = new MaterialDialog.Builder(context)
+                .title("Iniciando sesión...")
+                .content("Espere...")
+                .progress(true, 0).build();
+        progressDialog.show();
     }
 
     @Override
@@ -55,12 +66,20 @@ public class LoginTask extends AsyncTask<Void, String, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        progressDialog.dismiss();
+        String errorDialogDescription = "Ha ocurrido un error al iniciar la sesión. " +
+                "Compruebe su usuario y contraseña e inténtelo de nuevo.";
+
         if (result) {
             Intent startMainActivityIntent = new Intent(context, MainActivity.class);
             context.startActivity(startMainActivityIntent);
             context.finish();
         } else {
-            Toast.makeText(context, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
+            new MaterialDialog.Builder(context)
+                    .title("Ha ocurrido un error")
+                    .content(errorDialogDescription)
+                    .positiveText("Entendido")
+                    .show();
         }
 
         super.onPostExecute(result);

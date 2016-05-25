@@ -12,7 +12,6 @@ import android.os.Messenger;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -46,7 +45,6 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    private Button downloadButton;
     private TrainingsFragment trainingsFragment;
     private RequestsFragment requestsFragment;
 
@@ -180,8 +178,6 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
         if (actionBar != null) {
             actionBar.setIcon(R.drawable.ic_cloudfit_actionbar);
         }
-
-        downloadButton = (Button) findViewById(R.id.downloadButton);
 
         Intent cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);

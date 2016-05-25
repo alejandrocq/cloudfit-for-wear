@@ -31,7 +31,7 @@ public class WearableService extends WearableListenerService implements ServiceI
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case StaticVariables.MSG_REQUEST_WEARABLE_STATE:
-
+                    checkWearableState();
                     break;
                 case StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE:
 
@@ -83,8 +83,6 @@ public class WearableService extends WearableListenerService implements ServiceI
                 .build();
 
         googleApiClient.connect();
-
-        checkWearableState();
 
         return super.onStartCommand(intent, flags, startId);
     }

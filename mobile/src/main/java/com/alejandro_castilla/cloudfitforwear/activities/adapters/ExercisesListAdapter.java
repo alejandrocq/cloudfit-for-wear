@@ -86,7 +86,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
             MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(context)
                     .title(exerciseGroup.getTitle())
                     .content(exerciseDescription)
-                    .positiveText("OK");
+                    .positiveText("Entendido");
             materialDialog.show();
         }
     }
