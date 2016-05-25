@@ -8,9 +8,13 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup5;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.OptionalGroup1;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
+import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -35,6 +39,20 @@ public class Utilities {
         dateString = simpleDateFormat.format(date);
 
         return dateString;
+    }
+
+    public static ArrayList<ExerciseGroup> createExercisesListFromElement(ArrayList<Element>
+                                                                                  elements) {
+        ArrayList<ExerciseGroup> exercises = new ArrayList<>();
+
+        for (Element element : elements) {
+            if (element instanceof ExerciseGroup) {
+                ExerciseGroup exerciseGroup = (ExerciseGroup) element;
+                exercises.add(exerciseGroup);
+            }
+        }
+
+        return exercises;
     }
 
     public static String buildExerciseDescriptionFromExerciseGroup (ExerciseGroup exerciseGroup) {
@@ -72,6 +90,54 @@ public class Utilities {
         }
         return exerciseDescription;
     }
+
+    public static WearableTraining trainingToWearableTraining (Training training) {
+        WearableTraining wearableTraining = new WearableTraining(training.getTitle(),
+                training.getId());
+        ArrayList<ExerciseGroup> exercises;
+
+        exercises = createExercisesListFromElement(training.getElements());
+
+        for (ExerciseGroup exerciseGroup : exercises) {
+            switch (exerciseGroup.getGroup()) {
+                case StaticReferences.EXERCISE_GROUP1:
+                    ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
+                    WearableTraining.RunningExercise runningExercise =
+                            wearableTraining.getRunningExercise();
+
+                    if (exerciseGroup1.getTimeP()>0) {
+                        runningExercise.setTimeP(exerciseGroup1.getTimeP());
+                    } else if (exerciseGroup1.getTimeMaxP()>0) {
+                        runningExercise.setTimeMaxP(exerciseGroup1.getTimeMaxP());
+                    } else if (exerciseGroup1.getDistanceP() != -1.0) {
+                        runningExercise.setDistanceP(exerciseGroup1.getDistanceP());
+                    }
+
+                    if (exerciseGroup1.isOptional()) {
+                        OptionalGroup1 optionalGroup1 = exerciseGroup1.getOptional();
+
+                        runningExercise.setHeartRateMin(optionalGroup1.getHrmin());
+                        runningExercise.setHeartRateMax(optionalGroup1.getHrmax());
+
+                    }
+
+                    wearableTraining.setRunningExercise(runningExercise);
+
+                    break;
+                case StaticReferences.EXERCISE_GROUP5:
+                    ExerciseGroup5 exerciseGroup5 = (ExerciseGroup5) exerciseGroup;
+                    WearableTraining.RestExercise restExercise =
+                            wearableTraining.getRestExercise();
+
+                    restExercise.setRestp(exerciseGroup5.getRestp());
+                    wearableTraining.setRestExercise(restExercise);
+                    break;
+            }
+        }
+        return wearableTraining;
+    }
+
+
 
     public static String secondsToStandardFormat (long totalSeconds) {
         String time;

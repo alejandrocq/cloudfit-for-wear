@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CloudFit for Wear</string>
+    <string name="google_app_id">188562439527</string>
+
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
     <string name="settings_title">Configuración</string>

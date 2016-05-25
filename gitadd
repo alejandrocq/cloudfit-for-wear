@@ -75,16 +75,16 @@ Changes to be committed:
 	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFit.java
 	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFitHandler.java
 	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/cloudfit/CloudFitService.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/AesUtil.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/CloudFitCloud.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Content.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Encryption.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/StaticReferences.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/Utils.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/processData.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zDB.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zDBFunctions.java
-	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/zJSON.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/AesUtil.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/CloudFitCloud.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/Content.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/Encryption.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/StaticReferences.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/Utils.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/processData.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/zDB.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/zDBFunctions.java
+	new file:   mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/zJSON.java
 	modified:   mobile/src/main/res/layout/activity_main.xml
 	new file:   status
 	modified:   wear/src/main/AndroidManifest.xml
@@ -95,7 +95,7 @@ Changes to be committed:
 	new file:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Element.java
 	deleted:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/PracticeJSONParser.java
 	renamed:    wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/PracticeSession.java -> wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Training.java
-	new file:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/StaticReferences.java
+	new file:   wear/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/StaticReferences.java
 	modified:   wear/src/main/res/layout/activity_practice.xml
 	modified:   wear/src/main/res/layout/rect_activity_practice.xml
 	modified:   wear/src/main/res/layout/round_activity_practice.xml

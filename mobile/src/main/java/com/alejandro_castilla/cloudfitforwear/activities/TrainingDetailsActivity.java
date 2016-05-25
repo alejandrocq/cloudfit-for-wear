@@ -20,10 +20,10 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
-import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.activities.ScrollViewActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
@@ -108,21 +108,16 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
         unbindService(cloudFitServiceConnection);
     }
 
+    ////////////////////////////////
     /* Activity interface methods */
+    ////////////////////////////////
 
     @Override
     public void saveAndParseTraining(Training training) {
         Log.d(TAG, "Training title: "+ training.getTitle());
         this.training = training;
-        ArrayList<Element> elements = training.getElements();
 
-        for (Element element : elements) {
-            if (element instanceof ExerciseGroup) {
-                ExerciseGroup exerciseGroup = (ExerciseGroup) element;
-                Log.d(TAG, "Nombre ejercicio: "+exerciseGroup.getTitle());
-                exercises.add(exerciseGroup);
-            }
-        }
+        exercises = Utilities.createExercisesListFromElement(training.getElements());
 
         exercisesListAdapter.setExercises(exercises);
         exercisesListAdapter.notifyDataSetChanged();
@@ -147,6 +142,11 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
     @Override
     public CloudFitService getCloudFitService() {
         return null; //Not needed.
+    }
+
+    @Override
+    public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
+        //Not needed.
     }
 
     /* Material design library methods */

@@ -45,7 +45,19 @@ public class StaticVariables {
 
     public static final String BUNDLE_WEARABLE_STATE = "wearablestate";
 
+    /**
+     * Data Map Request Types
+     */
 
+    public static final String TRAINING_FROM_HANDHELD = "/traininghandheld";
+    public static final String ACK_FROM_WEARABLE = "/ackwearable";
+
+    /**
+     * Data Map Types
+     */
+
+    public static final String WEARABLE_TRAINING = "wearabletraining";
+    public static final String WEARABLE_TRAINING_ACK = "wearabletrainingack";
 
 
 }

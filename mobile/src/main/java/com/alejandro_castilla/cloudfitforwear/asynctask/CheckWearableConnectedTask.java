@@ -33,26 +33,34 @@ public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
-        Log.d(TAG, "Waiting for nodes.");
+        while (!this.isCancelled()) {
 
-        NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi
+            NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi
                     .getConnectedNodes(googleApiClient).await();
 
-        Log.d(TAG, "Nodes result obtained.");
+            if (nodes != null && nodes.getNodes().size() > 0) {
+                isWearableConnected = true;
+                Log.d(TAG, "Watch connected: " + nodes.getNodes().get(0).getDisplayName());
+            } else {
+                isWearableConnected = false;
+            }
 
-        if (nodes != null && nodes.getNodes().size() > 0) {
-            isWearableConnected = true;
-            Log.d(TAG, "Watch connected: " + nodes.getNodes().get(0).getDisplayName());
-        } else {
-            isWearableConnected = false;
+            serviceInterface.updateWearableState(isWearableConnected);
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
 
         return null;
+
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        serviceInterface.updateWearableState(isWearableConnected);
         super.onPostExecute(aVoid);
     }
 

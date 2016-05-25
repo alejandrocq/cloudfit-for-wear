@@ -32,6 +32,11 @@
             android:name=".services.zephyrsensor.ZephyrService"
             android:exported="false" />
 
+        <service
+            android:name=".services.WearableService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name">

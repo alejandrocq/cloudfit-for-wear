@@ -39,12 +39,12 @@ Untracked files:
 	mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/data/
 	mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/models/
 	mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/services/
-	mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/
+	mobile/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/
 	status
 	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/TrainingActivity.java
 	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/activities/adapters/
 	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Element.java
 	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/data/Training.java
-	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/utilities/
+	wear/src/main/java/com/alejandro_castilla/cloudfitforwear/com.alejandro_castilla.cloudfitforwear.utilities/
 
 no changes added to commit (use "git add" and/or "git commit -a")

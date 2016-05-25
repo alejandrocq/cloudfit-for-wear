@@ -12,16 +12,18 @@ import android.widget.ImageView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.MainActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 
 public class MainActivity extends WearableActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    private GridViewPager gridViewPager;
+    private Intent wearableServiceIntent;
 
     /* Layout Views */
     private ImageView startActionImgView;
     private ImageView settingsImgView;
+    private GridViewPager gridViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,9 @@ public class MainActivity extends WearableActivity {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 startActionImgView = (ImageView) stub.findViewById(R.id.startActionImg);
-                startActionImgView.setOnClickListener(new ActionButtonsClicListener());
+                startActionImgView.setOnClickListener(new ActionButtonsClickListener());
                 settingsImgView = (ImageView) stub.findViewById(R.id.settingsImg);
-                settingsImgView.setOnClickListener(new ActionButtonsClicListener());
+                settingsImgView.setOnClickListener(new ActionButtonsClickListener());
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.pager);
                 gridViewPager.setAdapter(new MainActivityGridPagerAdapter(MainActivity.this));
@@ -48,10 +50,18 @@ public class MainActivity extends WearableActivity {
         setAmbientEnabled();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        wearableServiceIntent = new Intent(MainActivity.this, WearableService.class);
+        startService(wearableServiceIntent);
 
     }
 
-    private class ActionButtonsClicListener implements View.OnClickListener {
+    @Override
+    protected void onDestroy() {
+        stopService(wearableServiceIntent);
+        super.onDestroy();
+    }
+
+    private class ActionButtonsClickListener implements View.OnClickListener {
 
         private int resId;
 

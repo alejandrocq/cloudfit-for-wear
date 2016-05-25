@@ -12,8 +12,8 @@ import android.os.Messenger;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFragment;
@@ -26,9 +26,11 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
+import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.activities.NavigationDrawerActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
@@ -38,6 +40,7 @@ import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerBottomHandle
 import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerStyleHandler;
 import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerTopHandler;
 import com.blunderer.materialdesignlibrary.models.Account;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -47,6 +50,7 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     private TrainingsFragment trainingsFragment;
     private RequestsFragment requestsFragment;
+    private MaterialDialog sendingToWearableDialog;
 
     private CloudFitService cloudFitService;
     private User cloudFitUser;
@@ -92,9 +96,8 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 //                            Toast.LENGTH_LONG).show();
                     break;
                 case StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE_ACK:
-                    Toast.makeText(MainActivity.this,
-                            "Entrenamiento enviado correctamente al reloj",
-                            Toast.LENGTH_LONG).show();
+                    sendingToWearableDialog.dismiss();
+                    showTrainingSentDialog();
                     break;
                 case StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE:
                     break;
@@ -104,6 +107,10 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
     };
 
     private Messenger mainActivityMessenger = new Messenger(MessageHandler);
+
+    ////////////////////////////////
+    /* Activity interface methods */
+    ////////////////////////////////
 
     /**
      * Saves user info obtained from GetUserInfoTask on this activity.
@@ -159,10 +166,81 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     public void saveAndParseTraining(Training training) {
-        //Not needed.
+        sendingToWearableDialog = new MaterialDialog.Builder(this)
+                .title("Enviando entrenamiento al reloj")
+                .content("Espere...")
+                .progress(true, 0)
+                .cancelable(false)
+                .build();
+        sendingToWearableDialog.show();
+        sendingToWearableDialogTimer(5000, sendingToWearableDialog);
+
+        try {
+            Log.d(TAG, "Parsing training with ID: " + training.getId());
+            WearableTraining wearableTraining;
+            wearableTraining = Utilities.trainingToWearableTraining(training);
+//        Toast.makeText(this, "Tiempo mínimo running exercise: "
+//                + wearableTraining.getRunningExercise().getTimeP(), Toast.LENGTH_LONG).show();
+            Gson gson = new Gson();
+            String wearableTrainingJSON = gson.toJson(wearableTraining);
+
+            if (isWearableConnected) {
+                Message msg = Message.obtain(null, StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE);
+                msg.obj = wearableTrainingJSON;
+                wearableServiceMessenger.send(msg);
+            } else {
+                sendingToWearableDialog.dismiss();
+                showTrainingNotSentDialog();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+    public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
+        new GetTrainingsTask(this, this, cloudFitService, calendarEvent.getId(),
+                StaticVariables.GET_SINGLE_TRAINING).execute();
+    }
 
+    ///////////////////
+    /* Other methods */
+    ///////////////////
+
+    public void sendingToWearableDialogTimer(long time, final MaterialDialog dialog) {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                if (!dialog.isCancelled()) {
+                    dialog.dismiss();
+                    showTrainingNotSentDialog();
+                }
+
+            }
+        }, time);
+    }
+
+    public void showTrainingSentDialog() {
+        if (isWearableConnected) {
+            String DialogDescription = "El entrenamiento ha sido enviado correctamente al reloj." +
+                    " Puede comenzarlo en cualquier momento.";
+            new MaterialDialog.Builder(MainActivity.this)
+                    .title("Entrenamiento enviado correctamente")
+                    .content(DialogDescription)
+                    .positiveText("Entendido")
+                    .show();
+        }
+    }
+
+    public void showTrainingNotSentDialog() {
+        String DialogDescription = "No se ha podido enviar el entrenamiento al reloj. " +
+                "Compruebe si está conectado y si la aplicación CloudFit For Wear está abierta.";
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("Ha ocurrido un error")
+                .content(DialogDescription)
+                .positiveText("Entendido")
+                .show();
+    }
 
     @Override
     public CloudFitService getCloudFitService() {

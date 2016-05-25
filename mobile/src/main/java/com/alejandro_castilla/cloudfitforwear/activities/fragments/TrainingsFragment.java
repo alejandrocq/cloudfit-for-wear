@@ -33,6 +33,10 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
 
     private ActivityInterface activityInterface;
 
+    ////////////////////////////////
+    /* Activity interface methods */
+    ////////////////////////////////
+
     @Override
     public void stopRefreshing() {
         setRefreshing(false);
@@ -52,6 +56,11 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
 
     @Override
     public void saveAndParseTraining(Training training) {
+        //Not needed.
+    }
+
+    @Override
+    public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
         //Not needed.
     }
 

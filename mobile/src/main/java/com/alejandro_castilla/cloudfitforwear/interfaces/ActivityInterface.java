@@ -18,6 +18,8 @@ public interface ActivityInterface {
     void stopRefreshing();
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
     void saveAndParseTraining(Training training);
+    void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent);
+
     CloudFitService getCloudFitService();
 
 }
