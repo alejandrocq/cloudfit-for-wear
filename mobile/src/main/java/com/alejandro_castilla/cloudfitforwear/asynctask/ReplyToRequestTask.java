@@ -2,6 +2,7 @@ package com.alejandro_castilla.cloudfitforwear.asynctask;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
@@ -34,6 +35,7 @@ public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
+        Log.d("ReplyTask", "User ID: " + userid);
         result = CloudFitCloud.responseRequest(cloudFitService, trainerid, userid, accept);
         return null;
     }
@@ -41,6 +43,7 @@ public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         Toast.makeText(context, "Resultado de la petición: " + result, Toast.LENGTH_SHORT).show();
+        new GetRequestsTask(context, cloudFitService).execute();
         super.onPostExecute(aVoid);
     }
 }

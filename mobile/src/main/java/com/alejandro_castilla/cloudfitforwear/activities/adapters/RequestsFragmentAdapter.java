@@ -10,6 +10,7 @@ import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.asynctask.ReplyToRequestTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
@@ -82,6 +83,7 @@ public class RequestsFragmentAdapter extends
     private class ButtonClickListener implements View.OnClickListener {
 
         private ActivityInterface activityInterface;
+        private CloudFitService cloudFitService;
         private int position;
         private short buttonType;
 
@@ -89,20 +91,21 @@ public class RequestsFragmentAdapter extends
             this.buttonType = buttonType;
             this.position = position;
             activityInterface = (ActivityInterface) context;
+            cloudFitService = activityInterface.getCloudFitService();
         }
 
         @Override
         public void onClick(View v) {
             switch (buttonType) {
                 case StaticVariables.NORMAL_BUTTON:
-                    new ReplyToRequestTask(context, activityInterface.getCloudFitService(),
-                            requests.get(position).getUserid(),
+                    new ReplyToRequestTask(context, cloudFitService,
+                            Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
                             requests.get(position).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
                             .execute();
                     break;
                 case StaticVariables.HIGHLIGHT_BUTTON:
-                    new ReplyToRequestTask(context, activityInterface.getCloudFitService(),
-                            requests.get(position).getUserid(),
+                    new ReplyToRequestTask(context, cloudFitService,
+                            Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
                             requests.get(position).getTrainerid(), StaticReferences.REQUEST_CANCEL)
                             .execute();
                     break;

@@ -31,6 +31,7 @@ public class RequestsFragment extends ScrollViewFragment {
     public void setRequests(ArrayList<RequestTrainer> requests) {
         setRefreshing(false);
         this.requests = requests;
+        if (requestsFragmentAdapter != null) requestsFragmentAdapter.setRequests(requests);
     }
 
     @Override
