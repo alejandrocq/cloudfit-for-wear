@@ -8,6 +8,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup5;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.OptionalGroup1;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
@@ -91,9 +92,11 @@ public class Utilities {
         return exerciseDescription;
     }
 
-    public static WearableTraining trainingToWearableTraining (Training training) {
+    public static WearableTraining trainingToWearableTraining (Training training,
+                                                               User cloudFitUser) {
+
         WearableTraining wearableTraining = new WearableTraining(training.getTitle(),
-                training.getId());
+                training.getId(), cloudFitUser.getId());
         ArrayList<ExerciseGroup> exercises;
 
         exercises = createExercisesListFromElement(training.getElements());

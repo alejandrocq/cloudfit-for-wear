@@ -46,11 +46,15 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
     public void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents) {
         this.calendarEvents = calendarEvents;
         trainingsFragmentAdapter.setCalendarEvents(calendarEvents);
-        trainingsFragmentAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> request) {
+    public void saveUserInfo(User cloudFitUser) {
+        //Not needed.
+    }
+
+    @Override
+    public void saveRequests(ArrayList<RequestTrainer> requests) {
         //Not needed.
     }
 
@@ -69,10 +73,13 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
         return null; //Not needed.
     }
 
+    ///////////////////
+    /* Other methods */
+    ///////////////////
+
     public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
         this.calendarEvents = calendarEvents;
         trainingsFragmentAdapter.setCalendarEvents(calendarEvents);
-        trainingsFragmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -111,7 +118,6 @@ public class TrainingsFragment extends ScrollViewFragment implements ActivityInt
 
     @Override
     public void onRefresh() {
-//        Toast.makeText(getActivity(), "Actualizando...", Toast.LENGTH_LONG).show();
         new GetTrainingsTask(getActivity(), this,
                 activityInterface.getCloudFitService(), -1,
                 StaticVariables.GET_ALL_TRAININGS).execute();

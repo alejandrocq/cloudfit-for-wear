@@ -125,7 +125,12 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
     }
 
     @Override
-    public void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> request) {
+    public void saveUserInfo(User cloudFitUser) {
+        //Not needed.
+    }
+
+    @Override
+    public void saveRequests(ArrayList<RequestTrainer> requests) {
         //Not needed.
     }
 

@@ -14,7 +14,8 @@ import java.util.ArrayList;
  */
 public interface ActivityInterface {
 
-    void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> request);
+    void saveUserInfo(User cloudFitUser);
+    void saveRequests(ArrayList<RequestTrainer> requests);
     void stopRefreshing();
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
     void saveAndParseTraining(Training training);

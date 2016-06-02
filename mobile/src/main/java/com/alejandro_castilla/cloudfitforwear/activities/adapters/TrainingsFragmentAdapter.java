@@ -76,6 +76,7 @@ public class TrainingsFragmentAdapter extends
     public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
         Log.d(TAG, "Data updated.");
         this.calendarEvents = calendarEvents;
+        notifyDataSetChanged();
     }
 
     /**

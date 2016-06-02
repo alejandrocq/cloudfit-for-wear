@@ -86,21 +86,13 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String noInternetConnectionDescription = "Parece ser que no está conectado " +
-                        "a Internet. Compruebe su conexión e inténtelo de nuevo.";
-
                 if (Utilities.checkInternetConnection(LoginActivity.this)) {
                     username = userTextField.getText().toString();
                     password = passTextField.getText().toString();
                     new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
                             .execute(); //Temporary trick to skip typing user and password
                 } else {
-                    MaterialDialog.Builder noConnectionDialog = new
-                            MaterialDialog.Builder(LoginActivity.this)
-                            .title("Sin conexión a Internet")
-                            .content(noInternetConnectionDescription)
-                            .positiveText("Entendido");
-                    noConnectionDialog.show();
+                    showNoInternetConnectionDialog();
                 }
             }
         });
@@ -113,6 +105,18 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         unbindService(cloudFitServiceConnection);
         db.close();
         super.onDestroy();
+    }
+
+    public void showNoInternetConnectionDialog() {
+        String noInternetConnectionDescription = "Parece ser que no está conectado " +
+                "a Internet. Compruebe su conexión e inténtelo de nuevo.";
+
+        MaterialDialog.Builder noConnectionDialog = new
+                MaterialDialog.Builder(LoginActivity.this)
+                .title("Sin conexión a Internet")
+                .content(noInternetConnectionDescription)
+                .positiveText("Entendido");
+        noConnectionDialog.show();
     }
 
     /* Material Design Library methods */

@@ -9,6 +9,7 @@ public class WearableTraining {
 
     private String trainingTitle;
     private long trainingID;
+    private long userID;
     private long startTime;
     private long endTime;
 
@@ -16,9 +17,10 @@ public class WearableTraining {
     private RestExercise restExercise;
     private ArrayList<HeartRate> heartRateList;
 
-    public WearableTraining(String trainingTitle, long trainingID) {
+    public WearableTraining(String trainingTitle, long trainingID, long userID) {
         this.trainingTitle = trainingTitle;
         this.trainingID = trainingID;
+        this.userID = userID;
         runningExercise = new RunningExercise();
         restExercise = new RestExercise();
     }

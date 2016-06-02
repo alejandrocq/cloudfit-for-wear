@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFragment;
+import com.alejandro_castilla.cloudfitforwear.asynctask.GetRequestsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
@@ -53,8 +55,9 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
     private MaterialDialog sendingToWearableDialog;
 
     private CloudFitService cloudFitService;
+    private Intent cloudFitServiceIntent;
     private User cloudFitUser;
-    private ArrayList<RequestTrainer> requests;
+    private ArrayList<RequestTrainer> requests = new ArrayList<>();
     private ArrayList<CalendarEvent> calendarEvents;
 
     private Intent wearableServiceIntent;
@@ -70,7 +73,8 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
             Log.d(TAG, "Connected to CloudFit service");
             CloudFitService.MyBinder cloudFitServiceBinder = (CloudFitService.MyBinder) service;
             cloudFitService = cloudFitServiceBinder.getService();
-            new GetUserInfoTask(MainActivity.this, cloudFitService, MainActivity.this).execute();
+            new GetUserInfoTask(MainActivity.this, cloudFitService)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             Log.d(TAG, "Getting user data");
         }
 
@@ -92,8 +96,6 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
                 case StaticVariables.MSG_WEARABLE_STATE:
                     Bundle bundle = (Bundle) msg.obj;
                     isWearableConnected = bundle.getBoolean(StaticVariables.BUNDLE_WEARABLE_STATE);
-//                    Toast.makeText(MainActivity.this, "Estado del reloj: " + isWearableConnected,
-//                            Toast.LENGTH_LONG).show();
                     break;
                 case StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE_ACK:
                     sendingToWearableDialog.dismiss();
@@ -115,10 +117,9 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
     /**
      * Saves user info obtained from GetUserInfoTask on this activity.
      * @param cloudFitUser User data from CloudFit platform.
-     * @param requests Requests from trainers sent by the platform.
      */
     @Override
-    public void saveUserInfo(User cloudFitUser, ArrayList<RequestTrainer> requests) {
+    public void saveUserInfo(User cloudFitUser) {
         this.cloudFitUser = cloudFitUser;
 
         if (cloudFitUser == null) {
@@ -130,27 +131,21 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
         } else if (cloudFitUser.getRol() == StaticReferences.ROL_USER) {
             Log.d(TAG, "ROL USER OK");
             this.cloudFitUser.setUsername(cloudFitService.getFit().getSetting().getUsername());
-//            Log.d(TAG, "ROLE: " + cloudFitService.getFit().getSetting().getRole());
             cloudFitService.getFit().getSetting().setUserID(cloudFitUser.getId()+"");
+            zDBFunctions.saveSetting(cloudFitService.getDB(),
+                    cloudFitService.getFit().getSetting());
 
-            if (requests != null && requests.size()>0) {
-                this.requests = requests;
-//                Log.d(TAG, "Request length: " + this.requests.size());
-//                Log.d(TAG, "Request trainer ID: " + this.requests.get(0).getTrainerid());
-//                Toast.makeText(this, "Número de solicitudes: " + this.requests.size(),
-//                        Toast.LENGTH_SHORT).show();
-                zDBFunctions.saveSetting(cloudFitService.getDB(),
-                        cloudFitService.getFit().getSetting());
-//                new ReplyToRequestTask(this, cloudFitService,
-//                        Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
-//                        this.requests.get(0).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
-//                        .execute();
-            } else {
-//                Toast.makeText(this, "No hay solicitudes.", Toast.LENGTH_SHORT).show();
-            }
             new GetTrainingsTask(this, this, cloudFitService, -1, StaticVariables.GET_ALL_TRAININGS)
-                    .execute();
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new GetRequestsTask(this, cloudFitService)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+    }
+
+    @Override
+    public void saveRequests(ArrayList<RequestTrainer> requests) {
+        this.requests = requests;
+        requestsFragment.setRequests(requests);
     }
 
     @Override
@@ -166,21 +161,12 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     public void saveAndParseTraining(Training training) {
-        sendingToWearableDialog = new MaterialDialog.Builder(this)
-                .title("Enviando entrenamiento al reloj")
-                .content("Espere...")
-                .progress(true, 0)
-                .cancelable(false)
-                .build();
-        sendingToWearableDialog.show();
-        sendingToWearableDialogTimer(5000, sendingToWearableDialog);
+        showSendingToWearableDialog();
 
         try {
             Log.d(TAG, "Parsing training with ID: " + training.getId());
             WearableTraining wearableTraining;
-            wearableTraining = Utilities.trainingToWearableTraining(training);
-//        Toast.makeText(this, "Tiempo mínimo running exercise: "
-//                + wearableTraining.getRunningExercise().getTimeP(), Toast.LENGTH_LONG).show();
+            wearableTraining = Utilities.trainingToWearableTraining(training, cloudFitUser);
             Gson gson = new Gson();
             String wearableTrainingJSON = gson.toJson(wearableTraining);
 
@@ -207,6 +193,17 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
     ///////////////////
     /* Other methods */
     ///////////////////
+
+    public void showSendingToWearableDialog() {
+        sendingToWearableDialog = new MaterialDialog.Builder(this)
+                .title("Enviando entrenamiento al reloj")
+                .content("Espere...")
+                .progress(true, 0)
+                .cancelable(false)
+                .build();
+        sendingToWearableDialog.show();
+        sendingToWearableDialogTimer(5000, sendingToWearableDialog);
+    }
 
     public void sendingToWearableDialogTimer(long time, final MaterialDialog dialog) {
         new Handler().postDelayed(new Runnable() {
@@ -249,6 +246,9 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
+        trainingsFragment = new TrainingsFragment();
+        requestsFragment = new RequestsFragment();
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
 
@@ -257,25 +257,33 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
             actionBar.setIcon(R.drawable.ic_cloudfit_actionbar);
         }
 
-        Intent cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
+        cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
         wearableServiceIntent = new Intent (MainActivity.this, WearableService.class);
         wearableServiceIntent.putExtra("messenger", mainActivityMessenger);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
         startService(wearableServiceIntent);
     }
 
     @Override
-    protected void onRestart() {
-        Log.d(TAG, "onRestart");
-        super.onRestart();
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        stopService(wearableServiceIntent);
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
         unbindService(cloudFitServiceConnection);
         stopService(wearableServiceIntent);
-        super.onDestroy();
     }
 
     /////////////////////////////////////
@@ -320,8 +328,8 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     public NavigationDrawerTopHandler getNavigationDrawerTopHandler() {
-        trainingsFragment = new TrainingsFragment();
-        requestsFragment = new RequestsFragment();
+//        trainingsFragment = new TrainingsFragment();
+//        requestsFragment = new RequestsFragment();
         return new NavigationDrawerTopHandler(this)
                 .addSection("CloudFit")
                 .addItem(R.string.exercises_menu_name, trainingsFragment)

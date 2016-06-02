@@ -1,7 +1,6 @@
 package com.alejandro_castilla.cloudfitforwear.asynctask;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
@@ -22,7 +21,6 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
     private ActivityInterface activityInterface;
-    private ProgressDialog progressDialog;
     private CloudFitService cloudFitService;
     private short taskType;
 
@@ -41,17 +39,10 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
         this.trainingid = trainingid;
         this.taskType = taskType;
 
-        progressDialog = new ProgressDialog(context);
-
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.setTitle("Espere...");
-        progressDialog.setMessage("Descargando entrenamientos...");
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-//        progressDialog.show();
         super.onPreExecute();
     }
 
@@ -81,7 +72,6 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-//        progressDialog.dismiss();
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
                     activityInterface.stopRefreshing();
@@ -91,10 +81,10 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
                 activityInterface.saveAndParseTraining(training);
                 break;
             case StaticVariables.GET_TRAINING_NOT_DONE:
-                // TODO do something here
+                // TODO do something here if needed
                 break;
             case StaticVariables.GET_TRAINING_DONE:
-                //TODO do something here
+                //TODO do something here if needed
                 break;
         }
 

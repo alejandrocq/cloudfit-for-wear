@@ -23,11 +23,10 @@ public class GetUserInfoTask extends AsyncTask<Void, String, Void> {
     private User cloudFitUser;
     private ActivityInterface activityInterface;
 
-    public GetUserInfoTask(Activity context, CloudFitService cloudFitService,
-                           ActivityInterface activityInterface) {
+    public GetUserInfoTask(Activity context, CloudFitService cloudFitService) {
         this.context = context;
         this.cloudFitService = cloudFitService;
-        this.activityInterface = activityInterface;
+        this.activityInterface = (ActivityInterface) context;
     }
 
     @Override
@@ -38,13 +37,12 @@ public class GetUserInfoTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         cloudFitUser = CloudFitCloud.getUserInfo(cloudFitService);
-        requests = CloudFitCloud.getRequestTrainer(cloudFitService);
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        activityInterface.saveUserInfo(cloudFitUser, requests);
+        activityInterface.saveUserInfo(cloudFitUser);
         super.onPostExecute(aVoid);
     }
 }

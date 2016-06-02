@@ -92,6 +92,7 @@ public class WearableService extends Service implements ServiceInterface, DataAp
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "Wearable service stopped.");
         Wearable.DataApi.removeListener(googleApiClient, this);
         googleApiClient.disconnect();
         checkWearable.cancel(true);
