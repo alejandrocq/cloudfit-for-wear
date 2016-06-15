@@ -12,7 +12,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -33,32 +32,27 @@ import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
-import com.blunderer.materialdesignlibrary.activities.NavigationDrawerActivity;
-import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
-import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
-import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerAccountsHandler;
-import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerAccountsMenuHandler;
-import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerBottomHandler;
-import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerStyleHandler;
-import com.blunderer.materialdesignlibrary.handlers.NavigationDrawerTopHandler;
-import com.blunderer.materialdesignlibrary.models.Account;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class MainActivity extends NavigationDrawerActivity implements ActivityInterface {
+import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
+import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
+import it.neokree.materialnavigationdrawer.elements.MaterialSection;
+
+public class MainActivity extends MaterialNavigationDrawer implements ActivityInterface {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
     private TrainingsFragment trainingsFragment;
     private RequestsFragment requestsFragment;
+    private MaterialSection trainingsSection;
+    private MaterialSection requestsSection;
     private MaterialDialog sendingToWearableDialog;
 
     private CloudFitService cloudFitService;
     private Intent cloudFitServiceIntent;
     private User cloudFitUser;
-    private ArrayList<RequestTrainer> requests = new ArrayList<>();
-    private ArrayList<CalendarEvent> calendarEvents;
 
     private Intent wearableServiceIntent;
     private Messenger wearableServiceMessenger;
@@ -144,7 +138,7 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     public void saveRequests(ArrayList<RequestTrainer> requests) {
-        this.requests = requests;
+        requestsSection.setNotifications(requests.size());
         requestsFragment.setRequests(requests);
     }
 
@@ -155,7 +149,7 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
 
     @Override
     public void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents) {
-        this.calendarEvents = calendarEvents;
+        trainingsSection.setNotifications(calendarEvents.size());
         trainingsFragment.setCalendarEvents(calendarEvents);
     }
 
@@ -245,12 +239,22 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
+    public void init(Bundle savedInstanceState) {
+
         trainingsFragment = new TrainingsFragment();
         requestsFragment = new RequestsFragment();
-        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+
+        MaterialAccount account =
+                new MaterialAccount(this.getResources(),"Alejandro","acastillaquesada@gmail.com",
+                        R.drawable.ic_user_default, R.drawable.ic_running_background);
+        this.addAccount(account);
+
+        this.addSubheader("CloudFit");
+        trainingsSection = newSection("Entrenamientos", trainingsFragment);
+        requestsSection = newSection("Peticiones", requestsFragment);
+
+        this.addSection(trainingsSection);
+        this.addSection(requestsSection);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -284,87 +288,5 @@ public class MainActivity extends NavigationDrawerActivity implements ActivityIn
         Log.d(TAG, "onDestroy");
         unbindService(cloudFitServiceConnection);
         stopService(wearableServiceIntent);
-    }
-
-    /////////////////////////////////////
-    /* Material Desing Library methods */
-    ////////////////////////////////////
-
-    @Override
-    protected ActionBarHandler getActionBarHandler() {
-        return new ActionBarDefaultHandler(this);
-    }
-
-    @Override
-    public NavigationDrawerAccountsHandler getNavigationDrawerAccountsHandler() {
-        return new NavigationDrawerAccountsHandler(this)
-                .addAccount("Alejandro", "acastillaquesada@gmail.com",
-                        R.drawable.ic_user_default, R.drawable.ic_running_background);
-    }
-
-    @Override
-    public NavigationDrawerStyleHandler getNavigationDrawerStyleHandler() {
-        return new NavigationDrawerStyleHandler();
-    }
-
-    @Override
-    public NavigationDrawerAccountsMenuHandler getNavigationDrawerAccountsMenuHandler() {
-        return new NavigationDrawerAccountsMenuHandler(this)
-                .addItem("Cerrar sesión", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent closeSessionIntent = new Intent(MainActivity.this,
-                                LoginActivity.class);
-                        startActivity(closeSessionIntent);
-                        finish();
-                    }
-                });
-    }
-
-    @Override
-    public void onNavigationDrawerAccountChange(Account account) {
-
-    }
-
-    @Override
-    public NavigationDrawerTopHandler getNavigationDrawerTopHandler() {
-//        trainingsFragment = new TrainingsFragment();
-//        requestsFragment = new RequestsFragment();
-        return new NavigationDrawerTopHandler(this)
-                .addSection("CloudFit")
-                .addItem(R.string.exercises_menu_name, trainingsFragment)
-                .addItem(R.string.requests_menu_name, requestsFragment)
-                .addDivider();
-    }
-
-    @Override
-    public NavigationDrawerBottomHandler getNavigationDrawerBottomHandler() {
-        return new NavigationDrawerBottomHandler(this)
-                .addSettings(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-    }
-
-    @Override
-    public int defaultNavigationDrawerItemSelectedPosition() {
-        return 0;
-    }
-
-    @Override
-    public boolean overlayActionBar() {
-        return false;
-    }
-
-    @Override
-    public boolean replaceActionBarTitleByNavigationDrawerItemTitle() {
-        return true;
-    }
-
-    @Override
-    protected boolean enableActionBarShadow() {
-        return false;
     }
 }

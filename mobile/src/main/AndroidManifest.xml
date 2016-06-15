@@ -38,7 +38,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NavigationDrawerTheme"/>
         <activity android:name=".activities.TrainingDetailsActivity" />
     </application>
 
