@@ -129,7 +129,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
             zDBFunctions.saveSetting(cloudFitService.getDB(),
                     cloudFitService.getFit().getSetting());
 
-            new GetTrainingsTask(this, this, cloudFitService, -1, StaticVariables.GET_ALL_TRAININGS)
+            new GetTrainingsTask(this, cloudFitService, -1, StaticVariables.GET_ALL_TRAININGS)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new GetRequestsTask(this, cloudFitService)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -151,6 +151,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
     public void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents) {
         trainingsSection.setNotifications(calendarEvents.size());
         trainingsFragment.setCalendarEvents(calendarEvents);
+        trainingsFragment.setRefreshing(false);
     }
 
     @Override
@@ -180,7 +181,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
 
     @Override
     public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
-        new GetTrainingsTask(this, this, cloudFitService, calendarEvent.getId(),
+        new GetTrainingsTask(this, cloudFitService, calendarEvent.getId(),
                 StaticVariables.GET_SINGLE_TRAINING).execute();
     }
 
@@ -230,6 +231,9 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
                 .title("Ha ocurrido un error")
                 .content(DialogDescription)
                 .positiveText("Entendido")
+                .titleColorRes(R.color.md_grey_800)
+                .contentColorRes(R.color.md_grey_800)
+                .backgroundColorRes(R.color.md_white_1000)
                 .show();
     }
 

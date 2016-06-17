@@ -1,15 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".activities.TrainingActivity"
-    tools:deviceIds="wear_square">
+    tools:deviceIds="wear_square"
+    android:background="@color/md_white_1000">
 
-    <TextView
-        android:id="@+id/text"
+    <android.support.wearable.view.GridViewPager
+        android:id="@+id/practicePager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/practiceMainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <TextView
+                android:id="@+id/heartRateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textSize="20sp"
+                android:textColor="@color/md_black_1000"
+                android:layout_marginTop="24dp"
+                android:layout_below="@+id/practiceChronometer"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:id="@+id/heartRateIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_heart"
+                android:layout_alignTop="@+id/heartRateText"
+                android:layout_alignBottom="@id/heartRateText"
+                android:layout_toLeftOf="@id/heartRateText"/>
+
+            <Chronometer
+                android:id="@+id/practiceChronometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="25sp"
+                android:textColor="@color/md_black_1000"
+                android:format="%s"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp" />
+
+            <ImageView
+                android:id="@+id/chronometerIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_av_av_chronometer"
+                android:layout_toLeftOf="@id/practiceChronometer"
+                android:layout_alignTop="@id/practiceChronometer"
+                android:layout_alignBottom="@id/practiceChronometer" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/practicePauseActionLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <ImageView
+                android:id="@+id/practicePauseActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_av_pause_action"/>
+
+            <TextView
+                android:id="@+id/practicePauseActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/practicePauseActionImg"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Pausar"
+                android:textSize="14sp"
+                android:textColor="@color/md_black_1000"/>
+
+            <ImageView
+                android:id="@+id/practiceResumeActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_av_play_action"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/practiceResumeActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/practiceResumeActionImg"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Continuar"
+                android:textSize="14sp"
+                android:textColor="@color/md_black_1000"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/practiceExitActionLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <ImageView
+                android:id="@+id/practiceExitActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_action_exit_action"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/practiceExitActionImg"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Guardar y salir"
+                android:textSize="14sp"
+                android:textColor="@color/md_black_1000"/>
+
+        </RelativeLayout>
+
+    </android.support.wearable.view.GridViewPager>
+
+    <android.support.wearable.view.DotsPageIndicator
+        android:id="@+id/practicePageIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_square" />
-</LinearLayout>
+        android:layout_centerHorizontal="true">
+    </android.support.wearable.view.DotsPageIndicator>
+
+</RelativeLayout>

@@ -52,7 +52,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
             Log.d(TAG, "Connected to CloudFit service");
             CloudFitService.MyBinder cloudFitServiceBinder = (CloudFitService.MyBinder) service;
             cloudFitService = cloudFitServiceBinder.getService();
-            new GetTrainingsTask(TrainingDetailsActivity.this, TrainingDetailsActivity.this,
+            new GetTrainingsTask(TrainingDetailsActivity.this,
                     cloudFitService, trainingID, StaticVariables.GET_SINGLE_TRAINING).execute();
         }
 

@@ -30,11 +30,11 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private ArrayList<CalendarEvent> calendarEvents;
 
-    public GetTrainingsTask(Activity context, ActivityInterface activityInterface,
+    public GetTrainingsTask(Activity context,
                             CloudFitService cloudFitService, long trainingid, short taskType) {
 
         this.context = context;
-        this.activityInterface = activityInterface;
+        this.activityInterface = (ActivityInterface) context;
         this.cloudFitService = cloudFitService;
         this.trainingid = trainingid;
         this.taskType = taskType;
@@ -74,7 +74,7 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
-                    activityInterface.stopRefreshing();
+//                    activityInterface.stopRefreshing();
                     activityInterface.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
