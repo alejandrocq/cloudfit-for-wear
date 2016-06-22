@@ -64,11 +64,11 @@ public class BluetoothService extends Service {
         return bluetoothServiceBinder;
     }
 
-    public void findBluetoothDevice(String deviceName) {
+    public void findBluetoothDevice(String macAddress) {
         targetDevice = null;
         deviceFound = false;
         startDiscoveryOfDevices();
-        new FindBluetoothDeviceTask().execute(deviceName);
+        new FindBluetoothDeviceTask().execute(macAddress);
     }
 
     private void startDiscoveryOfDevices() {
@@ -127,7 +127,7 @@ public class BluetoothService extends Service {
             }
             if (devices != null) {
                 for (BluetoothDevice device : devices) {
-                    if (device.getName().contains(params[0])) {
+                    if (device.getAddress().contains(params[0])) {
                         // We found it
                         deviceFound = true;
                         targetDevice = device;

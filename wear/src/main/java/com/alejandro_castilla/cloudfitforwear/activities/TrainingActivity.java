@@ -99,7 +99,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             BluetoothService.BluetoothServiceBinder bluetoothServiceBinder =
                     (BluetoothService.BluetoothServiceBinder) service;
             bluetoothService = bluetoothServiceBinder.getService();
-            bluetoothService.findBluetoothDevice("BH");
+            bluetoothService.findBluetoothDevice("C8:3E:99:0D:DD:43");
+            //TODO This mac address should be synced from the phone (and stored on SharedPreferences)
         }
 
         @Override
