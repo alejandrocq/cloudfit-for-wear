@@ -135,11 +135,6 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Activ
     }
 
     @Override
-    public void stopRefreshing() {
-        //Not needed.
-    }
-
-    @Override
     public void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents) {
         //Not needed.
     }

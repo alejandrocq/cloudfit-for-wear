@@ -105,6 +105,66 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
 
     private Messenger mainActivityMessenger = new Messenger(MessageHandler);
 
+    @Override
+    public void init(Bundle savedInstanceState) {
+
+        trainingsFragment = new TrainingsFragment();
+        requestsFragment = new RequestsFragment();
+
+        account = new MaterialAccount(this.getResources(),"",
+                "", R.drawable.ic_user_default,
+                R.drawable.ic_running_background);
+        this.addAccount(account);
+
+        trainingsSection = newSection("Entrenamientos", R.drawable.ic_action_event,
+                trainingsFragment);
+        requestsSection = newSection("Peticiones", R.drawable.ic_social_group_add,
+                requestsFragment);
+        //TODO complete intent with settings activity
+        this.addSection(trainingsSection);
+        this.addSection(requestsSection);
+
+        MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
+                new Intent());
+        MaterialSection aboutSection = newSection("Acerca de", R.drawable.ic_action_help,
+                new Intent());
+        this.addBottomSection(settingsSection);
+        this.addBottomSection(aboutSection);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setIcon(R.drawable.ic_cloudfit_actionbar);
+        }
+
+        cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
+        bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
+
+        wearableServiceIntent = new Intent (MainActivity.this, WearableService.class);
+        wearableServiceIntent.putExtra("messenger", mainActivityMessenger);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        startService(wearableServiceIntent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+        stopService(wearableServiceIntent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+        unbindService(cloudFitServiceConnection);
+        stopService(wearableServiceIntent);
+    }
+
     ////////////////////////////////
     /* Activity interface methods */
     ////////////////////////////////
@@ -135,6 +195,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
             new GetRequestsTask(this, cloudFitService)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+            //Update account with user data obtained from the platform
             account.setTitle(cloudFitUser.getName());
             account.setSubTitle(cloudFitUser.getEmail());
             notifyAccountDataChanged();
@@ -146,11 +207,6 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
     public void saveRequests(ArrayList<RequestTrainer> requests) {
         requestsSection.setNotifications(requests.size());
         requestsFragment.setRequests(requests);
-    }
-
-    @Override
-    public void stopRefreshing() {
-        //Not needed.
     }
 
     @Override
@@ -247,65 +303,5 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
     @Override
     public CloudFitService getCloudFitService() {
         return cloudFitService;
-    }
-
-    @Override
-    public void init(Bundle savedInstanceState) {
-
-        trainingsFragment = new TrainingsFragment();
-        requestsFragment = new RequestsFragment();
-
-        account = new MaterialAccount(this.getResources(),"",
-                        "", R.drawable.ic_user_default,
-                        R.drawable.ic_running_background);
-        this.addAccount(account);
-
-        trainingsSection = newSection("Entrenamientos", R.drawable.ic_action_event,
-                trainingsFragment);
-        requestsSection = newSection("Peticiones", R.drawable.ic_social_group_add,
-                requestsFragment);
-        //TODO complete intent with settings activity
-        this.addSection(trainingsSection);
-        this.addSection(requestsSection);
-
-        MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
-                new Intent());
-        MaterialSection aboutSection = newSection("Acerca de", R.drawable.ic_action_help,
-                new Intent());
-        this.addBottomSection(settingsSection);
-        this.addBottomSection(aboutSection);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setIcon(R.drawable.ic_cloudfit_actionbar);
-        }
-
-        cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
-        bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
-
-        wearableServiceIntent = new Intent (MainActivity.this, WearableService.class);
-        wearableServiceIntent.putExtra("messenger", mainActivityMessenger);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-        startService(wearableServiceIntent);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-        stopService(wearableServiceIntent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-        unbindService(cloudFitServiceConnection);
-        stopService(wearableServiceIntent);
     }
 }

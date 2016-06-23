@@ -16,7 +16,6 @@ public interface ActivityInterface {
 
     void saveUserInfo(User cloudFitUser);
     void saveRequests(ArrayList<RequestTrainer> requests);
-    void stopRefreshing();
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
     void saveAndParseTraining(Training training);
     void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent);
