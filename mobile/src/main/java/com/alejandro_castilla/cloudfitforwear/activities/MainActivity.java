@@ -49,6 +49,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
     private MaterialSection trainingsSection;
     private MaterialSection requestsSection;
     private MaterialDialog sendingToWearableDialog;
+    private MaterialAccount account;
 
     private CloudFitService cloudFitService;
     private Intent cloudFitServiceIntent;
@@ -133,6 +134,11 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new GetRequestsTask(this, cloudFitService)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+            account.setTitle(cloudFitUser.getName());
+            account.setSubTitle(cloudFitUser.getEmail());
+            notifyAccountDataChanged();
+
         }
     }
 
@@ -152,6 +158,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
         trainingsSection.setNotifications(calendarEvents.size());
         trainingsFragment.setCalendarEvents(calendarEvents);
         trainingsFragment.setRefreshing(false);
+
     }
 
     @Override
@@ -248,17 +255,25 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
         trainingsFragment = new TrainingsFragment();
         requestsFragment = new RequestsFragment();
 
-        MaterialAccount account =
-                new MaterialAccount(this.getResources(),"Alejandro","acastillaquesada@gmail.com",
-                        R.drawable.ic_user_default, R.drawable.ic_running_background);
+        account = new MaterialAccount(this.getResources(),"",
+                        "", R.drawable.ic_user_default,
+                        R.drawable.ic_running_background);
         this.addAccount(account);
 
-        this.addSubheader("CloudFit");
-        trainingsSection = newSection("Entrenamientos", trainingsFragment);
-        requestsSection = newSection("Peticiones", requestsFragment);
-
+        trainingsSection = newSection("Entrenamientos", R.drawable.ic_action_event,
+                trainingsFragment);
+        requestsSection = newSection("Peticiones", R.drawable.ic_social_group_add,
+                requestsFragment);
+        //TODO complete intent with settings activity
         this.addSection(trainingsSection);
         this.addSection(requestsSection);
+
+        MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
+                new Intent());
+        MaterialSection aboutSection = newSection("Acerca de", R.drawable.ic_action_help,
+                new Intent());
+        this.addBottomSection(settingsSection);
+        this.addBottomSection(aboutSection);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

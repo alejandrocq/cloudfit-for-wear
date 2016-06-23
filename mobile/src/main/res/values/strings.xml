@@ -5,6 +5,10 @@
     <string name="exercises_menu_name">Entrenamientos</string>
     <string name="settings_menu_name">Configuración</string>
     <string name="requests_menu_name">Peticiones</string>
+    <string name="text_info_no_requests">No hay peticiones disponibles en este momento.
+        Desliza hacia abajo para actualizar.</string>
+    <string name="text_info_no_trainings">No hay entrenamientos disponibles en este momento.
+        Desliza hacia abajo para actualizar.</string>
 
 
 </resources>

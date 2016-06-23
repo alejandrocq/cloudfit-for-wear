@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.RequestsFragmentAdapter;
@@ -23,6 +25,7 @@ public class RequestsFragment extends ScrollViewFragment {
 
     private ActivityInterface activityInterface;
 
+    private View view;
     private RecyclerView recyclerView;
     private RequestsFragmentAdapter requestsFragmentAdapter;
 
@@ -32,16 +35,36 @@ public class RequestsFragment extends ScrollViewFragment {
         setRefreshing(false);
         this.requests = requests;
         if (requestsFragmentAdapter != null) requestsFragmentAdapter.setRequests(requests);
+        checkNumberOfRequestsAndUpdateLayout();
+    }
+
+    public void checkNumberOfRequestsAndUpdateLayout() {
+        if (view != null) {
+            ImageView img = (ImageView) view.findViewById(R.id.imgInfo);
+            TextView txt = (TextView) view.findViewById(R.id.textNoTrainings);
+
+            if (requests.size()>0) {
+                img.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
+            } else {
+                img.setVisibility(View.VISIBLE);
+                txt.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
+
         requestsFragmentAdapter =
                 new RequestsFragmentAdapter(getActivity(), requests);
         recyclerView = (RecyclerView) view.findViewById(R.id.reqRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(requestsFragmentAdapter);
         recyclerView.setHasFixedSize(true);
+
+        checkNumberOfRequestsAndUpdateLayout();
 
         super.onViewCreated(view, savedInstanceState);
     }

@@ -7,7 +7,25 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.alejandro_castilla.cloudfitforwear.activities.MainActivity">
+    tools:context="com.alejandro_castilla.cloudfitforwear.activities.MainActivity"
+    android:id="@+id/trainingsLayout">
+
+    <ImageView
+        android:id="@+id/imgInfo"
+        android:src="@drawable/ic_action_info_outline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textNoTrainings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/imgInfo"
+        android:text="@string/text_info_no_trainings"
+        android:textColor="@color/md_grey_500"
+        android:textAlignment="center" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/trRecyclerView"

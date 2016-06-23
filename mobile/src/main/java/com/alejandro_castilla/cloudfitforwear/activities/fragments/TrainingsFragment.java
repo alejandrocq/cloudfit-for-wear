@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsFragmentAdapter;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
  */
 public class TrainingsFragment extends ScrollViewFragment {
 
+    private View view;
     private RecyclerView recyclerView;
     private TrainingsFragmentAdapter trainingsFragmentAdapter;
 
@@ -32,6 +35,22 @@ public class TrainingsFragment extends ScrollViewFragment {
     public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
         this.calendarEvents = calendarEvents;
         trainingsFragmentAdapter.setCalendarEvents(calendarEvents);
+        checkNumberOfTrainingsAndUpdateLayout();
+    }
+
+    public void checkNumberOfTrainingsAndUpdateLayout() {
+        if (view != null) {
+            ImageView img = (ImageView) view.findViewById(R.id.imgInfo);
+            TextView txt = (TextView) view.findViewById(R.id.textNoTrainings);
+
+            if (calendarEvents.size()>0) {
+                img.setVisibility(View.GONE);
+                txt.setVisibility(View.GONE);
+            } else {
+                img.setVisibility(View.VISIBLE);
+                txt.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -43,6 +62,8 @@ public class TrainingsFragment extends ScrollViewFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(trainingsFragmentAdapter);
         recyclerView.setHasFixedSize(true);
+
+        checkNumberOfTrainingsAndUpdateLayout();
 
         super.onViewCreated(view, savedInstanceState);
     }

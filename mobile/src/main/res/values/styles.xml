@@ -15,6 +15,7 @@
         <item name="colorAccent">@color/md_light_blue_700</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:textColorPrimary">@color/md_white_1000</item>
+        <item name="learningPattern">false</item>
 
     </style>
 
