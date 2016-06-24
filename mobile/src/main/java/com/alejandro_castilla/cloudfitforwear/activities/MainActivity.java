@@ -130,8 +130,10 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
 
         this.addDivisor();
 
-        trainingsCompletedSection = newSection("Entrenamientos completados",
+        trainingsCompletedSection = newSection("Completados",
                 R.drawable.ic_action_done, trainingsCompletedFragment);
+
+        this.addSection(trainingsCompletedSection);
 
         MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
                 new Intent());

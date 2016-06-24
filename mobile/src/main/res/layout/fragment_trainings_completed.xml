@@ -17,17 +17,17 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/textNoTrainings"
+        android:id="@+id/textNoTrainingsCompleted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/imgInfo"
-        android:text="@string/text_info_no_trainings"
+        android:text="@string/text_info_no_trainings_completed"
         android:textColor="@color/md_grey_500"
         android:textAlignment="center" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/trRecyclerView"
+        android:id="@+id/trCompletedRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

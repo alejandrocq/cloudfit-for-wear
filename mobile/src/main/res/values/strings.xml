@@ -9,6 +9,8 @@
         Desliza hacia abajo para actualizar.</string>
     <string name="text_info_no_trainings">No hay entrenamientos disponibles en este momento.
         Desliza hacia abajo para actualizar.</string>
+    <string name="text_info_no_trainings_completed">No has completado ningún entrenamiento aún.
+    Cuando un entrenamiento haya sido sincronizado desde el reloj, lo verás aquí.</string>
 
 
 </resources>
