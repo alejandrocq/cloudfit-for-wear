@@ -16,6 +16,7 @@ import android.util.Log;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
+import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsCompletedFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFragment;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetRequestsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
@@ -46,8 +47,10 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
 
     private TrainingsFragment trainingsFragment;
     private RequestsFragment requestsFragment;
+    private TrainingsCompletedFragment trainingsCompletedFragment;
     private MaterialSection trainingsSection;
     private MaterialSection requestsSection;
+    private MaterialSection trainingsCompletedSection;
     private MaterialDialog sendingToWearableDialog;
     private MaterialAccount account;
 
@@ -110,6 +113,7 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
 
         trainingsFragment = new TrainingsFragment();
         requestsFragment = new RequestsFragment();
+        trainingsCompletedFragment = new TrainingsCompletedFragment();
 
         account = new MaterialAccount(this.getResources(),"",
                 "", R.drawable.ic_user_default,
@@ -123,6 +127,11 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
         //TODO complete intent with settings activity
         this.addSection(trainingsSection);
         this.addSection(requestsSection);
+
+        this.addDivisor();
+
+        trainingsCompletedSection = newSection("Entrenamientos completados",
+                R.drawable.ic_action_done, trainingsCompletedFragment);
 
         MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
                 new Intent());

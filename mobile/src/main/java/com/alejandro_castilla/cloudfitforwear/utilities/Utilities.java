@@ -3,6 +3,7 @@ package com.alejandro_castilla.cloudfitforwear.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
@@ -14,6 +15,10 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -166,6 +171,46 @@ public class Utilities {
 
         return time;
 
+    }
+
+    public static void writeAssetFile(Context c, String file, String path) {
+        try {
+            if (new File(path).exists()) {
+                Log.d("UTILS", "File path: " + path);
+                return;
+            }
+
+            InputStream input = c.getAssets().open(file);
+            String outputFile = path;
+
+            OutputStream output = new FileOutputStream(outputFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            output.flush();
+            output.close();
+            input.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean checkDirectories() {
+        try {
+            File f = new File(StaticVariables.DATABASE_PATH);
+            if (!f.exists()) {
+                f.mkdir();
+            }
+            return true;
+        } catch (Exception e) {
+
+        }
+        return false;
     }
 
 

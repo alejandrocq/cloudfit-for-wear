@@ -1,5 +1,7 @@
 package com.alejandro_castilla.cloudfitforwear.utilities;
 
+import android.os.Environment;
+
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 
@@ -58,6 +60,15 @@ public class StaticVariables {
 
     public static final String WEARABLE_TRAINING = "wearabletraining";
     public static final String WEARABLE_TRAINING_ACK = "wearabletrainingack";
+
+    /**
+     * Database fields
+     */
+
+    public static final String APP_NAME = "CloudFitForWear";
+    public static final String DATABASE_PATH = Environment.getExternalStorageDirectory() + "/"
+            + APP_NAME + "/";
+    public static final String TRAININGS_DATABASE_NAME = "trainingscompleted.sqlite";
 
 
 }
