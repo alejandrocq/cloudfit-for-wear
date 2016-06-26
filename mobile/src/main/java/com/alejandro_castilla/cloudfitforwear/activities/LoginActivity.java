@@ -17,7 +17,6 @@ import com.alejandro_castilla.cloudfitforwear.asynctask.LoginTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.Utils;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDB;
-import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 import com.gc.materialdesign.views.ButtonFlat;
@@ -59,26 +58,19 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     };
 
     /**
-     * Checks if directory and databases are created. If not, creates all of them.
+     * Checks if directory and database are created. If not, creates all of them.
      */
-    private void checkDatabasesAndDirectories() {
-        //CloudFit API
+    private void checkCloudFitDatabase() {
+        //Database for CloudFit API
         Utils.checkDataBaseTimestamp();
-        boolean res =  Utils.checkDirectory();
-        db = new zDB(this);
-        db.open();
-
-        //CloudFitForWear
-        res &= Utilities.checkDirectories();
-
-        if (res) {
-            Utilities.writeAssetFile(this, StaticVariables.TRAININGS_DATABASE_NAME,
-                    StaticVariables.DATABASE_PATH + StaticVariables.TRAININGS_DATABASE_NAME);
-        } else {
+        boolean res = Utils.checkDirectory();
+        if (!res) {
             Toast.makeText(this, "Ha ocurrido un error al acceder al sistema de archivos",
                     Toast.LENGTH_LONG).show();
             finish();
         }
+        db = new zDB(this);
+        db.open();
     }
 
     @Override
@@ -94,7 +86,7 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         passTextField = passMaterialTextField.getEditText();
         loginButton = (ButtonFlat) findViewById(R.id.loginButton);
 
-        checkDatabasesAndDirectories();
+        checkCloudFitDatabase();
         Intent cloudFitServiceIntent = new Intent(LoginActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 

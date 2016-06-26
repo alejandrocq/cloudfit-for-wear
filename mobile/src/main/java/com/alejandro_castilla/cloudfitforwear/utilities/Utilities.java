@@ -173,6 +173,14 @@ public class Utilities {
 
     }
 
+    public static void checkAppDirectory() {
+        File dir = new File (StaticVariables.APP_PATH);
+
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+    }
+
     public static void writeAssetFile(Context c, String file, String path) {
         try {
             if (new File(path).exists()) {
@@ -198,19 +206,6 @@ public class Utilities {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static boolean checkDirectories() {
-        try {
-            File f = new File(StaticVariables.DATABASE_PATH);
-            if (!f.exists()) {
-                f.mkdir();
-            }
-            return true;
-        } catch (Exception e) {
-
-        }
-        return false;
     }
 
 

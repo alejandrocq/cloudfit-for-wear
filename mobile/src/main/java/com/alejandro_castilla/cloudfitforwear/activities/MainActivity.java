@@ -32,6 +32,7 @@ import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.google.gson.Gson;
 
@@ -111,9 +112,14 @@ public class MainActivity extends MaterialNavigationDrawer implements ActivityIn
     @Override
     public void init(Bundle savedInstanceState) {
 
+        TrainingsDb db = new TrainingsDb(this);
+
         trainingsFragment = new TrainingsFragment();
         requestsFragment = new RequestsFragment();
         trainingsCompletedFragment = new TrainingsCompletedFragment();
+
+        trainingsCompletedFragment.setDb(db);
+        trainingsCompletedFragment.checkTrainingsCompleted();
 
         account = new MaterialAccount(this.getResources(),"",
                 "", R.drawable.ic_user_default,

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsCompletedFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
 import java.util.ArrayList;
@@ -23,13 +24,12 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
     private View view;
     private TrainingsCompletedFragmentAdapter trainingsCompletedFragmentAdapter;
 
+    private TrainingsDb db;
     private ArrayList<WearableTraining> trainingsCompleted;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
-
-        trainingsCompleted = checkTrainingsCompleted();
 
         trainingsCompletedFragmentAdapter =
                 new TrainingsCompletedFragmentAdapter(getActivity(), trainingsCompleted);
@@ -39,14 +39,17 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
         recyclerView.setHasFixedSize(true);
 
         checkNumberOfTrainingsAndUpdateLayout();
+        trainingsCompletedFragmentAdapter.setTrainingsCompleted(trainingsCompleted);
 
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public ArrayList<WearableTraining> checkTrainingsCompleted() {
-        //TODO Check trainings on database
+    public void checkTrainingsCompleted() {
+        trainingsCompleted = db.getAllTrainings();
 
-        return new ArrayList<>();
+        if (trainingsCompletedFragmentAdapter != null) {
+            trainingsCompletedFragmentAdapter.setTrainingsCompleted(trainingsCompleted);
+        }
     }
 
     public void checkNumberOfTrainingsAndUpdateLayout() {
@@ -62,6 +65,10 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
                 txt.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public void setDb(TrainingsDb db) {
+        this.db = db;
     }
 
     @Override
@@ -81,7 +88,7 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
 
     @Override
     public void onRefresh() {
-        //TODO Call database and get data
+        checkTrainingsCompleted();
         setRefreshing(false);
     }
 }

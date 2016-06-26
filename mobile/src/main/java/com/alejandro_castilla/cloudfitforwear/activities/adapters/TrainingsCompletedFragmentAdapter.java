@@ -38,6 +38,11 @@ public class TrainingsCompletedFragmentAdapter extends
         this.trainingsCompleted = trainingsCompleted;
     }
 
+    public void setTrainingsCompleted(ArrayList<WearableTraining> trainingsCompleted) {
+        this.trainingsCompleted = trainingsCompleted;
+        notifyDataSetChanged();
+    }
+
     @Override
     public TrainingsCompletedFragmentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                            int viewType) {
@@ -53,9 +58,9 @@ public class TrainingsCompletedFragmentAdapter extends
                                  int position) {
 
         if (trainingsCompleted != null && trainingsCompleted.size()>0) {
-            holder.cardView.setTitle(trainingsCompleted.get(position).getTrainingTitle());
+            holder.cardView.setTitle(trainingsCompleted.get(position).getTitle());
             String date = Utilities.dateOnMillisToString(trainingsCompleted.get(position)
-                    .getEndTime());
+                    .getEndDate());
             String descr = "Completado el "+date;
             holder.cardView.setDescription(descr);
             holder.cardView.setOnNormalButtonClickListener(new ButtonClickListener(context,
