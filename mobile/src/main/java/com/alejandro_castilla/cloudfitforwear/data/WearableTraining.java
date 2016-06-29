@@ -13,7 +13,6 @@ public class WearableTraining {
     private String title;
     private long trainingId;
     private long userId;
-    private long date;
     private long startDate;
     private long endDate;
     private long cloudFitId;
@@ -23,24 +22,25 @@ public class WearableTraining {
     private RestExercise restExercise;
     private ArrayList<HeartRate> heartRateList;
 
-    public WearableTraining(String title, long trainingId, long userId) {
+    public WearableTraining(String title, long cloudFitId, long userId) {
         this.title = title;
-        this.trainingId = trainingId;
+        this.cloudFitId = cloudFitId;
         this.userId = userId;
         runningExercise = new RunningExercise();
         restExercise = new RestExercise();
+        heartRateList = new ArrayList<>();
     }
 
     /* Exercises classes */
 
     public class RunningExercise {
         /* Parameters set by the trainer */
-        private double distanceP;
-        private double timeP;
-        private double timeMaxP;
+        private double distanceP = -1.0;
+        private double timeP = -1.0;
+        private double timeMaxP = -1.0;
 
-        private int heartRateMin;
-        private int heartRateMax;
+        private int heartRateMin = -1;
+        private int heartRateMax = -1;
 
         /* Goals made by the athlete */
         private double distanceR;
@@ -104,7 +104,7 @@ public class WearableTraining {
     }
 
     public class RestExercise {
-        private int restp; //Set by trainer
+        private int restp = -1; //Set by trainer
         private int restr; //Goal of athlete
 
         public int getRestp() {
@@ -234,11 +234,4 @@ public class WearableTraining {
         this.userId = userId;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
 }

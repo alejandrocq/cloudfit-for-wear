@@ -115,10 +115,6 @@ public class TrainingsDb {
                         Log.d(TAG, "TRAINING: "+tr.getTitle());
 
                     } while (cur.moveToNext());
-                } else {
-                    //TODO (remove this)
-                    WearableTraining tr = new WearableTraining("Ejemplo", 2, 3);
-                    insertTraining(tr);
                 }
 
                 cur.close();
@@ -154,12 +150,12 @@ public class TrainingsDb {
 
         try {
             openDb();
-            String query = "INSERT INTO " + TABLE_TRAININGS + " (user_id, title, date, start_date" +
+            String query = "INSERT INTO " + TABLE_TRAININGS + " (user_id, title, start_date" +
                     ", end_date, cloudfit_id, state) " + "VALUES (" + "'" + tr.getUserId() + "'"
-                    + "," + "'" + tr.getTitle() + "'" + "," + "'" + tr.getDate() + "'" + ","
-                    + "'" + tr.getStartDate() + "'" + "," + "'" + tr.getEndDate() + "'" + ","
-                    + "'" + tr.getCloudFitId() + "'" + "," + "'" + tr.getState() + "'" + ")";
-            Log.d(TAG, query);
+                    + "," + "'" + tr.getTitle() + "'" + "," + "'" + tr.getStartDate() + "'" + ","
+                    + "'" + tr.getEndDate() + "'" + "," + "'" + tr.getCloudFitId() + "'" + ","
+                    + "'" + tr.getState() + "'" + ")";
+            Log.d(TAG, "QUERY INSERT: " + query);
             res = execQuery(query);
             closeDb();
         } catch (Exception e) {
