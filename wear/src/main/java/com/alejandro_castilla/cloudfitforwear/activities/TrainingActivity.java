@@ -29,16 +29,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.TrainingData;
 import com.alejandro_castilla.cloudfitforwear.data.TrainingData.HeartRate;
-import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
-import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class TrainingActivity extends WearableActivity implements View.OnClickListener,
         SensorEventListener {
@@ -134,12 +132,12 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         public void handleMessage(Message msg) {
             timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
             switch (msg.what) {
-                case MessageType.DEVICE_FOUND:
+                case StaticVariables.DEVICE_FOUND:
                     Log.d(TAG, "Device received on " + TAG);
                     targetDevice = (BluetoothDevice) msg.obj;
                     zephyrService.connectToZephyr(targetDevice);
                     break;
-                case MessageType.ZEPHYR_HEART_RATE:
+                case StaticVariables.ZEPHYR_HEART_RATE:
                     startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false;
                     pauseActionImgView.setOnClickListener(TrainingActivity.this);
@@ -151,9 +149,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         heartRateTextView.setText(heartRateString);
                     }
                     break;
-                case MessageType.DEVICE_NOT_FOUND:
-                    Toast.makeText(TrainingActivity.this, "Device not found", Toast.LENGTH_SHORT)
-                            .show();
+                case StaticVariables.DEVICE_NOT_FOUND:
+                    Toast.makeText(TrainingActivity.this, "No se ha podido conectar con el " +
+                            "sensor Zephyr.", Toast.LENGTH_SHORT).show();
                     finish();
             }
             super.handleMessage(msg);
@@ -188,13 +186,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         findViewById(R.id.practicePageIndicator);
                 dotsPageIndicator.setPager(gridViewPager);
 
+                //TODO Read WearableTraining and set parameters
                 checkSharedPreferences();
-                trainingData = new TrainingData();
                 heartRateList = new ArrayList<HeartRate>();
-                saveCurrentDate();
 
                 if (zephyrEnabled) {
-
                     // Start bluetooth and Zephyr sensor services
                     Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
                             BluetoothService.class);
@@ -209,25 +205,24 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     bindService(zephyrServiceIntent, zephyrServiceConnection,
                             Context.BIND_AUTO_CREATE);
                     zephyrServiceBinded = true;
-
                 } else {
-
                     //Initialize internal heart rate sensor
                     sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
                     heartRateInternalSensor = sensorManager
                             .getDefaultSensor(Sensor.TYPE_HEART_RATE);
+                    if (heartRateInternalSensor == null) {
+                        Toast.makeText(TrainingActivity.this, "Este dispositivo no tiene " +
+                                "pulsómetro.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
                     sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
                             SensorManager.SENSOR_DELAY_UI);
-
                 }
 
             }
         });
 
         setAmbientEnabled();
-
-
-
     }
 
     @Override
@@ -261,7 +256,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
                 trainingData.setElapsedTime(timeElapsed);
                 trainingData.setHeartRateList(heartRateList);
-                // TODO This should be an Async Task
 //                TrainingJSONParser parser = new TrainingJSONParser(trainingData);
 //                String json = parser.writeToJSON();
 //                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
@@ -314,12 +308,12 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         heartRateList.add(heartRateObj);
     }
 
-    private void saveCurrentDate() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
-        String date = sdf.format(calendar.getTime());
-        trainingData.setDate(date);
-    }
+//    private void saveCurrentDate() {
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
+//        String date = sdf.format(calendar.getTime());
+//        trainingData.setDate(date);
+//    }
 
     /* Methods for internal heart rate sensor */
 

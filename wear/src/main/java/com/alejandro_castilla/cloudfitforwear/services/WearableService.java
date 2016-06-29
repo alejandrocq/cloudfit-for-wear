@@ -2,6 +2,7 @@ package com.alejandro_castilla.cloudfitforwear.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -24,19 +26,30 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
 
-import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
-
 public class WearableService extends Service implements DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = WearableService.class.getSimpleName();
+    private final IBinder wearableServiceBinder = new WearableServiceBinder();
 
     private GoogleApiClient googleApiClient;
 
+    /* Class used to bind with the client */
+
+    public class WearableServiceBinder extends Binder {
+        public WearableService getService() {
+            return WearableService.this;
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "Service started");
+        return super.onStartCommand(intent, flags, startId);
+    }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -44,14 +57,7 @@ public class WearableService extends Service implements DataApi.DataListener,
                 .build();
 
         googleApiClient.connect();
-
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+        return wearableServiceBinder;
     }
 
     @Override
@@ -115,8 +121,9 @@ public class WearableService extends Service implements DataApi.DataListener,
                     if (json != null) {
                         Log.d(TAG, "WEARABLE TRAINING JSON: " + json);
                         Gson gson = new Gson();
-                        WearableTraining wearableTraining = gson.fromJson(json, WearableTraining.class);
-                        Log.d(TAG, "TRAINING NAME: " + wearableTraining.getTrainingTitle());
+                        WearableTraining wearableTraining = gson.fromJson(json,
+                                WearableTraining.class);
+                        Log.d(TAG, "TRAINING NAME: " + wearableTraining.getTitle());
                         sendACKToHandheld();
                     }
                 }

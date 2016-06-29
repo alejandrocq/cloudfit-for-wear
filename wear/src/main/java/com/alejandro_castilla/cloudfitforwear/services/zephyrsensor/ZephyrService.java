@@ -14,7 +14,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import zephyr.android.BioHarnessBT.BTClient;
 
@@ -92,7 +92,7 @@ public class ZephyrService extends Service {
                 case HEART_RATE:
                     String heartRatetext = msg.getData().getString("HeartRate");
                     System.out.println("Heart Rate Info is " + heartRatetext);
-                    Message heartRateMsg = Message.obtain(null, MessageType.ZEPHYR_HEART_RATE);
+                    Message heartRateMsg = Message.obtain(null, StaticVariables.ZEPHYR_HEART_RATE);
                     Bundle heartRateBundle = new Bundle();
                     heartRateBundle.putString("heartratestring", heartRatetext);
                     heartRateMsg.setData(heartRateBundle);

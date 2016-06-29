@@ -16,7 +16,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.alejandro_castilla.cloudfitforwear.messaging.MessageType;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
 
@@ -144,7 +144,7 @@ public class BluetoothService extends Service {
             Message msg;
             if (!deviceFound) {
                 Log.d(TAG, "Device not found");
-                msg = Message.obtain(null, MessageType.DEVICE_NOT_FOUND);
+                msg = Message.obtain(null, StaticVariables.DEVICE_NOT_FOUND);
                 try {
                     messenger.send(msg);
                 } catch (RemoteException e) {
@@ -153,7 +153,7 @@ public class BluetoothService extends Service {
             } else {
                 //Send the device to MainActivity
                 Log.d(TAG, "Sending targetDevice to MainActivity");
-                msg = Message.obtain(null, MessageType.DEVICE_FOUND);
+                msg = Message.obtain(null, StaticVariables.DEVICE_FOUND);
                 msg.obj = targetDevice;
                 try {
                     messenger.send(msg);

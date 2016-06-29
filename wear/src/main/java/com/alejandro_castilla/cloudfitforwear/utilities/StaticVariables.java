@@ -9,7 +9,10 @@ public class StaticVariables {
      * Message types
      */
 
-
+    public static final int TARGET_DEVICE = 1;
+    public static final int DEVICE_FOUND = 2;
+    public static final int DEVICE_NOT_FOUND = 3;
+    public static final int ZEPHYR_HEART_RATE = 4;
 
     /**
      * Bundle strings

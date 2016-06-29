@@ -31,28 +31,31 @@
                 android:id="@+id/imgcloudfit" />
 
             <TextView
+                android:id="@+id/trText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 entrenamientos disponibles"
+                android:text="Sin entrenamientos disponibles"
                 android:layout_below="@id/imgcloudfit"
                 android:layout_marginTop="12sp"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/md_black_1000"/>
+                android:textColor="@color/md_black_1000"
+                android:textSize="12sp"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_settings_black_24dp"
                 android:id="@+id/settingsImg"
-                android:layout_alignTop="@+id/imgsync"
-                android:layout_toEndOf="@+id/imgcloudfit" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_sync_black_24dp"
-                android:id="@+id/imgsync"
-                android:layout_alignParentBottom="true"
-                android:layout_toStartOf="@+id/imgcloudfit"
-                android:layout_marginBottom="25sp" />
+                android:layout_below="@id/trText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12sp"/>
+            <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/ic_sync_black_24dp"-->
+            <!--android:id="@+id/imgsync"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_toStartOf="@+id/imgcloudfit"-->
+            <!--android:layout_marginBottom="41dp" />-->
 
         </RelativeLayout>
 
@@ -97,22 +100,23 @@
             android:background="@color/md_white_1000">
 
             <ImageView
-                android:id="@+id/previousPracticesImg"
+                android:id="@+id/infoImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="25sp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_content_save"/>
+                android:src="@drawable/ic_action_info_outline"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/previousPracticesImg"
+                android:layout_below="@id/infoImg"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-condensed"
-                android:text="Sesiones anteriores"
-                android:textSize="14sp"
-                android:textColor="@color/md_black_1000"/>
+                android:text="@string/text_training_not_completed"
+                android:textSize="12sp"
+                android:textColor="@color/md_black_1000"
+                android:textAlignment="center"/>
 
         </RelativeLayout>
 

@@ -1,12 +1,16 @@
 package com.alejandro_castilla.cloudfitforwear.activities;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,11 +23,27 @@ public class MainActivity extends WearableActivity {
     private final String TAG = MainActivity.class.getSimpleName();
 
     private Intent wearableServiceIntent;
+    private WearableService wearableService;
 
     /* Layout Views */
     private ImageView startActionImgView;
     private ImageView settingsImgView;
     private GridViewPager gridViewPager;
+
+    private ServiceConnection wearableServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "Connected to Wearable Service");
+            WearableService.WearableServiceBinder wearableServiceBinder =
+                    (WearableService.WearableServiceBinder) service;
+            wearableService = wearableServiceBinder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "Disconnected from Wearable Service");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +71,12 @@ public class MainActivity extends WearableActivity {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         wearableServiceIntent = new Intent(MainActivity.this, WearableService.class);
-        startService(wearableServiceIntent);
-
+        bindService(wearableServiceIntent, wearableServiceConnection, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
-        stopService(wearableServiceIntent);
+        unbindService(wearableServiceConnection);
         super.onDestroy();
     }
 
@@ -74,7 +93,7 @@ public class MainActivity extends WearableActivity {
                             TrainingActivity.class);
                     startActivity(startPracticeActivityIntent);
                     break;
-                case R.id.previousPracticesImg:
+                case R.id.infoImg:
                     //TODO something here
                     break;
                 case R.id.settingsImg:
