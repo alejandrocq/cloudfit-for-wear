@@ -23,7 +23,7 @@
 
         <!--
         Declaration of services. With android:exported we stop other apps
-        from starting it.
+        from starting them.
         -->
         <service
             android:name=".services.bluetooth.BluetoothService"
@@ -42,7 +42,6 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,11 +50,10 @@
             android:name=".activities.TrainingActivity"
             android:label="@string/title_activity_practice"
             android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <activity

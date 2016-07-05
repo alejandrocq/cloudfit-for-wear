@@ -35,6 +35,7 @@ import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -50,13 +51,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private TextView heartRateTextView, resumeActionTextView, pauseActionTextView;
     private GridViewPager gridViewPager;
 
-    /* Bluetooth fields */
-
-    private BluetoothDevice targetDevice;
-
     /* Preferences fields */
 
-    private SharedPreferences sharedPref;
     private boolean zephyrEnabled;
 
     /* Status fields */
@@ -76,11 +72,12 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Data fields */
 
     private WearableTraining training;
+    private WearableTraining.RunningExercise running;
+    private WearableTraining.RestExercise rest;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
 
-    private BluetoothService bluetoothService;
     private boolean bluetoothServiceBinded = false;
     private ZephyrService zephyrService;
     private boolean zephyrServiceBinded = false;
@@ -90,9 +87,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         public void onServiceConnected(ComponentName name, IBinder service) {
             BluetoothService.BluetoothServiceBinder bluetoothServiceBinder =
                     (BluetoothService.BluetoothServiceBinder) service;
-            bluetoothService = bluetoothServiceBinder.getService();
+            BluetoothService bluetoothService = bluetoothServiceBinder.getService();
             bluetoothService.findBluetoothDevice("C8:3E:99:0D:DD:43");
-            //TODO This mac address should be synced from the phone (and stored on SharedPreferences)
+            //TODO This mac address should be synced from the phone(and stored on SharedPreferences)
         }
 
         @Override
@@ -124,16 +121,15 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
         @Override
         public void handleMessage(Message msg) {
-            timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
             switch (msg.what) {
                 case StaticVariables.DEVICE_FOUND:
                     Log.d(TAG, "Device received on " + TAG);
-                    targetDevice = (BluetoothDevice) msg.obj;
-                    zephyrService.connectToZephyr(targetDevice);
+                    BluetoothDevice device = (BluetoothDevice) msg.obj;
+                    zephyrService.connectToZephyr(device);
                     break;
                 case StaticVariables.ZEPHYR_HEART_RATE:
                     startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
-                    chronoAllowedToStart = false;
+                    chronoAllowedToStart = false; //Starts chronometer only one time
                     pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
                     if (!sessionPaused) {
@@ -187,8 +183,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 dotsPageIndicator.setPager(gridViewPager);
 
                 //TODO Read WearableTraining and set parameters
-                checkSharedPreferences();
-                heartRateList = new ArrayList<HeartRate>();
+                checkSharedPreferencesAndParseTraining();
+                heartRateList = new ArrayList<>();
 
                 if (zephyrEnabled) {
                     // Start bluetooth and Zephyr sensor services
@@ -283,20 +279,62 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
 
         if (!zephyrEnabled) {
-            sensorManager.unregisterListener(this);
+            sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
         }
 
         super.onDestroy();
     }
 
-    private void checkSharedPreferences() {
+    private void checkSharedPreferencesAndParseTraining() {
         //Check if the user wants to use Zephyr Sensor
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        zephyrEnabled = sharedPref.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        zephyrEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
+
+        String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
+
+        if (!tr.equals("")) {
+            //Training available.
+            Gson gson = new Gson();
+            training = gson.fromJson(tr, WearableTraining.class);
+            running = training.getRunningExercise();
+            rest = training.getRestExercise();
+
+            if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
+                Log.d(TAG, "Distance set");
+                //TODO Save distance and check when it's covered (GPS)
+            } else if (running.getTimeP() != -1.0) {
+                //TODO Show min time on screen
+
+                if (running.getTimeMaxP() != -1.0) {
+                    //Stop training when max time is reached.
+                    chronometer.setOnChronometerTickListener(new Chronometer
+                            .OnChronometerTickListener() {
+                        @Override
+                        public void onChronometerTick(Chronometer chronometer) {
+                            long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                            if (time >= (running.getTimeP()*1000)) {
+                                //TODO Vibrate, for example, three times. Save data and go rest.
+                                finish();
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            // Training not available
+            Intent intent = new Intent (TrainingActivity.this,
+                    ConfirmationActivity.class);
+            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                    ConfirmationActivity.FAILURE_ANIMATION);
+            intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
+                    "No hay ningún entrenamiento disponible");
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void startChronometer(boolean allowed, long baseTime) {
-        if (allowed) {
+        if (allowed) { //Check if chronometer is already started.
             chronometer.setBase(baseTime);
             chronometer.start();
         }

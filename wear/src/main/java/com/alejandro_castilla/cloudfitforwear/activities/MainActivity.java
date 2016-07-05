@@ -38,8 +38,6 @@ public class MainActivity extends WearableActivity implements WearableHandler {
     private ImageView settingsImgView;
     private GridViewPager gridViewPager;
 
-    private Intent confirmationIntent;
-
     private ServiceConnection wearableServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -77,6 +75,14 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                 DotsPageIndicator dotsPageIndicator = (DotsPageIndicator)
                         findViewById(R.id.page_indicator);
                 dotsPageIndicator.setPager(gridViewPager);
+
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(MainActivity.this);
+                String training = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
+
+                if (!training.equals("")) {
+                    trTextView.setText(R.string.text_training_available);
+                }
             }
         });
 
@@ -85,8 +91,6 @@ public class MainActivity extends WearableActivity implements WearableHandler {
 
         wearableServiceIntent = new Intent(MainActivity.this, WearableService.class);
         bindService(wearableServiceIntent, wearableServiceConnection, BIND_AUTO_CREATE);
-
-        confirmationIntent = new Intent(this, ConfirmationActivity.class);
 
     }
 
@@ -117,21 +121,19 @@ public class MainActivity extends WearableActivity implements WearableHandler {
 
     private class ActionButtonsClickListener implements View.OnClickListener {
 
-        private int resId;
-
         @Override
         public void onClick(View v) {
-            resId = v.getId();
+            int resId = v.getId();
             switch (resId) {
                 case R.id.startActionImg:
-                    Intent startPracticeActivityIntent = new Intent(MainActivity.this,
+                    Intent training = new Intent(MainActivity.this,
                             TrainingActivity.class);
-                    startActivity(startPracticeActivityIntent);
+                    startActivity(training);
                     break;
                 case R.id.settingsImg:
-                    Intent startSettingsActivityIntent = new Intent (MainActivity.this,
+                    Intent settings = new Intent (MainActivity.this,
                             SettingsActivity.class);
-                    startActivity(startSettingsActivityIntent);
+                    startActivity(settings);
                     break;
             }
         }
