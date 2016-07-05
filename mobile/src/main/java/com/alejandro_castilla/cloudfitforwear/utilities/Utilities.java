@@ -115,8 +115,9 @@ public class Utilities {
 
                     if (exerciseGroup1.getTimeP()>0) {
                         runningExercise.setTimeP(exerciseGroup1.getTimeP());
-                    } else if (exerciseGroup1.getTimeMaxP()>0) {
-                        runningExercise.setTimeMaxP(exerciseGroup1.getTimeMaxP());
+                        if (exerciseGroup1.getTimeMaxP()>0) {
+                            runningExercise.setTimeMaxP(exerciseGroup1.getTimeMaxP());
+                        }
                     } else if (exerciseGroup1.getDistanceP() != -1.0) {
                         runningExercise.setDistanceP(exerciseGroup1.getDistanceP());
                     }
