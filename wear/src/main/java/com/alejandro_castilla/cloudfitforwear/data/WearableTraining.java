@@ -124,34 +124,6 @@ public class WearableTraining {
         }
     }
 
-    /* Data classes */
-
-    public class HeartRate {
-        private long timeMark;
-        private int heartRateValue;
-
-        public long getTimeMark() {
-            return timeMark;
-        }
-
-        public void setTimeMark(long timeMark) {
-            this.timeMark = timeMark;
-        }
-
-        public int getHeartRateValue() {
-            return heartRateValue;
-        }
-
-        public void setHeartRateValue(int heartRateValue) {
-            this.heartRateValue = heartRateValue;
-        }
-
-        @Override
-        public String toString() {
-            return "Time: " + timeMark + "\n" + "Heart Rate: " + heartRateValue + "\n";
-        }
-    }
-
     /* Get and set methods */
 
     public String getTitle() {

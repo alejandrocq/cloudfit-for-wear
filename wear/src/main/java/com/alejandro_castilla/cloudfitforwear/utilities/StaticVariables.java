@@ -34,5 +34,12 @@ public class StaticVariables {
     public static final String WEARABLE_TRAINING = "wearabletraining";
     public static final String WEARABLE_TRAINING_ACK = "wearabletrainingack";
 
+    /**
+     * Shared Preferences Types
+     */
+
+    public static final String KEY_PREF_ZEPHYR_ENABLED = "pref_zephyr_sensor_enabled";
+    public static final String KEY_TRAINING_TO_BE_DONE = "training_to_be_done";
+
 
 }

@@ -17,6 +17,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
@@ -26,12 +27,11 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
-import com.alejandro_castilla.cloudfitforwear.data.TrainingData;
-import com.alejandro_castilla.cloudfitforwear.data.TrainingData.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
@@ -57,13 +57,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Preferences fields */
 
     private SharedPreferences sharedPref;
-    private SharedPreferences.Editor sharedPrefEditor;
-
-    private final String KEY_PREF_ZEPHYR_ENABLED = "pref_zephyr_sensor_enabled";
     private boolean zephyrEnabled;
-
-    private final String KEY_PREF_SESSIONS_JSON = "pref_sessions_json";
-    private String sessionsJSONString;
 
     /* Status fields */
 
@@ -81,7 +75,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     /* Data fields */
 
-    private TrainingData trainingData;
+    private WearableTraining training;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
@@ -141,6 +135,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false;
                     pauseActionImgView.setOnClickListener(TrainingActivity.this);
+
                     if (!sessionPaused) {
                         String heartRateString = msg.getData().getString("heartratestring");
                         timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -150,8 +145,13 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     }
                     break;
                 case StaticVariables.DEVICE_NOT_FOUND:
-                    Toast.makeText(TrainingActivity.this, "No se ha podido conectar con el " +
-                            "sensor Zephyr.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent (TrainingActivity.this,
+                            ConfirmationActivity.class);
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                            ConfirmationActivity.FAILURE_ANIMATION);
+                    intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
+                            "No se ha podido conectar con el sensor Zephyr");
+                    startActivity(intent);
                     finish();
             }
             super.handleMessage(msg);
@@ -206,13 +206,18 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                             Context.BIND_AUTO_CREATE);
                     zephyrServiceBinded = true;
                 } else {
-                    //Initialize internal heart rate sensor
+                    //Initialize internal heart rate sensor (if it's available)
                     sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
                     heartRateInternalSensor = sensorManager
                             .getDefaultSensor(Sensor.TYPE_HEART_RATE);
                     if (heartRateInternalSensor == null) {
-                        Toast.makeText(TrainingActivity.this, "Este dispositivo no tiene " +
-                                "pulsómetro.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent (TrainingActivity.this,
+                                ConfirmationActivity.class);
+                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                                ConfirmationActivity.FAILURE_ANIMATION);
+                        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
+                                "Este dispositivo no tiene pulsómetro");
+                        startActivity(intent);
                         finish();
                     }
                     sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
@@ -254,8 +259,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
                 }
 
-                trainingData.setElapsedTime(timeElapsed);
-                trainingData.setHeartRateList(heartRateList);
+                //TODO Save training data
 //                TrainingJSONParser parser = new TrainingJSONParser(trainingData);
 //                String json = parser.writeToJSON();
 //                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
@@ -288,13 +292,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void checkSharedPreferences() {
         //Check if the user wants to use Zephyr Sensor
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPrefEditor = sharedPref.edit();
-        zephyrEnabled = sharedPref.getBoolean(KEY_PREF_ZEPHYR_ENABLED, false);
-        sessionsJSONString = sharedPref.getString(KEY_PREF_SESSIONS_JSON, "");
-        Log.d(TAG, "Sessions from SharedPreferences: " + sessionsJSONString);
+        zephyrEnabled = sharedPref.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
     }
 
-    private void startChronometer(boolean allowed , long baseTime) {
+    private void startChronometer(boolean allowed, long baseTime) {
         if (allowed) {
             chronometer.setBase(baseTime);
             chronometer.start();
@@ -302,10 +303,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveHeartRate(long timeMark, int heartRate) {
-        HeartRate heartRateObj = trainingData.new HeartRate();
-        heartRateObj.setHeartRateValue(heartRate);
-        heartRateObj.setTimeMark(timeMark);
-        heartRateList.add(heartRateObj);
+        HeartRate hr = new HeartRate(timeMark, heartRate);
+        heartRateList.add(hr);
     }
 
 //    private void saveCurrentDate() {

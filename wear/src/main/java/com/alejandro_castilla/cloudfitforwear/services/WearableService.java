@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.interfaces.WearableHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,6 +32,7 @@ public class WearableService extends Service implements DataApi.DataListener,
 
     private final String TAG = WearableService.class.getSimpleName();
     private final IBinder wearableServiceBinder = new WearableServiceBinder();
+    private WearableHandler handler;
 
     private GoogleApiClient googleApiClient;
 
@@ -68,7 +70,7 @@ public class WearableService extends Service implements DataApi.DataListener,
         super.onDestroy();
     }
 
-    public void sendACKToHandheld () {
+    private void sendACKToHandheld () {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(StaticVariables.ACK_FROM_WEARABLE);
         putDataMapRequest.getDataMap().putBoolean(StaticVariables.WEARABLE_TRAINING_ACK,
@@ -84,6 +86,10 @@ public class WearableService extends Service implements DataApi.DataListener,
                 Log.d(TAG, "ACK sent.");
             }
         });
+    }
+
+    public void setWearableHandler(WearableHandler handler) {
+        this.handler = handler;
     }
 
     /* Google API methods */
@@ -121,9 +127,10 @@ public class WearableService extends Service implements DataApi.DataListener,
                     if (json != null) {
                         Log.d(TAG, "WEARABLE TRAINING JSON: " + json);
                         Gson gson = new Gson();
-                        WearableTraining wearableTraining = gson.fromJson(json,
+                        WearableTraining tr = gson.fromJson(json,
                                 WearableTraining.class);
-                        Log.d(TAG, "TRAINING NAME: " + wearableTraining.getTitle());
+                        Log.d(TAG, "TRAINING NAME: " + tr.getTitle());
+                        handler.saveWearableTraining(tr);
                         sendACKToHandheld();
                     }
                 }

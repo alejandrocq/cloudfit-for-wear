@@ -7,4 +7,5 @@
     <string name="settings_title">Configuración</string>
     <string name="title_activity_practice">PracticeActivity</string>
     <string name="text_training_not_completed">Completa el entrenamiento para que pueda ser sincronizado con tu teléfono</string>
+    <string name="text_training_available">Entrenamiento disponible</string>
 </resources>
