@@ -48,7 +48,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private Chronometer chronometer;
     private ImageView resumeActionImgView, pauseActionImgView, exitActionImgView;
-    private TextView heartRateTextView, resumeActionTextView, pauseActionTextView;
+    private TextView heartRateTextView, distanceTextView, infoTextView,
+            resumeActionTextView, pauseActionTextView;
     private GridViewPager gridViewPager;
 
     /* Preferences fields */
@@ -166,12 +167,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             public void onLayoutInflated(WatchViewStub stub) {
                 chronometer = (Chronometer) findViewById(R.id.practiceChronometer);
                 heartRateTextView = (TextView) findViewById(R.id.heartRateText);
+                distanceTextView = (TextView) findViewById(R.id.distanceText);
+                infoTextView = (TextView) findViewById(R.id.infoText);
+
                 resumeActionImgView = (ImageView) findViewById(R.id.practiceResumeActionImg);
                 pauseActionImgView = (ImageView) findViewById(R.id.practicePauseActionImg);
                 pauseActionTextView = (TextView) findViewById(R.id.practicePauseActionText);
                 resumeActionTextView = (TextView) findViewById(R.id.practiceResumeActionText);
                 exitActionImgView = (ImageView) findViewById(R.id.practiceExitActionImg);
 
+                //Pause action listener is set later
                 resumeActionImgView.setOnClickListener(TrainingActivity.this);
                 exitActionImgView.setOnClickListener(TrainingActivity.this);
 
@@ -188,6 +193,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
                 if (zephyrEnabled) {
                     // Start bluetooth and Zephyr sensor services
+                    infoTextView.setText("Conectando con el sensor...");
+
                     Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
                             BluetoothService.class);
                     bluetoothServiceIntent.putExtra("messenger", practiceActivityMessenger);
@@ -203,6 +210,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     zephyrServiceBinded = true;
                 } else {
                     //Initialize internal heart rate sensor (if it's available)
+                    infoTextView.setText("Iniciando pulsómetro...");
                     sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
                     heartRateInternalSensor = sensorManager
                             .getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -239,6 +247,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 resumeActionImgView.setVisibility(View.VISIBLE);
                 pauseActionTextView.setVisibility(View.GONE);
                 resumeActionTextView.setVisibility(View.VISIBLE);
+                infoTextView.setText("Entrenamiento pausado");
                 break;
             case R.id.practiceResumeActionImg:
                 startChronometer(true, SystemClock.elapsedRealtime() - timeWhenPaused);
@@ -335,6 +344,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void startChronometer(boolean allowed, long baseTime) {
         if (allowed) { //Check if chronometer is already started.
+            infoTextView.setText("Entrenamiento iniciado");
             chronometer.setBase(baseTime);
             chronometer.start();
         }

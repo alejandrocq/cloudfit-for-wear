@@ -18,37 +18,16 @@
             android:layout_height="match_parent"
             android:background="@color/md_white_1000">
 
-            <TextView
-                android:id="@+id/heartRateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="20sp"
-                android:textColor="@color/md_black_1000"
-                android:layout_marginTop="24dp"
-                android:layout_below="@+id/practiceChronometer"
-                android:layout_centerHorizontal="true" />
-
-            <ImageView
-                android:id="@+id/heartRateIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_heart"
-                android:layout_alignTop="@+id/heartRateText"
-                android:layout_alignBottom="@id/heartRateText"
-                android:layout_toLeftOf="@id/heartRateText"/>
-
             <Chronometer
                 android:id="@+id/practiceChronometer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed"
-                android:textSize="25sp"
-                android:textColor="@color/md_black_1000"
+                android:textSize="35sp"
+                android:textColor="@color/md_grey_800"
                 android:format="%s"
-                android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="70dp" />
+                android:layout_marginTop="5sp"/>
 
             <ImageView
                 android:id="@+id/chronometerIcon"
@@ -58,6 +37,84 @@
                 android:layout_toLeftOf="@id/practiceChronometer"
                 android:layout_alignTop="@id/practiceChronometer"
                 android:layout_alignBottom="@id/practiceChronometer" />
+
+            <TextView
+                android:id="@+id/heartRateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textSize="35sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/practiceChronometer"/>
+
+            <TextView
+                android:id="@+id/bpmText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" bpm"
+                android:textSize="15sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_toRightOf="@id/heartRateText"
+                android:layout_alignBottom="@id/heartRateText"/>
+
+            <ImageView
+                android:id="@+id/heartRateIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_heart"
+                android:layout_alignTop="@+id/heartRateText"
+                android:layout_alignBottom="@id/heartRateText"
+                android:layout_toStartOf="@id/heartRateText" />
+
+            <TextView
+                android:id="@+id/distanceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textSize="35sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/heartRateText"/>
+
+            <TextView
+                android:id="@+id/kmText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" km"
+                android:textSize="15sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_toRightOf="@id/distanceText"
+                android:layout_alignBottom="@id/distanceText"/>
+
+            <ImageView
+                android:id="@+id/distanceIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_maps_directions_walk"
+                android:layout_alignTop="@+id/distanceText"
+                android:layout_alignBottom="@id/distanceText"
+                android:layout_toLeftOf="@id/distanceText"/>
+
+            <TextView
+                android:id="@+id/infoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="12sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_marginTop="5sp"
+                android:layout_below="@id/distanceText"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/infoIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_info_24dp"
+                android:layout_alignTop="@+id/infoText"
+                android:layout_alignBottom="@id/infoText"
+                android:layout_toLeftOf="@id/infoText"/>
 
         </RelativeLayout>
 

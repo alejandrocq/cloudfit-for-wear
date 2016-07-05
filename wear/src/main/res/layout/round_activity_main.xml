@@ -35,6 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sin entrenamientos disponibles"
+                android:textSize="18sp"
                 android:layout_below="@id/imgcloudfit"
                 android:layout_marginTop="12sp"
                 android:layout_centerHorizontal="true"
@@ -42,10 +43,11 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings_black_24dp"
+                android:src="@drawable/ic_action_settings"
                 android:id="@+id/settingsImg"
                 android:layout_below="@id/trText"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="18sp"/>
             <!--<ImageView-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -82,7 +84,7 @@
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-condensed"
                 android:text="Comenzar entrenamiento"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textColor="@color/md_black_1000"/>
 
         </RelativeLayout>
@@ -112,7 +114,7 @@
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/text_training_not_completed"
-                android:textSize="12sp"
+                android:textSize="18sp"
                 android:textColor="@color/md_black_1000"
                 android:textAlignment="center"/>
 
