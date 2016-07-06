@@ -14,6 +14,8 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,36 +112,34 @@ public class Utilities {
             switch (exerciseGroup.getGroup()) {
                 case StaticReferences.EXERCISE_GROUP1:
                     ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
-                    WearableTraining.RunningExercise runningExercise =
-                            wearableTraining.getRunningExercise();
+                    Running running = new Running(exerciseGroup1.getTitle());
 
                     if (exerciseGroup1.getTimeP()>0) {
-                        runningExercise.setTimeP(exerciseGroup1.getTimeP());
+                        running.setTimeP(exerciseGroup1.getTimeP());
                         if (exerciseGroup1.getTimeMaxP()>0) {
-                            runningExercise.setTimeMaxP(exerciseGroup1.getTimeMaxP());
+                            running.setTimeMaxP(exerciseGroup1.getTimeMaxP());
                         }
                     } else if (exerciseGroup1.getDistanceP() != -1.0) {
-                        runningExercise.setDistanceP(exerciseGroup1.getDistanceP());
+                        running.setDistanceP(exerciseGroup1.getDistanceP());
                     }
 
                     if (exerciseGroup1.isOptional()) {
                         OptionalGroup1 optionalGroup1 = exerciseGroup1.getOptional();
 
-                        runningExercise.setHeartRateMin(optionalGroup1.getHrmin());
-                        runningExercise.setHeartRateMax(optionalGroup1.getHrmax());
+                        running.setHeartRateMin(optionalGroup1.getHrmin());
+                        running.setHeartRateMax(optionalGroup1.getHrmax());
 
                     }
 
-                    wearableTraining.setRunningExercise(runningExercise);
+                    wearableTraining.setRunning(running);
 
                     break;
                 case StaticReferences.EXERCISE_GROUP5:
                     ExerciseGroup5 exerciseGroup5 = (ExerciseGroup5) exerciseGroup;
-                    WearableTraining.RestExercise restExercise =
-                            wearableTraining.getRestExercise();
+                    Rest rest = new Rest(exerciseGroup5.getTitle());
 
-                    restExercise.setRestp(exerciseGroup5.getRestp());
-                    wearableTraining.setRestExercise(restExercise);
+                    rest.setRestp(exerciseGroup5.getRestp());
+                    wearableTraining.setRest(rest);
                     break;
             }
         }
