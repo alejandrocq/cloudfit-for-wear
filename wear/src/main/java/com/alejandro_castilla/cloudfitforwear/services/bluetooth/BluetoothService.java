@@ -35,24 +35,30 @@ public class BluetoothService extends Service {
     private BroadcastReceiver broadcastReceiver;
     private ArrayList<BluetoothDevice> devices;
     private BluetoothDevice targetDevice;
+    private FindBluetoothDeviceTask findTask;
     private boolean deviceFound;
 
     /* Messengers fields */
     private Messenger messenger = null;
+
+    /* Class used to bind with the client */
+
+    public class BluetoothServiceBinder extends Binder {
+        public BluetoothService getService() {
+            return BluetoothService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-
-
     @Override
     public void onDestroy() {
         stopDiscoveryOfDevices();
         super.onDestroy();
     }
-
 
     @Nullable
     @Override
@@ -68,7 +74,8 @@ public class BluetoothService extends Service {
         targetDevice = null;
         deviceFound = false;
         startDiscoveryOfDevices();
-        new FindBluetoothDeviceTask().execute(macAddress);
+        findTask = new FindBluetoothDeviceTask();
+        findTask.execute(macAddress);
     }
 
     private void startDiscoveryOfDevices() {
@@ -105,12 +112,8 @@ public class BluetoothService extends Service {
         }
     }
 
-    /* Class used to bind with the client */
-
-    public class BluetoothServiceBinder extends Binder {
-        public BluetoothService getService() {
-            return BluetoothService.this;
-        }
+    public void stopFindTask() {
+        findTask.cancel(true);
     }
 
     /* AsyncTask to find devices on devices list */
@@ -122,20 +125,22 @@ public class BluetoothService extends Service {
                 // Wait for devices list to be updated.
                 Thread.sleep(10000);
                 stopDiscoveryOfDevices();
+                if (devices != null) {
+                    for (BluetoothDevice device : devices) {
+                        if (device.getAddress().contains(params[0])) {
+                            // We found it
+                            deviceFound = true;
+                            targetDevice = device;
+                            Log.d(TAG, "The device requested has been found.");
+                        }
+                    }
+                }
+                return targetDevice;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (devices != null) {
-                for (BluetoothDevice device : devices) {
-                    if (device.getAddress().contains(params[0])) {
-                        // We found it
-                        deviceFound = true;
-                        targetDevice = device;
-                        Log.d(TAG, "The device requested has been found.");
-                    }
-                }
-            }
-            return targetDevice;
+
+            return null;
         }
 
         @Override

@@ -80,6 +80,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     /* Fields to connect to services */
 
+    private BluetoothService bluetoothService;
     private boolean bluetoothServiceBinded = false;
     private ZephyrService zephyrService;
     private boolean zephyrServiceBinded = false;
@@ -89,7 +90,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         public void onServiceConnected(ComponentName name, IBinder service) {
             BluetoothService.BluetoothServiceBinder bluetoothServiceBinder =
                     (BluetoothService.BluetoothServiceBinder) service;
-            BluetoothService bluetoothService = bluetoothServiceBinder.getService();
+            bluetoothService = bluetoothServiceBinder.getService();
             bluetoothService.findBluetoothDevice("C8:3E:99:0D:DD:43");
             //TODO This mac address should be synced from the phone(and stored on SharedPreferences)
         }
@@ -286,6 +287,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void stopServices() {
         if (bluetoothServiceBinded) {
+            bluetoothService.stopFindTask(); //If this task is still running, we have to stop it to
+                                            //avoid problems
             unbindService(bluetoothServiceConnection);
             bluetoothServiceBinded = false;
         }
