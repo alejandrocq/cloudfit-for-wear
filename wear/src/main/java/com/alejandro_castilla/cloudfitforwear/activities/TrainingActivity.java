@@ -31,6 +31,8 @@ import android.widget.TextView;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
@@ -74,8 +76,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Data fields */
 
     private WearableTraining training;
-    private WearableTraining.RunningExercise running;
-    private WearableTraining.RestExercise rest;
+    private Running running;
+    private Rest rest;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
@@ -310,8 +312,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             //Training available.
             Gson gson = new Gson();
             training = gson.fromJson(tr, WearableTraining.class);
-            running = training.getRunningExercise();
-            rest = training.getRestExercise();
+            running = training.getRunning();
+            rest = training.getRest();
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 Log.d(TAG, "Distance set");
