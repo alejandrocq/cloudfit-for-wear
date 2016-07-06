@@ -35,6 +35,7 @@ import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -258,6 +259,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 resumeActionTextView.setVisibility(View.GONE);
                 break;
             case R.id.practiceExitActionImg:
+                stopServices();
+
                 if (sessionPaused) {
                     timeElapsed = timeWhenPaused;
                 } else {
@@ -265,11 +268,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 }
 
                 //TODO Save training data
-//                TrainingJSONParser parser = new TrainingJSONParser(trainingData);
-//                String json = parser.writeToJSON();
-//                sharedPrefEditor.putString(KEY_PREF_SESSIONS_JSON, sessionsJSONString + json);
-//                sharedPrefEditor.commit();
-//                Log.d(TAG, json);
                 finish();
                 break;
         }
@@ -277,6 +275,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     @Override
     protected void onDestroy() {
+        stopServices();
+
+        if (!zephyrEnabled) {
+            sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
+        }
+
+        super.onDestroy();
+    }
+
+    private void stopServices() {
         if (bluetoothServiceBinded) {
             unbindService(bluetoothServiceConnection);
             bluetoothServiceBinded = false;
@@ -286,12 +294,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             unbindService(zephyrServiceConnection);
             zephyrServiceBinded = false;
         }
-
-        if (!zephyrEnabled) {
-            sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
-        }
-
-        super.onDestroy();
     }
 
     private void checkSharedPreferencesAndParseTraining() {
@@ -322,7 +324,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         public void onChronometerTick(Chronometer chronometer) {
                             long time = SystemClock.elapsedRealtime() - chronometer.getBase();
                             if (time >= (running.getTimeP()*1000)) {
-                                //TODO Vibrate, for example, three times. Save data and go rest.
+                                //TODO Save data and go to next exercise.
+                                Utilities.buildNotification(TrainingActivity.this, "Información",
+                                        "Carrera finalizada. Iniciado el siguiente ejercicio.");
                                 finish();
                             }
                         }
