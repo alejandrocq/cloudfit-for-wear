@@ -329,15 +329,18 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         public void onChronometerTick(Chronometer chronometer) {
                             long time = SystemClock.elapsedRealtime() - chronometer.getBase();
                             if (time >= (running.getTimeP()*1000)) {
-                                //TODO Save data and go to next exercise.
+                                saveRunningData(time);
                                 Utilities.buildNotification(TrainingActivity.this, "Información",
                                         "Carrera finalizada. Iniciado el siguiente ejercicio.");
-                                finish();
+                                resetDataAndMoveToNextExercise();
                             }
                         }
                     });
                 }
             }
+
+            training.setStartDate(SystemClock.elapsedRealtime());
+
         } else {
             // Training not available
             Intent intent = new Intent (TrainingActivity.this,
@@ -359,17 +362,70 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
     }
 
+    private void resetDataAndMoveToNextExercise() {
+        //TODO Also reset distance
+        chronometer.stop();
+        startChronometer(true, SystemClock.elapsedRealtime()); //Reset chronometer
+        heartRateList = new ArrayList<>(); //Reset heart rate data
+        infoTextView.setText("En recuperación: "+rest.getRestp()/60+" min");
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                if (time >= rest.getRestp()*1000) {
+                    saveRestData((int) time);
+                    saveTrainingDataAndFinish();
+                }
+            }
+        });
+
+    }
+
+    private void saveTrainingDataAndFinish() {
+        training.setEndDate(SystemClock.elapsedRealtime());
+        training.setState(WearableTraining.NOT_UPLOADED);
+        training.setRunning(running);
+        training.setRest(rest);
+
+        Gson gson = new Gson();
+        SharedPreferences.Editor prefsEditor = PreferenceManager
+                .getDefaultSharedPreferences(this).edit();
+        prefsEditor.putString(StaticVariables.KEY_TRAINING_DONE, gson.toJson(training));
+        prefsEditor.apply();
+        Log.d(TAG, "Training saved at date: "+training.getEndDate());
+
+        //Clear training to be done
+        prefsEditor.putString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
+        prefsEditor.apply();
+
+        Utilities.buildNotification(TrainingActivity.this, "Información",
+                "Entrenamiento finalizado y listo para ser sincronizado.");
+
+        Intent intent = new Intent (TrainingActivity.this,
+                ConfirmationActivity.class);
+        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                ConfirmationActivity.SUCCESS_ANIMATION);
+        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
+                "Entrenamiento completado correctamente");
+        startActivity(intent);
+        finish();
+    }
+
     private void saveHeartRate(long timeMark, int heartRate) {
         HeartRate hr = new HeartRate(timeMark, heartRate);
         heartRateList.add(hr);
     }
 
-//    private void saveCurrentDate() {
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy kk:mm:ss");
-//        String date = sdf.format(calendar.getTime());
-//        trainingData.setDate(date);
-//    }
+    private void saveRunningData(long timeElapsed) {
+        //TODO Save distance too
+        running.setTimeR(timeElapsed);
+        running.setHeartRateList(heartRateList);
+    }
+
+    private void saveRestData(int timeRest) {
+        rest.setRestr(timeRest);
+        rest.setHeartRateList(heartRateList);
+    }
 
     /* Methods for internal heart rate sensor */
 

@@ -19,7 +19,7 @@ public class Utilities {
                         .setContentTitle(title)
                         .setContentText(content);
         //Vibration doesn't work, but it allows us to show the notification on top of the activity.
-        builder.setVibrate(new long[] { 1000, 1000, 1000 });
+        builder.setVibrate(new long[] { 0, 0, 0 });
         NotificationManager manager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         //Don't need the ID for the moment, so we set it to 0

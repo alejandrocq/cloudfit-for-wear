@@ -8,9 +8,6 @@ import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
  */
 public class WearableTraining {
 
-    //TODO Move inner classes to single classes
-    //TODO Every exercise should have a Heart Rate List
-
     public static final int NOT_UPLOADED = 0;
     public static final int UPLOADED = 1;
 

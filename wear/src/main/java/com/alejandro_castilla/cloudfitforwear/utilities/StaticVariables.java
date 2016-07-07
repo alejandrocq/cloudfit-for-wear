@@ -40,6 +40,7 @@ public class StaticVariables {
 
     public static final String KEY_PREF_ZEPHYR_ENABLED = "pref_zephyr_sensor_enabled";
     public static final String KEY_TRAINING_TO_BE_DONE = "training_to_be_done";
+    public static final String KEY_TRAINING_DONE = "training_done";
 
 
 }
