@@ -116,6 +116,7 @@ public class Utilities {
                 case StaticReferences.EXERCISE_GROUP1:
                     ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
                     Running running = new Running(exerciseGroup1.getTitle());
+                    running.setType(Exercise.TYPE_RUNNING);
 
                     if (exerciseGroup1.getTimeP()>0) {
                         running.setTimeP(exerciseGroup1.getTimeP());
@@ -140,6 +141,7 @@ public class Utilities {
                 case StaticReferences.EXERCISE_GROUP5:
                     ExerciseGroup5 exerciseGroup5 = (ExerciseGroup5) exerciseGroup;
                     Rest rest = new Rest(exerciseGroup5.getTitle());
+                    rest.setType(Exercise.TYPE_REST);
 
                     rest.setRestp(exerciseGroup5.getRestp());
                     exercises.add(rest);
