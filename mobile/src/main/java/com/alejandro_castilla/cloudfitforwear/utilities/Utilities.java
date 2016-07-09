@@ -14,6 +14,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
 
@@ -104,11 +105,13 @@ public class Utilities {
 
         WearableTraining wearableTraining = new WearableTraining(training.getTitle(),
                 training.getId(), cloudFitUser.getId());
-        ArrayList<ExerciseGroup> exercises;
+        ArrayList<ExerciseGroup> groups;
 
-        exercises = createExercisesListFromElement(training.getElements());
+        groups = createExercisesListFromElement(training.getElements());
 
-        for (ExerciseGroup exerciseGroup : exercises) {
+        ArrayList<Exercise> exercises = new ArrayList<>();
+
+        for (ExerciseGroup exerciseGroup : groups) {
             switch (exerciseGroup.getGroup()) {
                 case StaticReferences.EXERCISE_GROUP1:
                     ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
@@ -131,7 +134,7 @@ public class Utilities {
 
                     }
 
-                    wearableTraining.setRunning(running);
+                    exercises.add(running);
 
                     break;
                 case StaticReferences.EXERCISE_GROUP5:
@@ -139,10 +142,12 @@ public class Utilities {
                     Rest rest = new Rest(exerciseGroup5.getTitle());
 
                     rest.setRestp(exerciseGroup5.getRestp());
-                    wearableTraining.setRest(rest);
+                    exercises.add(rest);
                     break;
             }
         }
+
+        wearableTraining.setExercises(exercises);
         return wearableTraining;
     }
 

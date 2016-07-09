@@ -1,7 +1,8 @@
 package com.alejandro_castilla.cloudfitforwear.data;
 
-import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
-import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
+
+import java.util.ArrayList;
 
 /**
  * Created by alejandrocq on 25/05/16.
@@ -22,8 +23,7 @@ public class WearableTraining {
     private long cloudFitId;
     private int state;
 
-    private Running running;
-    private Rest rest;
+    private ArrayList<Exercise> exercises;
 
     public WearableTraining(String title, long cloudFitId, long userId) {
         this.title = title;
@@ -55,22 +55,6 @@ public class WearableTraining {
 
     public void setEndDate(long endDate) {
         this.endDate = endDate;
-    }
-
-    public Running getRunning() {
-        return running;
-    }
-
-    public void setRunning(Running running) {
-        this.running = running;
-    }
-
-    public Rest getRest() {
-        return rest;
-    }
-
-    public void setRest(Rest rest) {
-        this.rest = rest;
     }
 
     public long getCloudFitId() {
@@ -105,4 +89,11 @@ public class WearableTraining {
         this.userId = userId;
     }
 
+    public ArrayList<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(ArrayList<Exercise> exercises) {
+        this.exercises = exercises;
+    }
 }
