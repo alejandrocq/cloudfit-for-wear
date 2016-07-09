@@ -31,9 +31,10 @@ import android.widget.TextView;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Running;
-import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.services.bluetooth.BluetoothService;
 import com.alejandro_castilla.cloudfitforwear.services.zephyrsensor.ZephyrService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
@@ -76,8 +77,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Data fields */
 
     private WearableTraining training;
-    private Running running;
-    private Rest rest;
+    private Exercise currentExercise;
+    private int currentExerciseIndex;
+    private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
 
     /* Fields to connect to services */
@@ -301,19 +303,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
     }
 
-    private void checkSharedPreferencesAndParseTraining() {
-        //Check if the user wants to use Zephyr Sensor
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        zephyrEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
-
-        String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
-
-        if (!tr.equals("")) {
-            //Training available.
-            Gson gson = new Gson();
-            training = gson.fromJson(tr, WearableTraining.class);
-            running = training.getRunning();
-            rest = training.getRest();
+    private void prepareCurrentExercise() {
+        if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
+            Log.d(TAG, "RUNNING EXERCISE");
+            final Running running = (Running) currentExercise;
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 Log.d(TAG, "Distance set");
@@ -329,8 +322,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         public void onChronometerTick(Chronometer chronometer) {
                             long time = SystemClock.elapsedRealtime() - chronometer.getBase();
                             if (time >= (running.getTimeP()*1000)) {
-                                saveRunningData(time);
-                                Utilities.buildNotification(TrainingActivity.this, "Información",
+                                saveExerciseData(time);
+                                Utilities.buildNotification(TrainingActivity.this,
+                                        "Información",
                                         "Carrera finalizada. Iniciado el siguiente ejercicio.");
                                 resetDataAndMoveToNextExercise();
                             }
@@ -338,6 +332,42 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     });
                 }
             }
+        } else if (currentExercise.getType() == Exercise.TYPE_REST) {
+            final Rest rest = (Rest) currentExercise;
+            Log.d(TAG, "Rest Exercise");
+
+            infoTextView.setText("En recuperación: "+rest.getRestp()/60+" min");
+            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                @Override
+                public void onChronometerTick(Chronometer chronometer) {
+                    long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                    if (time >= rest.getRestp()*1000) {
+                        saveExerciseData(time);
+                        saveTrainingDataAndFinish();
+                    }
+                }
+            });
+        } else {
+            //TODO Handle this situation (exercise not supported or another error)
+            finish();
+        }
+    }
+
+    private void checkSharedPreferencesAndParseTraining() {
+        //Check if the user wants to use Zephyr Sensor
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        zephyrEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
+
+        String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
+
+        if (!tr.equals("")) { //Not empty
+            //Training available.
+            Gson gson = new Gson();
+            training = gson.fromJson(tr, WearableTraining.class);
+            currentExerciseIndex = 0;
+            currentExercise = training.getExercises().get(currentExerciseIndex);
+
+            prepareCurrentExercise();
 
             training.setStartDate(SystemClock.elapsedRealtime());
 
@@ -356,7 +386,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void startChronometer(boolean allowed, long baseTime) {
         if (allowed) { //Check if chronometer is already started.
-            infoTextView.setText("Entrenamiento iniciado");
+            infoTextView.setText(currentExercise.getTitle());
             chronometer.setBase(baseTime);
             chronometer.start();
         }
@@ -367,25 +397,21 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         chronometer.stop();
         startChronometer(true, SystemClock.elapsedRealtime()); //Reset chronometer
         heartRateList = new ArrayList<>(); //Reset heart rate data
-        infoTextView.setText("En recuperación: "+rest.getRestp()/60+" min");
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                long time = SystemClock.elapsedRealtime() - chronometer.getBase();
-                if (time >= rest.getRestp()*1000) {
-                    saveRestData((int) time);
-                    saveTrainingDataAndFinish();
-                }
-            }
-        });
+        currentExerciseIndex++;
+
+        if (currentExerciseIndex == training.getExercises().size()) {
+            saveTrainingDataAndFinish();
+        }
+
+        currentExercise = training.getExercises().get(currentExerciseIndex);
+        prepareCurrentExercise();
 
     }
 
     private void saveTrainingDataAndFinish() {
         training.setEndDate(SystemClock.elapsedRealtime());
         training.setState(WearableTraining.NOT_UPLOADED);
-        training.setRunning(running);
-        training.setRest(rest);
+        training.setExercises(exercisesCompleted);
 
         Gson gson = new Gson();
         SharedPreferences.Editor prefsEditor = PreferenceManager
@@ -398,8 +424,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         prefsEditor.putString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
         prefsEditor.apply();
 
-        Utilities.buildNotification(TrainingActivity.this, "Información",
-                "Entrenamiento finalizado y listo para ser sincronizado.");
+//        Utilities.buildNotification(TrainingActivity.this, "Información",
+//                "Entrenamiento finalizado y listo para ser sincronizado.");
 
         Intent intent = new Intent (TrainingActivity.this,
                 ConfirmationActivity.class);
@@ -416,15 +442,18 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         heartRateList.add(hr);
     }
 
-    private void saveRunningData(long timeElapsed) {
-        //TODO Save distance too
-        running.setTimeR(timeElapsed);
-        running.setHeartRateList(heartRateList);
-    }
-
-    private void saveRestData(int timeRest) {
-        rest.setRestr(timeRest);
-        rest.setHeartRateList(heartRateList);
+    private void saveExerciseData (long timeElapsed) {
+        if (currentExercise instanceof Running) {
+            Running running = (Running) currentExercise;
+            running.setTimeR(timeElapsed);
+            running.setHeartRateList(heartRateList);
+            exercisesCompleted.add(running);
+        } else if (currentExercise instanceof Rest) {
+            Rest rest = (Rest) currentExercise;
+            rest.setRestr((int) timeElapsed);
+            rest.setHeartRateList(heartRateList);
+            exercisesCompleted.add(rest);
+        }
     }
 
     /* Methods for internal heart rate sensor */
