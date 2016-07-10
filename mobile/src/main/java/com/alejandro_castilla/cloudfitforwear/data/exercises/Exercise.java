@@ -16,6 +16,9 @@ public class Exercise {
     private int type;
     private ArrayList<HeartRate> heartRateList;
 
+    private Running running;
+    private Rest rest;
+
     public Exercise(String title) {
         this.title = title;
         heartRateList = new ArrayList<>();
@@ -43,5 +46,21 @@ public class Exercise {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public Running getRunning() {
+        return running;
+    }
+
+    public void setRunning(Running running) {
+        this.running = running;
+    }
+
+    public Rest getRest() {
+        return rest;
+    }
+
+    public void setRest(Rest rest) {
+        this.rest = rest;
     }
 }

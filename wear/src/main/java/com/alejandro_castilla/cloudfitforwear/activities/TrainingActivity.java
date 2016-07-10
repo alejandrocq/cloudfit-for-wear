@@ -306,7 +306,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void prepareCurrentExercise() {
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
             Log.d(TAG, "RUNNING EXERCISE");
-            final Running running = (Running) currentExercise;
+            final Running running = currentExercise.getRunning();
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 Log.d(TAG, "Distance set");
@@ -333,7 +333,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 }
             }
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
-            final Rest rest = (Rest) currentExercise;
+            final Rest rest = currentExercise.getRest();
             Log.d(TAG, "Rest Exercise");
 
             infoTextView.setText("En recuperación: "+rest.getRestp()/60+" min");
@@ -370,6 +370,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             prepareCurrentExercise();
 
             training.setStartDate(SystemClock.elapsedRealtime());
+            exercisesCompleted = new ArrayList<>();
 
         } else {
             // Training not available
@@ -399,7 +400,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         heartRateList = new ArrayList<>(); //Reset heart rate data
         currentExerciseIndex++;
 
-        if (currentExerciseIndex == training.getExercises().size()) {
+        if (currentExerciseIndex == training.getExercises().size()) { //No more exercises
             saveTrainingDataAndFinish();
         }
 
@@ -443,16 +444,14 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveExerciseData (long timeElapsed) {
-        if (currentExercise instanceof Running) {
-            Running running = (Running) currentExercise;
-            running.setTimeR(timeElapsed);
-            running.setHeartRateList(heartRateList);
-            exercisesCompleted.add(running);
-        } else if (currentExercise instanceof Rest) {
-            Rest rest = (Rest) currentExercise;
-            rest.setRestr((int) timeElapsed);
-            rest.setHeartRateList(heartRateList);
-            exercisesCompleted.add(rest);
+        if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
+            currentExercise.getRunning().setTimeR(timeElapsed);
+            currentExercise.setHeartRateList(heartRateList);
+            exercisesCompleted.add(currentExercise);
+        } else if (currentExercise.getType() == Exercise.TYPE_REST) {
+            currentExercise.getRest().setRestr((int) timeElapsed);
+            currentExercise.setHeartRateList(heartRateList);
+            exercisesCompleted.add(currentExercise);
         }
     }
 

@@ -3,7 +3,7 @@ package com.alejandro_castilla.cloudfitforwear.data.exercises;
 /**
  * Created by alejandrocq on 6/07/16.
  */
-public class Running extends Exercise {
+public class Running {
     /* Parameters set by the trainer */
     private double distanceP = -1.0;
     private double timeP = -1.0;
@@ -15,10 +15,6 @@ public class Running extends Exercise {
     /* Goals made by the athlete */
     private double distanceR;
     private double timeR;
-
-    public Running (String title) {
-        super(title);
-    }
 
     public double getDistanceP() {
         return distanceP;

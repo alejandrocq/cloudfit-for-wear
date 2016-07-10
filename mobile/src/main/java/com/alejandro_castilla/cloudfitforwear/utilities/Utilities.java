@@ -111,12 +111,15 @@ public class Utilities {
 
         ArrayList<Exercise> exercises = new ArrayList<>();
 
+        Exercise ex;
+
         for (ExerciseGroup exerciseGroup : groups) {
             switch (exerciseGroup.getGroup()) {
                 case StaticReferences.EXERCISE_GROUP1:
                     ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
-                    Running running = new Running(exerciseGroup1.getTitle());
-                    running.setType(Exercise.TYPE_RUNNING);
+                    ex = new Exercise(exerciseGroup1.getTitle());
+                    ex.setType(Exercise.TYPE_RUNNING);
+                    Running running = new Running();
 
                     if (exerciseGroup1.getTimeP()>0) {
                         running.setTimeP(exerciseGroup1.getTimeP());
@@ -135,16 +138,19 @@ public class Utilities {
 
                     }
 
-                    exercises.add(running);
-
+                    ex.setRunning(running);
+                    exercises.add(ex);
                     break;
                 case StaticReferences.EXERCISE_GROUP5:
                     ExerciseGroup5 exerciseGroup5 = (ExerciseGroup5) exerciseGroup;
-                    Rest rest = new Rest(exerciseGroup5.getTitle());
-                    rest.setType(Exercise.TYPE_REST);
+                    ex = new Exercise(exerciseGroup5.getTitle());
+                    ex.setType(Exercise.TYPE_REST);
 
+                    Rest rest = new Rest();
                     rest.setRestp(exerciseGroup5.getRestp());
-                    exercises.add(rest);
+
+                    ex.setRest(rest);
+                    exercises.add(ex);
                     break;
             }
         }
