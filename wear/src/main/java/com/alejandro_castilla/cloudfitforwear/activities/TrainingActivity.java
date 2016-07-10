@@ -135,7 +135,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     zephyrService.connectToZephyr(device);
                     break;
                 case StaticVariables.ZEPHYR_HEART_RATE:
-                    startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
+                    startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false; //Starts chronometer only one time
                     pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
@@ -256,7 +256,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 infoTextView.setText("Entrenamiento pausado");
                 break;
             case R.id.practiceResumeActionImg:
-                startChronometer(true, SystemClock.elapsedRealtime() - timeWhenPaused);
+                startChronometerAndUpdateInfo(true, SystemClock.elapsedRealtime() - timeWhenPaused);
                 sessionPaused = false;
                 pauseActionImgView.setVisibility(View.VISIBLE);
                 resumeActionImgView.setVisibility(View.GONE);
@@ -325,7 +325,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                                 saveExerciseData(time);
                                 Utilities.buildNotification(TrainingActivity.this,
                                         "Información",
-                                        "Carrera finalizada. Iniciado el siguiente ejercicio.");
+                                        "Carrera completada correctamente.");
                                 resetDataAndMoveToNextExercise();
                             }
                         }
@@ -336,14 +336,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             final Rest rest = currentExercise.getRest();
             Log.d(TAG, "Rest Exercise");
 
-            infoTextView.setText("En recuperación: "+rest.getRestp()/60+" min");
             chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                 @Override
                 public void onChronometerTick(Chronometer chronometer) {
                     long time = SystemClock.elapsedRealtime() - chronometer.getBase();
                     if (time >= rest.getRestp()*1000) {
                         saveExerciseData(time);
-                        saveTrainingDataAndFinish();
+                        Utilities.buildNotification(TrainingActivity.this,
+                                "Información",
+                                "Descanso completado correctamente.");
+                        resetDataAndMoveToNextExercise();
                     }
                 }
             });
@@ -360,12 +362,13 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
         String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
 
-        if (!tr.equals("")) { //Not empty
+        if (!tr.equals("")) {
             //Training available.
             Gson gson = new Gson();
             training = gson.fromJson(tr, WearableTraining.class);
             currentExerciseIndex = 0;
             currentExercise = training.getExercises().get(currentExerciseIndex);
+            Log.d(TAG, "NUMBER OF EXERCISES: "+training.getExercises().size());
 
             prepareCurrentExercise();
 
@@ -385,9 +388,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
     }
 
-    private void startChronometer(boolean allowed, long baseTime) {
-        if (allowed) { //Check if chronometer is already started.
-            infoTextView.setText(currentExercise.getTitle());
+    private void startChronometerAndUpdateInfo(boolean allowed, long baseTime) {
+        if (allowed) { //If the chronometer is started, is not allowed to start.
+
+            if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
+                infoTextView.setText(currentExercise.getTitle());
+            } else if (currentExercise.getType() == Exercise.TYPE_REST) {
+                infoTextView.setText("En recuperación: "+currentExercise
+                        .getRest().getRestp()/60+" min");
+            }
+
             chronometer.setBase(baseTime);
             chronometer.start();
         }
@@ -396,16 +406,17 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void resetDataAndMoveToNextExercise() {
         //TODO Also reset distance
         chronometer.stop();
-        startChronometer(true, SystemClock.elapsedRealtime()); //Reset chronometer
         heartRateList = new ArrayList<>(); //Reset heart rate data
         currentExerciseIndex++;
 
         if (currentExerciseIndex == training.getExercises().size()) { //No more exercises
             saveTrainingDataAndFinish();
+            return;
         }
 
         currentExercise = training.getExercises().get(currentExerciseIndex);
         prepareCurrentExercise();
+        startChronometerAndUpdateInfo(true, SystemClock.elapsedRealtime()); //Reset chronometer
 
     }
 
@@ -425,16 +436,18 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         prefsEditor.putString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
         prefsEditor.apply();
 
-//        Utilities.buildNotification(TrainingActivity.this, "Información",
-//                "Entrenamiento finalizado y listo para ser sincronizado.");
+        //Start Main Activity again
+        Intent intent = new Intent(TrainingActivity.this, MainActivity.class);
+        startActivity(intent);
 
-        Intent intent = new Intent (TrainingActivity.this,
+        intent = new Intent (TrainingActivity.this,
                 ConfirmationActivity.class);
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
                 ConfirmationActivity.SUCCESS_ANIMATION);
         intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
                 "Entrenamiento completado correctamente");
         startActivity(intent);
+
         finish();
     }
 
@@ -460,7 +473,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        startChronometer(chronoAllowedToStart, SystemClock.elapsedRealtime());
+        startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
         chronoAllowedToStart = false;
         pauseActionImgView.setOnClickListener(TrainingActivity.this);
 

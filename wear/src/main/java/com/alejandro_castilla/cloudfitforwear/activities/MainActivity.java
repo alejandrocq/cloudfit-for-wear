@@ -129,6 +129,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                     Intent training = new Intent(MainActivity.this,
                             TrainingActivity.class);
                     startActivity(training);
+                    finish();
                     break;
                 case R.id.settingsImg:
                     Intent settings = new Intent (MainActivity.this,

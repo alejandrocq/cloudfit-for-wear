@@ -64,6 +64,7 @@ public class ZephyrService extends Service {
     public boolean connectToZephyr(BluetoothDevice zephyrDevice) {
         Log.d(TAG, "Starting connection to Zephyr device.");
         _bt = new BTClient(bluetoothAdapter, zephyrDevice.getAddress());
+        //TODO Handle a problem with bluetooth socket timeout
         _NConnListener = new NewConnectedListener(messageHandler, messageHandler);
         _bt.addConnectedEventListener(_NConnListener);
         if (_bt.IsConnected()) {
