@@ -92,7 +92,7 @@
         <!--Layout for previous practices action-->
 
         <RelativeLayout
-            android:id="@+id/previousPracticesLayout"
+            android:id="@+id/syncTrainingLayout"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -100,7 +100,7 @@
             android:background="@color/md_white_1000">
 
             <ImageView
-                android:id="@+id/infoImg"
+                android:id="@+id/trainingNotCompletedImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25sp"
@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/infoImg"
+                android:layout_below="@id/trainingNotCompletedImg"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/text_training_not_completed"

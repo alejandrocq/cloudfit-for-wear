@@ -1,9 +1,12 @@
 package com.alejandro_castilla.cloudfitforwear.utilities;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.wearable.activity.ConfirmationActivity;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -90,6 +93,14 @@ public class Utilities {
     public static void vibrate (Context ctx, int millis) {
         Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(millis);
+    }
+
+    public static void showConfirmation (Activity context, String message, int animationType) {
+        Intent intent = new Intent (context,
+                ConfirmationActivity.class);
+        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, animationType);
+        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message);
+        context.startActivity(intent);
     }
 
 }

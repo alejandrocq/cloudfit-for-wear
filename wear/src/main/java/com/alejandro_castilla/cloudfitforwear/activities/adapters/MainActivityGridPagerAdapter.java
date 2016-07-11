@@ -15,7 +15,7 @@ public class MainActivityGridPagerAdapter extends GridPagerAdapter {
     private final String TAG = MainActivityGridPagerAdapter.class.getSimpleName();
 
     private final int[] actionLayouts = {R.id.mainLayout, R.id.startActionLayout,
-            R.id.previousPracticesLayout};
+            R.id.syncTrainingLayout};
     private final int NUMBER_OF_ACTIONS = actionLayouts.length;
 
     private Context context;

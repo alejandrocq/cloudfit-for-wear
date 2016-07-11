@@ -8,4 +8,9 @@
     <string name="title_activity_practice">PracticeActivity</string>
     <string name="text_training_not_completed">Completa el entrenamiento para que pueda ser sincronizado con tu teléfono</string>
     <string name="text_training_available">Entrenamiento disponible</string>
+    <string name="text_training_ready_to_sync">Listo para sincronizar</string>
+    <string name="text_training_not_available">Sin entrenamientos disponibles</string>
+    <string name="text_training_completed">Entrenamiento completado</string>
+    <string name="text_send_to_handheld">Enviar al teléfono</string>
+    <string name="text_delete">Eliminar</string>
 </resources>

@@ -34,7 +34,7 @@
                 android:id="@+id/trText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sin entrenamientos disponibles"
+                android:text="@string/text_training_not_available"
                 android:layout_below="@id/imgcloudfit"
                 android:layout_marginTop="12sp"
                 android:layout_centerHorizontal="true"
@@ -48,14 +48,6 @@
                 android:layout_below="@id/trText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12sp"/>
-            <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_sync_black_24dp"-->
-            <!--android:id="@+id/imgsync"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_toStartOf="@+id/imgcloudfit"-->
-            <!--android:layout_marginBottom="41dp" />-->
 
         </RelativeLayout>
 
@@ -92,15 +84,17 @@
         <!--Layout for previous practices action-->
 
         <RelativeLayout
-            android:id="@+id/previousPracticesLayout"
+            android:id="@+id/syncTrainingLayout"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/md_white_1000">
 
+            <!--This items show when there is no training available to sync-->
+
             <ImageView
-                android:id="@+id/infoImg"
+                android:id="@+id/trainingNotCompletedImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25sp"
@@ -108,15 +102,76 @@
                 android:src="@drawable/ic_action_info_outline"/>
 
             <TextView
+                android:id="@+id/trainingNotCompletedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/infoImg"
+                android:layout_below="@id/trainingNotCompletedImg"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/text_training_not_completed"
                 android:textSize="14sp"
                 android:textColor="@color/md_black_1000"
                 android:textAlignment="center"/>
+
+            <!--Items to sync training to the handheld-->
+
+            <TextView
+                android:id="@+id/trainingCompletedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_training_completed"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/uploadActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_file_cloud_upload"
+                android:visibility="gone"
+                android:layout_below="@id/trainingCompletedText"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/uploadActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_send_to_handheld"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_below="@id/uploadActionImg"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/deleteActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_action_delete"
+                android:visibility="gone"
+                android:layout_marginTop="15sp"
+                android:layout_below="@id/uploadActionText" />
+
+            <TextView
+                android:id="@+id/deleteActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_delete"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_below="@id/deleteActionImg"
+                android:visibility="gone"/>
+
 
         </RelativeLayout>
 
