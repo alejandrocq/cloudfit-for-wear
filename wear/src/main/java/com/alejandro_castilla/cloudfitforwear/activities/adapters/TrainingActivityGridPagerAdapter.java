@@ -9,9 +9,13 @@ import com.alejandro_castilla.cloudfitforwear.R;
 /**
  * Created by alejandrocq on 24/04/16.
  */
-public class PracticeActivityGridPagerAdapter extends GridPagerAdapter {
+public class TrainingActivityGridPagerAdapter extends GridPagerAdapter {
 
-    private final int[] layoutsIDs = {R.id.practiceMainLayout, R.id.practicePauseActionLayout,
+    private final int[] layoutsIDs = {
+            R.id.practiceMainLayout,
+            R.id.exerciseInfoLayout,
+            R.id.sensorsInfoLayout,
+            R.id.practicePauseActionLayout,
             R.id.practiceExitActionLayout};
     private final int NUMBER_OF_ACTIONS = layoutsIDs.length;
 

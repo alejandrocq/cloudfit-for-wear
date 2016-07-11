@@ -5,7 +5,7 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_practice"
-    app:roundLayout="@layout/round_activity_practice"
+    app:rectLayout="@layout/rect_activity_training"
+    app:roundLayout="@layout/round_activity_training"
     tools:context=".activities.TrainingActivity"
     tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>

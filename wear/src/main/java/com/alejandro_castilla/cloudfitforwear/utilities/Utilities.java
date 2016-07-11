@@ -6,11 +6,71 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 
 /**
  * Created by alejandrocq on 6/07/16.
  */
 public class Utilities {
+
+    public static String buildExerciseInfo (Exercise ex) {
+        String exInfo = "Título: "+ex.getTitle()+"\n";
+
+        switch (ex.getType()) {
+            case Exercise.TYPE_RUNNING:
+                if (ex.getRunning().getTimeP()>0) {
+                    exInfo += "Tiempo min.: "
+                            + secondsToStandardFormat(ex.getRunning().getTimeP()) + "\n";
+                    if (ex.getRunning().getTimeMaxP()>0) {
+                        exInfo += "Tiempo max.: "
+                                + secondsToStandardFormat(ex.getRunning().getTimeMaxP()) + "\n";
+                    }
+                } else if (ex.getRunning().getDistanceP() != -1.0) {
+                    exInfo += "Distancia: "
+                            + secondsToStandardFormat(ex.getRunning().getDistanceP()) + "\n";
+                }
+
+                if (ex.getRunning().getHeartRateMin()>0 && ex.getRunning().getHeartRateMax()>0) {
+                    exInfo += "Frec. min.: "
+                            + ex.getRunning().getHeartRateMin() + "\n"
+                            + "Frec. max.: " + ex.getRunning().getHeartRateMax()
+                            + "\n";
+                }
+                break;
+            case Exercise.TYPE_REST:
+                exInfo += "Descanso: "
+                        + secondsToStandardFormat(ex.getRest().getRestp());
+                break;
+        }
+
+        return exInfo;
+    }
+
+    public static String secondsToStandardFormat (long totalSeconds) {
+        String time;
+
+        int hours = (int) totalSeconds / 3600;
+        int minutes = (int) (totalSeconds % 3600) / 60;
+        int seconds = (int) totalSeconds % 60;
+
+        time = hours + " h " + minutes + " m " + seconds + " s";
+
+        return time;
+
+    }
+
+    public static String secondsToStandardFormat (double totalSeconds) {
+        String time;
+
+        int hours = (int) totalSeconds / 3600;
+        int minutes = (int) (totalSeconds % 3600) / 60;
+        int seconds = (int) totalSeconds % 60;
+
+        time = hours + " h " + minutes + " m " + seconds + " s";
+
+        return time;
+
+    }
 
     public static void buildNotification (Context ctx, String title, String content) {
         NotificationCompat.Builder builder =

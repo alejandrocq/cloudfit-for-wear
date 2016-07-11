@@ -119,6 +119,107 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/exerciseInfoLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <TextView
+                android:id="@+id/exerciseInfoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Info. ejercicio"
+                android:textSize="18sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"/>
+
+            <TextView
+                android:id="@+id/exerciseInfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sin información disponible."
+                android:textSize="13sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/exerciseInfoTitle"
+                android:layout_marginTop="5sp"/>
+
+            <Button
+                android:id="@+id/finishExerciseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finalizar ejercicio"
+                android:textSize="13sp"
+                android:textColor="@color/md_white_1000"
+                android:background="#2e81a9"
+                android:layout_marginTop="5sp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/sensorsInfoLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_white_1000">
+
+            <TextView
+                android:id="@+id/sensorsStatusTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado sensores"
+                android:textSize="18sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="10sp"/>
+
+            <ImageView
+                android:id="@+id/heartSensorIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_heart"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/sensorsStatusTitle"/>
+
+            <TextView
+                android:id="@+id/heartSensorInfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Conectando"
+                android:textSize="16sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/heartSensorIcon"/>
+
+            <ImageView
+                android:id="@+id/locationSensorIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/heartSensorInfoText" />
+
+            <TextView
+                android:id="@+id/locationInfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No disponible"
+                android:textSize="16sp"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/locationSensorIcon"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/practicePauseActionLayout"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"

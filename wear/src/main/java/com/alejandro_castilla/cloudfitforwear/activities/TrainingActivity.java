@@ -24,12 +24,13 @@ import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
-import com.alejandro_castilla.cloudfitforwear.activities.adapters.PracticeActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingActivityGridPagerAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -52,8 +53,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private Chronometer chronometer;
     private ImageView resumeActionImgView, pauseActionImgView, exitActionImgView;
-    private TextView heartRateTextView, distanceTextView, infoTextView,
-            resumeActionTextView, pauseActionTextView;
+    private TextView
+            heartRateTextView,
+            distanceTextView,
+            infoTextView,
+            exerciseInfoTextView,
+            heartSensorStatusTextView,
+            locationStatusTextView,
+            resumeActionTextView,
+            pauseActionTextView;
+    private Button finishExerciseButton;
     private GridViewPager gridViewPager;
 
     /* Preferences fields */
@@ -135,9 +144,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     zephyrService.connectToZephyr(device);
                     break;
                 case StaticVariables.ZEPHYR_HEART_RATE:
-                    startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
+                    startChronometerAndUpdateInfo(chronoAllowedToStart,
+                            SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false; //Starts chronometer only one time
-                    pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
                     if (!sessionPaused) {
                         String heartRateString = msg.getData().getString("heartratestring");
@@ -166,7 +175,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practice);
+        setContentView(R.layout.activity_training);
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
@@ -175,6 +184,17 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 heartRateTextView = (TextView) findViewById(R.id.heartRateText);
                 distanceTextView = (TextView) findViewById(R.id.distanceText);
                 infoTextView = (TextView) findViewById(R.id.infoText);
+
+                /*Sensors info layout items*/
+
+                heartSensorStatusTextView = (TextView) findViewById(R.id.heartSensorInfoText);
+
+                /*Exercise info layout items*/
+
+                exerciseInfoTextView = (TextView) findViewById(R.id.exerciseInfoText);
+                finishExerciseButton = (Button) findViewById(R.id.finishExerciseButton);
+
+                /*Actions items*/
 
                 resumeActionImgView = (ImageView) findViewById(R.id.practiceResumeActionImg);
                 pauseActionImgView = (ImageView) findViewById(R.id.practicePauseActionImg);
@@ -187,8 +207,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 exitActionImgView.setOnClickListener(TrainingActivity.this);
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.practicePager);
-                gridViewPager.setAdapter(new PracticeActivityGridPagerAdapter());
-                gridViewPager.setOffscreenPageCount(2);
+                gridViewPager.setAdapter(new TrainingActivityGridPagerAdapter());
+                gridViewPager.setOffscreenPageCount(4);
                 DotsPageIndicator dotsPageIndicator = (DotsPageIndicator)
                         findViewById(R.id.practicePageIndicator);
                 dotsPageIndicator.setPager(gridViewPager);
@@ -275,6 +295,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 //TODO Save training data
                 finish();
                 break;
+            case R.id.finishExerciseButton:
+                long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                saveExerciseData(time);
+                resetDataAndMoveToNextExercise();
+                break;
         }
     }
 
@@ -305,14 +330,12 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void prepareCurrentExercise() {
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
-            Log.d(TAG, "RUNNING EXERCISE");
             final Running running = currentExercise.getRunning();
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 Log.d(TAG, "Distance set");
                 //TODO Save distance and check when it's covered (GPS)
             } else if (running.getTimeP() != -1.0) {
-                //TODO Show min time on screen
 
                 if (running.getTimeMaxP() != -1.0) {
                     //Stop training when max time is reached.
@@ -334,7 +357,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             }
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             final Rest rest = currentExercise.getRest();
-            Log.d(TAG, "Rest Exercise");
 
             chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                 @Override
@@ -353,6 +375,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             //TODO Handle this situation (exercise not supported or another error)
             finish();
         }
+
+        exerciseInfoTextView.setText(Utilities.buildExerciseInfo(currentExercise));
     }
 
     private void checkSharedPreferencesAndParseTraining() {
@@ -390,6 +414,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void startChronometerAndUpdateInfo(boolean allowed, long baseTime) {
         if (allowed) { //If the chronometer is started, is not allowed to start.
+
+            pauseActionImgView.setOnClickListener(TrainingActivity.this);
+            finishExerciseButton.setOnClickListener(TrainingActivity.this);
+
+            heartSensorStatusTextView.setText("Recibiendo datos");
 
             if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
                 infoTextView.setText(currentExercise.getTitle());
