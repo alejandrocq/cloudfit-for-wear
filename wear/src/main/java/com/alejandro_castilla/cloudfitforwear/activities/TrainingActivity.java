@@ -348,7 +348,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         @Override
                         public void onChronometerTick(Chronometer chronometer) {
                             long time = SystemClock.elapsedRealtime() - chronometer.getBase();
-                            if (time >= (running.getTimeP()*1000)) {
+                            if (time >= (running.getTimeMaxP()*1000)) {
                                 saveExerciseData(time);
                                 Utilities.buildNotification(TrainingActivity.this,
                                         "Información",
