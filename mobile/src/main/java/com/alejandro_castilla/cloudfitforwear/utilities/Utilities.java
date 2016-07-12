@@ -74,9 +74,10 @@ public class Utilities {
                 if (exerciseGroup1.getTimeP()>0) {
                     exerciseDescription += "Tiempo Mínimo: "
                             + secondsToStandardFormat(exerciseGroup1.getTimeP()) + "\n";
-                } else if (exerciseGroup1.getTimeMaxP()>0) {
-                    exerciseDescription += "Tiempo Máximo: "
-                            + secondsToStandardFormat(exerciseGroup1.getTimeMaxP()) + "\n";
+                    if (exerciseGroup1.getTimeMaxP()>0) {
+                        exerciseDescription += "Tiempo Máximo: "
+                                + secondsToStandardFormat(exerciseGroup1.getTimeMaxP()) + "\n";
+                    }
                 } else if (exerciseGroup1.getDistanceP() != -1.0) {
                     exerciseDescription += "Distancia: "
                             + secondsToStandardFormat(exerciseGroup1.getDistanceP()) + "\n";
