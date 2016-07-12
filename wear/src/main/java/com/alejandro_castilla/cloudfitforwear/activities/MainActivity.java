@@ -35,7 +35,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
 
     /* Layout Views */
     private TextView
-            trTextView,
+            startInfoTextView,
             trainingNotCompletedTextView,
             trainingCompletedTextView,
             uploadActionTextView,
@@ -72,7 +72,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                trTextView = (TextView) findViewById(R.id.trText);
+                startInfoTextView = (TextView) findViewById(R.id.startInfoText);
                 settingsImgView = (ImageView) stub.findViewById(R.id.settingsImg);
                 settingsImgView.setOnClickListener(new ActionButtonsClickListener());
 
@@ -125,9 +125,9 @@ public class MainActivity extends WearableActivity implements WearableHandler {
         editor.putString(StaticVariables.KEY_TRAINING_TO_BE_DONE, gson.toJson(tr));
         editor.apply();
 
-        trTextView.setText(R.string.text_training_available);
         Utilities.showConfirmation(this, "Entrenamiento recibido",
                 ConfirmationActivity.SUCCESS_ANIMATION);
+        checkTrainingsAndUpdateLayout();
     }
 
     private void checkTrainingsAndUpdateLayout() {
@@ -137,33 +137,38 @@ public class MainActivity extends WearableActivity implements WearableHandler {
         String trainingDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
 
         if (!training.equals("")) {
-            trTextView.setText(R.string.text_training_available);
-            trainingNotCompletedTextView.setVisibility(View.VISIBLE);
-            trainingNotCompletedImgView.setVisibility(View.VISIBLE);
-            trainingCompletedTextView.setVisibility(View.GONE);
-            uploadActionImgView.setVisibility(View.GONE);
-            uploadActionTextView.setVisibility(View.GONE);
-            deleteActionImgView.setVisibility(View.GONE);
-            deleteActionTextView.setVisibility(View.GONE);
+            if (!trainingDone.equals("")) {
+                //Training available but there is a training ready to be synced.
+                startInfoTextView.setText(R.string.text_training_ready_to_sync);
+                setTrainingNotCompletedLayoutVisibility(View.GONE);
+                setTrainingCompletedLayoutVisibility(View.VISIBLE);
+            } else {
+                startInfoTextView.setText(R.string.text_training_available);
+                setTrainingNotCompletedLayoutVisibility(View.VISIBLE);
+                setTrainingCompletedLayoutVisibility(View.GONE);
+            }
         } else if (!trainingDone.equals("")) {
-            trTextView.setText(R.string.text_training_ready_to_sync);
-            trainingNotCompletedTextView.setVisibility(View.GONE);
-            trainingNotCompletedImgView.setVisibility(View.GONE);
-            trainingCompletedTextView.setVisibility(View.VISIBLE);
-            uploadActionImgView.setVisibility(View.VISIBLE);
-            uploadActionTextView.setVisibility(View.VISIBLE);
-            deleteActionImgView.setVisibility(View.VISIBLE);
-            deleteActionTextView.setVisibility(View.VISIBLE);
+            startInfoTextView.setText(R.string.text_training_ready_to_sync);
+            setTrainingNotCompletedLayoutVisibility(View.GONE);
+            setTrainingCompletedLayoutVisibility(View.VISIBLE);
         } else {
-            trTextView.setText(R.string.text_training_not_available);
-            trainingNotCompletedTextView.setVisibility(View.VISIBLE);
-            trainingNotCompletedImgView.setVisibility(View.VISIBLE);
-            trainingCompletedTextView.setVisibility(View.GONE);
-            uploadActionImgView.setVisibility(View.GONE);
-            uploadActionTextView.setVisibility(View.GONE);
-            deleteActionImgView.setVisibility(View.GONE);
-            deleteActionTextView.setVisibility(View.GONE);
+            startInfoTextView.setText(R.string.text_training_not_available);
+            setTrainingNotCompletedLayoutVisibility(View.VISIBLE);
+            setTrainingCompletedLayoutVisibility(View.GONE);
         }
+    }
+
+    private void setTrainingNotCompletedLayoutVisibility(int visibility) {
+        trainingNotCompletedTextView.setVisibility(visibility);
+        trainingNotCompletedImgView.setVisibility(visibility);
+    }
+
+    private void setTrainingCompletedLayoutVisibility(int visibility) {
+        trainingCompletedTextView.setVisibility(visibility);
+        uploadActionImgView.setVisibility(visibility);
+        uploadActionTextView.setVisibility(visibility);
+        deleteActionImgView.setVisibility(visibility);
+        deleteActionTextView.setVisibility(visibility);
     }
 
     private void deleteTrainingDone() {

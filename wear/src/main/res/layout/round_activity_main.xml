@@ -31,7 +31,7 @@
                 android:id="@+id/imgcloudfit" />
 
             <TextView
-                android:id="@+id/trText"
+                android:id="@+id/startInfoText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sin entrenamientos disponibles"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_settings"
                 android:id="@+id/settingsImg"
-                android:layout_below="@id/trText"
+                android:layout_below="@id/startInfoText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="18sp"/>
             <!--<ImageView-->

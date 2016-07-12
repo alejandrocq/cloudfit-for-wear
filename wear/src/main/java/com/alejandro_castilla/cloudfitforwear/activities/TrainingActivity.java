@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingActivityGridPagerAdapter;
@@ -132,9 +133,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private final Handler messageHandler = new Handler() {
 
-        long timeMark;
-        int heartRateInt;
-
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -144,26 +142,25 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     zephyrService.connectToZephyr(device);
                     break;
                 case StaticVariables.ZEPHYR_HEART_RATE:
+                    //Start chronometer when heart rate sensor is ready
                     startChronometerAndUpdateInfo(chronoAllowedToStart,
                             SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false; //Starts chronometer only one time
 
                     if (!sessionPaused) {
                         String heartRateString = msg.getData().getString("heartratestring");
-                        timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        heartRateInt = Integer.parseInt(heartRateString);
+                        long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        int heartRateInt = Integer.parseInt(heartRateString);
                         saveHeartRate(timeMark, heartRateInt);
                         heartRateTextView.setText(heartRateString);
                     }
                     break;
                 case StaticVariables.DEVICE_NOT_FOUND:
-                    Intent intent = new Intent (TrainingActivity.this,
-                            ConfirmationActivity.class);
-                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                            ConfirmationActivity.FAILURE_ANIMATION);
-                    intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
-                            "No se ha podido conectar con el sensor Zephyr");
+                    Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
                     startActivity(intent);
+                    Utilities.showConfirmation(TrainingActivity.this,
+                            "No se ha podido conectar con el sensor Zephyr",
+                            ConfirmationActivity.FAILURE_ANIMATION);
                     finish();
             }
             super.handleMessage(msg);
@@ -213,7 +210,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         findViewById(R.id.practicePageIndicator);
                 dotsPageIndicator.setPager(gridViewPager);
 
-                //TODO Read WearableTraining and set parameters
                 checkSharedPreferencesAndParseTraining();
                 heartRateList = new ArrayList<>();
 
@@ -241,14 +237,13 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     heartRateInternalSensor = sensorManager
                             .getDefaultSensor(Sensor.TYPE_HEART_RATE);
                     if (heartRateInternalSensor == null) {
-                        Intent intent = new Intent (TrainingActivity.this,
-                                ConfirmationActivity.class);
-                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                                ConfirmationActivity.FAILURE_ANIMATION);
-                        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
-                                "Este dispositivo no tiene pulsómetro");
+                        Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
                         startActivity(intent);
+                        Utilities.showConfirmation(TrainingActivity.this,
+                                "Este dispositivo no tiene pulsómetro",
+                                ConfirmationActivity.FAILURE_ANIMATION);
                         finish();
+                        return;
                     }
                     sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
                             SensorManager.SENSOR_DELAY_UI);
@@ -292,8 +287,17 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
                 }
 
-                //TODO Save training data
-                finish();
+                if (currentExerciseIndex == training.getExercises().size()) {
+                    saveExerciseData(timeElapsed);
+                    saveTrainingDataAndFinish();
+                } else {
+                    Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    Utilities.showConfirmation(TrainingActivity.this,
+                            "No has completado el entrenamiento",
+                            ConfirmationActivity.FAILURE_ANIMATION);
+                    finish();
+                }
                 break;
             case R.id.finishExerciseButton:
                 long time = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -385,9 +389,19 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         zephyrEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
 
         String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
+        String trDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
 
         if (!tr.equals("")) {
             //Training available.
+            if (!trDone.equals("")) {
+                Intent intent = new Intent(TrainingActivity.this, MainActivity.class);
+                startActivity(intent);
+                Toast.makeText(this, "Sincroniza y/o elimina " +
+                        "el entrenamiento completado antes de continuar", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
             Gson gson = new Gson();
             training = gson.fromJson(tr, WearableTraining.class);
             currentExerciseIndex = 0;
@@ -401,13 +415,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
         } else {
             // Training not available
-            Intent intent = new Intent (TrainingActivity.this,
-                    ConfirmationActivity.class);
-            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                    ConfirmationActivity.FAILURE_ANIMATION);
-            intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
-                    "No hay ningún entrenamiento disponible");
+            Intent intent = new Intent(TrainingActivity.this, MainActivity.class);
             startActivity(intent);
+            Utilities.showConfirmation(this, "No hay ningún entrenamiento disponible",
+                    ConfirmationActivity.FAILURE_ANIMATION);
             finish();
         }
     }
@@ -469,13 +480,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         Intent intent = new Intent(TrainingActivity.this, MainActivity.class);
         startActivity(intent);
 
-        intent = new Intent (TrainingActivity.this,
-                ConfirmationActivity.class);
-        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+        Utilities.showConfirmation(this, "Entrenamiento completado correctamente",
                 ConfirmationActivity.SUCCESS_ANIMATION);
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
-                "Entrenamiento completado correctamente");
-        startActivity(intent);
 
         finish();
     }
