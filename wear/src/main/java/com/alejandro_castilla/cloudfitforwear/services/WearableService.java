@@ -70,6 +70,23 @@ public class WearableService extends Service implements DataApi.DataListener,
         super.onDestroy();
     }
 
+    public void sendTrainingDoneToHandheld(String training) {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest
+                .create(StaticVariables.TRAINING_DONE_FROM_WEARABLE);
+        putDataMapRequest.getDataMap().putString(StaticVariables.WEARABLE_TRAINING_DONE, training);
+        putDataMapRequest.getDataMap().putLong("timestamp", System.currentTimeMillis());
+        PutDataRequest putDataRequest = putDataMapRequest.asPutDataRequest();
+        putDataRequest.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
+                Log.d(TAG, "Training done sent to handheld");
+            }
+        });
+    }
+
     private void sendACKToHandheld () {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(StaticVariables.ACK_FROM_WEARABLE);
@@ -133,6 +150,12 @@ public class WearableService extends Service implements DataApi.DataListener,
                         handler.saveWearableTraining(tr);
                         sendACKToHandheld();
                     }
+                } else if (item.getUri().getPath()
+                        .compareTo(StaticVariables.ACK_FROM_HANDHELD) == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    boolean handheldACK = dataMap.getBoolean(StaticVariables
+                            .WEARABLE_TRAINING_DONE_ACK);
+                    handler.showTrainingSentConfirmationAndUpdateData(handheldACK);
                 }
 
             }

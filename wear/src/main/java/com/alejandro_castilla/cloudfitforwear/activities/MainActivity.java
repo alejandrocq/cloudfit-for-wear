@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.MainActivityGridPagerAdapter;
@@ -25,6 +26,7 @@ import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.google.gson.Gson;
+import com.wang.avi.AVLoadingIndicatorView;
 
 public class MainActivity extends WearableActivity implements WearableHandler {
 
@@ -47,6 +49,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
             uploadActionImgView,
             deleteActionImgView;
     private GridViewPager gridViewPager;
+    private AVLoadingIndicatorView uploadProgressView;
 
     private ServiceConnection wearableServiceConnection = new ServiceConnection() {
         @Override
@@ -91,6 +94,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                 deleteActionImgView = (ImageView) findViewById(R.id.deleteActionImg);
                 deleteActionTextView = (TextView) findViewById(R.id.deleteActionText);
                 deleteActionImgView.setOnClickListener(new ActionButtonsClickListener());
+                uploadProgressView = (AVLoadingIndicatorView) findViewById(R.id.uploadProgressView);
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.pager);
                 gridViewPager.setAdapter(new MainActivityGridPagerAdapter(MainActivity.this));
@@ -128,6 +132,19 @@ public class MainActivity extends WearableActivity implements WearableHandler {
         Utilities.showConfirmation(this, "Entrenamiento recibido",
                 ConfirmationActivity.SUCCESS_ANIMATION);
         checkTrainingsAndUpdateLayout();
+    }
+
+    @Override
+    public void showTrainingSentConfirmationAndUpdateData(boolean result) {
+        if (result) {
+            uploadProgressView.setVisibility(View.GONE);
+            Utilities.showConfirmation(this, "Entrenamiento enviado correctamente",
+                    ConfirmationActivity.SUCCESS_ANIMATION);
+            deleteTrainingDone();
+            checkTrainingsAndUpdateLayout();
+        } else {
+            Toast.makeText(this, "Ha ocurrido un error", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void checkTrainingsAndUpdateLayout() {
@@ -196,7 +213,11 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                     startActivity(settings);
                     break;
                 case R.id.uploadActionImg:
-                    //TODO send training to handheld
+                    uploadProgressView.setVisibility(View.VISIBLE);
+                    SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(MainActivity.this);
+                    String trainingDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
+                    wearableService.sendTrainingDoneToHandheld(trainingDone);
                     break;
                 case R.id.deleteActionImg:
                     deleteTrainingDone();

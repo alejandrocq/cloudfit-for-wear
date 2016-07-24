@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.MainActivity"
     tools:deviceIds="wear_square"
     android:background="@color/md_white_1000">
@@ -171,6 +171,17 @@
                 android:layout_marginTop="5sp"
                 android:layout_below="@id/deleteActionImg"
                 android:visibility="gone"/>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/uploadProgressView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:indicator="BallSpinFadeLoader"
+                app:indicator_color="@color/md_blue_500"
+                android:layout_toEndOf="@id/uploadActionImg"
+                android:layout_alignTop="@id/uploadActionImg"
+                android:layout_alignBottom="@id/uploadActionImg"/>
 
 
         </RelativeLayout>
