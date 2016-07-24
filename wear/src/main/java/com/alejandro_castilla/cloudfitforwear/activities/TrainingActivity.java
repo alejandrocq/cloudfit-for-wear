@@ -1,15 +1,20 @@
 package com.alejandro_castilla.cloudfitforwear.activities;
 
+import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,6 +22,8 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.DotsPageIndicator;
@@ -43,12 +50,14 @@ import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class TrainingActivity extends WearableActivity implements View.OnClickListener,
         SensorEventListener {
 
     private final String TAG = TrainingActivity.class.getSimpleName();
+    private final int PERMISSIONS_REQUEST_CODE = 0xFF;
 
     /*Fields for the views used on the layout*/
 
@@ -87,10 +96,19 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Data fields */
 
     private WearableTraining training;
+    private double maxDistance = 0;
     private Exercise currentExercise;
     private int currentExerciseIndex;
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
+
+    /* Location fields */
+
+    private LocationManager locManager;
+    private LocationListener locListener;
+    private ArrayList<Location> locations;
+    private float totalDistance;
+    private boolean firstLocationReceived;
 
     /* Fields to connect to services */
 
@@ -185,6 +203,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 /*Sensors info layout items*/
 
                 heartSensorStatusTextView = (TextView) findViewById(R.id.heartSensorInfoText);
+                locationStatusTextView = (TextView) findViewById(R.id.locationInfoText);
 
                 /*Exercise info layout items*/
 
@@ -213,46 +232,58 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 checkSharedPreferencesAndParseTraining();
                 heartRateList = new ArrayList<>();
 
-                if (zephyrEnabled) {
-                    // Start bluetooth and Zephyr sensor services
-                    infoTextView.setText("Conectando con el sensor...");
+                //Check necessary permissions and request them
 
-                    Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
-                            BluetoothService.class);
-                    bluetoothServiceIntent.putExtra("messenger", practiceActivityMessenger);
-                    bindService(bluetoothServiceIntent, bluetoothServiceConnection,
-                            Context.BIND_AUTO_CREATE);
-                    bluetoothServiceBinded = true;
+                boolean locationGranted = ContextCompat.checkSelfPermission(TrainingActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
 
-                    Intent zephyrServiceIntent = new Intent(TrainingActivity.this,
-                            ZephyrService.class);
-                    zephyrServiceIntent.putExtra("messenger", practiceActivityMessenger);
-                    bindService(zephyrServiceIntent, zephyrServiceConnection,
-                            Context.BIND_AUTO_CREATE);
-                    zephyrServiceBinded = true;
+                boolean sensorsGranted = ContextCompat.checkSelfPermission(TrainingActivity.this,
+                        Manifest.permission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED;
+
+                if (!locationGranted || !sensorsGranted) {
+                    ActivityCompat.requestPermissions(TrainingActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.BODY_SENSORS}, PERMISSIONS_REQUEST_CODE);
+                    Log.d(TAG, "Permissions requested");
                 } else {
-                    //Initialize internal heart rate sensor (if it's available)
-                    infoTextView.setText("Iniciando pulsómetro...");
-                    sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-                    heartRateInternalSensor = sensorManager
-                            .getDefaultSensor(Sensor.TYPE_HEART_RATE);
-                    if (heartRateInternalSensor == null) {
-                        Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        Utilities.showConfirmation(TrainingActivity.this,
-                                "Este dispositivo no tiene pulsómetro",
-                                ConfirmationActivity.FAILURE_ANIMATION);
-                        finish();
-                        return;
-                    }
-                    sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
-                            SensorManager.SENSOR_DELAY_UI);
+                    initSensors();
+                    initLocation();
                 }
 
             }
         });
 
         setAmbientEnabled();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        boolean permissionsGranted = true;
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE:
+
+                for (int result : grantResults) {
+                    if (!(result == PackageManager.PERMISSION_GRANTED)) {
+                        permissionsGranted = false;
+                    }
+                }
+
+                if (permissionsGranted) {
+                    initSensors();
+                    initLocation();
+                } else {
+                    Toast.makeText(TrainingActivity.this, "Permisos insuficientes",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
+                break;
+        }
     }
 
     @Override
@@ -287,7 +318,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
                 }
 
-                if (currentExerciseIndex == training.getExercises().size()) {
+                if (currentExerciseIndex == (training.getExercises().size() - 1)) {
                     saveExerciseData(timeElapsed);
                     saveTrainingDataAndFinish();
                 } else {
@@ -315,7 +346,123 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
         }
 
+        try {
+            if (locManager != null) {
+                locManager.removeUpdates(locListener);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
         super.onDestroy();
+    }
+
+    private void initSensors() {
+        if (zephyrEnabled) {
+            // Start bluetooth and Zephyr sensor services
+            infoTextView.setText("Conectando con el sensor...");
+
+            Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
+                    BluetoothService.class);
+            bluetoothServiceIntent.putExtra("messenger", practiceActivityMessenger);
+            bindService(bluetoothServiceIntent, bluetoothServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+            bluetoothServiceBinded = true;
+
+            Intent zephyrServiceIntent = new Intent(TrainingActivity.this,
+                    ZephyrService.class);
+            zephyrServiceIntent.putExtra("messenger", practiceActivityMessenger);
+            bindService(zephyrServiceIntent, zephyrServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+            zephyrServiceBinded = true;
+        } else {
+            //Initialize internal heart rate sensor (if it's available)
+            infoTextView.setText("Iniciando pulsómetro...");
+            sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            heartRateInternalSensor = sensorManager
+                    .getDefaultSensor(Sensor.TYPE_HEART_RATE);
+            if (heartRateInternalSensor == null) {
+                Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
+                startActivity(intent);
+                Utilities.showConfirmation(TrainingActivity.this,
+                        "Este dispositivo no tiene pulsómetro",
+                        ConfirmationActivity.FAILURE_ANIMATION);
+                finish();
+                return;
+            }
+            sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
+                    SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    private void initLocation() {
+        firstLocationReceived = false;
+        locations = new ArrayList<>();
+        totalDistance = 0;
+
+        PackageManager pm = this.getPackageManager();
+        if (pm.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) { //Check if GPS is available
+            distanceTextView.setText("0.00");
+            locationStatusTextView.setText("Esperando GPS");
+            locManager = (LocationManager)
+                    this.getSystemService(Context.LOCATION_SERVICE);
+            locListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    if (!firstLocationReceived) {
+                        Log.d(TAG, "First location received.");
+                        locations.add(location);
+                        firstLocationReceived = true;
+                        locationStatusTextView.setText("Recibiendo datos");
+                    }
+                    //Distance between last location and this new location (km) with two decimals
+                    DecimalFormat precision = new DecimalFormat("0.00");
+                    totalDistance += locations.get(locations.size()-1).distanceTo(location) / 1000;
+                    locations.add(location);
+                    distanceTextView.setText(precision.format(totalDistance));
+
+                    //Stop exercise if max distance is reached
+                    if (totalDistance > maxDistance && maxDistance != 0) {
+                        long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        saveExerciseData(time);
+                        resetDataAndMoveToNextExercise();
+                    }
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    Log.d(TAG, "Location status changed");
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                    Log.d(TAG, "Location provider enabled");
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                    Log.d(TAG, "Location provider disabled");
+                }
+            };
+
+            try {
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
+            } catch (SecurityException e) { //This exception is thrown with insufficient permissions
+                e.printStackTrace();
+                locationStatusTextView.setText("No disponible");
+            }
+        } else {
+            locationStatusTextView.setText("No disponible");
+            if (maxDistance != 0) { //Exercise has a maximum distance (GPS needed)
+                Toast.makeText(this, "Este ejercicio necesita GPS", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Si este dispositivo cuenta con GPS, " +
+                        "comprueba los permisos de la aplicación", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+
+
+
     }
 
     private void stopServices() {
@@ -337,7 +484,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             final Running running = currentExercise.getRunning();
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
+                maxDistance = running.getDistanceP();
                 Log.d(TAG, "Distance set");
+
                 //TODO Save distance and check when it's covered (GPS)
             } else if (running.getTimeP() != -1.0) {
 
@@ -432,7 +581,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             heartSensorStatusTextView.setText("Recibiendo datos");
 
             if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
-                infoTextView.setText(currentExercise.getTitle());
+                infoTextView.setText("Entrenamiento iniciado");
             } else if (currentExercise.getType() == Exercise.TYPE_REST) {
                 infoTextView.setText("En recuperación: "+currentExercise
                         .getRest().getRestp()/60+" min");
@@ -444,7 +593,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void resetDataAndMoveToNextExercise() {
-        //TODO Also reset distance
+        maxDistance = 0;
         chronometer.stop();
         heartRateList = new ArrayList<>(); //Reset heart rate data
         currentExerciseIndex++;
@@ -493,6 +642,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void saveExerciseData (long timeElapsed) {
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
+            currentExercise.getRunning().setDistanceR(totalDistance);
             currentExercise.getRunning().setTimeR(timeElapsed);
             currentExercise.setHeartRateList(heartRateList);
             exercisesCompleted.add(currentExercise);
