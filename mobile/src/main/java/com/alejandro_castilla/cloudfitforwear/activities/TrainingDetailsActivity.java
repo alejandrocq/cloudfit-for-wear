@@ -21,7 +21,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.activities.ScrollViewActivity;
@@ -30,7 +30,7 @@ import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 
 import java.util.ArrayList;
 
-public class TrainingDetailsActivity extends ScrollViewActivity implements ActivityInterface {
+public class TrainingDetailsActivity extends ScrollViewActivity implements CloudFitDataHandler {
 
     private final String TAG = TrainingDetailsActivity.class.getSimpleName();
 

@@ -12,7 +12,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.blunderer.materialdesignlibrary.views.CardView;
 
@@ -82,7 +82,7 @@ public class RequestsFragmentAdapter extends
 
     private class ButtonClickListener implements View.OnClickListener {
 
-        private ActivityInterface activityInterface;
+        private CloudFitDataHandler cloudFitDataHandler;
         private CloudFitService cloudFitService;
         private int position;
         private short buttonType;
@@ -90,8 +90,8 @@ public class RequestsFragmentAdapter extends
         public ButtonClickListener(short buttonType, int position) {
             this.buttonType = buttonType;
             this.position = position;
-            activityInterface = (ActivityInterface) context;
-            cloudFitService = activityInterface.getCloudFitService();
+            cloudFitDataHandler = (CloudFitDataHandler) context;
+            cloudFitService = cloudFitDataHandler.getCloudFitService();
         }
 
         @Override

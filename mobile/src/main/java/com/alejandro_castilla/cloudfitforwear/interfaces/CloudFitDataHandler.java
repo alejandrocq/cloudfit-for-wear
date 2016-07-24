@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Interface created to communicate with
  * activities when using AsyncTasks.
  */
-public interface ActivityInterface {
+public interface CloudFitDataHandler {
 
     void saveUserInfo(User cloudFitUser);
     void saveRequests(ArrayList<RequestTrainer> requests);

@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alejandro_castilla.cloudfitforwear.asynctask.CheckWearableConnectedTask;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ServiceInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.WearableStatusHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,12 +29,12 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-public class WearableService extends Service implements ServiceInterface, DataApi.DataListener,
+public class WearableService extends Service implements WearableStatusHandler, DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = WearableService.class.getSimpleName();
 
-    private ServiceInterface serviceInterface;
+    private WearableStatusHandler wearableStatusHandler;
 
     private GoogleApiClient googleApiClient;
     private CheckWearableConnectedTask checkWearable;
@@ -67,7 +67,7 @@ public class WearableService extends Service implements ServiceInterface, DataAp
         Log.d(TAG, "Service started.");
         mainActivityMessenger = intent.getParcelableExtra("messenger");
 
-        serviceInterface = this;
+        wearableStatusHandler = this;
 
         try {
             Message msg = Message.obtain(null, StaticVariables.MSG_WEARABLESERVICE_MESSENGER);
@@ -122,7 +122,7 @@ public class WearableService extends Service implements ServiceInterface, DataAp
     }
 
     public void startCheckWearableTask() {
-        checkWearable = new CheckWearableConnectedTask(serviceInterface, googleApiClient);
+        checkWearable = new CheckWearableConnectedTask(wearableStatusHandler, googleApiClient);
         checkWearable.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

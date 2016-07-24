@@ -13,7 +13,7 @@ import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
@@ -30,7 +30,7 @@ public class TrainingsFragment extends ScrollViewFragment {
 
     private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
 
-    private ActivityInterface activityInterface;
+    private CloudFitDataHandler cloudFitDataHandler;
 
     public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
         this.calendarEvents = calendarEvents;
@@ -71,7 +71,7 @@ public class TrainingsFragment extends ScrollViewFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        activityInterface = (ActivityInterface) activity;
+        cloudFitDataHandler = (CloudFitDataHandler) activity;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TrainingsFragment extends ScrollViewFragment {
     @Override
     public void onRefresh() {
         new GetTrainingsTask(getActivity(),
-                activityInterface.getCloudFitService(), -1,
+                cloudFitDataHandler.getCloudFitService(), -1,
                 StaticVariables.GET_ALL_TRAININGS).execute();
     }
 }

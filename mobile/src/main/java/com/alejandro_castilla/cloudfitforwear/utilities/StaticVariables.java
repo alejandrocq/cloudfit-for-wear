@@ -57,6 +57,8 @@ public class StaticVariables {
 
     public static final String TRAINING_FROM_HANDHELD = "/traininghandheld";
     public static final String ACK_FROM_WEARABLE = "/ackwearable";
+    public static final String TRAINING_DONE_FROM_WEARABLE = "/trainingdone";
+    public static final String ACK_FROM_HANDHELD = "/ackhandheld";
 
     /**
      * Data Map Types
@@ -64,6 +66,8 @@ public class StaticVariables {
 
     public static final String WEARABLE_TRAINING = "wearabletraining";
     public static final String WEARABLE_TRAINING_ACK = "wearabletrainingack";
+    public static final String WEARABLE_TRAINING_DONE = "wearabletrainingdone";
+    public static final String WEARABLE_TRAINING_DONE_ACK = "wearabletrainingdoneack";
 
 
 

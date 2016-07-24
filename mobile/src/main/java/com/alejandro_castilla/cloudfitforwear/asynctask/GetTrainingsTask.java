@@ -8,7 +8,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
-    private ActivityInterface activityInterface;
+    private CloudFitDataHandler cloudFitDataHandler;
     private CloudFitService cloudFitService;
     private short taskType;
 
@@ -34,7 +34,7 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
                             CloudFitService cloudFitService, long trainingid, short taskType) {
 
         this.context = context;
-        this.activityInterface = (ActivityInterface) context;
+        this.cloudFitDataHandler = (CloudFitDataHandler) context;
         this.cloudFitService = cloudFitService;
         this.trainingid = trainingid;
         this.taskType = taskType;
@@ -74,11 +74,11 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
-//                    activityInterface.stopRefreshing();
-                    activityInterface.updateTrainingsList(calendarEvents);
+//                    cloudFitDataHandler.stopRefreshing();
+                    cloudFitDataHandler.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
-                activityInterface.saveAndParseTraining(training);
+                cloudFitDataHandler.saveAndParseTraining(training);
                 break;
             case StaticVariables.GET_TRAINING_NOT_DONE:
                 // TODO do something here if needed

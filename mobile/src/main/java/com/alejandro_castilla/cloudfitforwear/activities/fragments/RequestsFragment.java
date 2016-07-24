@@ -13,7 +13,7 @@ import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.RequestsFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetRequestsTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class RequestsFragment extends ScrollViewFragment {
 
-    private ActivityInterface activityInterface;
+    private CloudFitDataHandler cloudFitDataHandler;
 
     private View view;
     private RecyclerView recyclerView;
@@ -71,7 +71,7 @@ public class RequestsFragment extends ScrollViewFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        activityInterface = (ActivityInterface) activity;
+        cloudFitDataHandler = (CloudFitDataHandler) activity;
         super.onAttach(activity);
     }
 
@@ -98,6 +98,6 @@ public class RequestsFragment extends ScrollViewFragment {
 
     @Override
     public void onRefresh() {
-        new GetRequestsTask(getActivity(), activityInterface.getCloudFitService()).execute();
+        new GetRequestsTask(getActivity(), cloudFitDataHandler.getCloudFitService()).execute();
     }
 }

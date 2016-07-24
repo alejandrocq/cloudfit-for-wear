@@ -29,7 +29,7 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.services.WearableService;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
@@ -42,7 +42,7 @@ import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
 import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 
-public class MainActivity extends MaterialNavigationDrawer implements ActivityInterface {
+public class MainActivity extends MaterialNavigationDrawer implements CloudFitDataHandler {
 
     private final String TAG = MainActivity.class.getSimpleName();
 

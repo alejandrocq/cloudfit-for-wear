@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class GetRequestsTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
-    private ActivityInterface activityInterface;
+    private CloudFitDataHandler cloudFitDataHandler;
     private CloudFitService cloudFitService;
 
     private ArrayList<RequestTrainer> requests;
@@ -25,7 +25,7 @@ public class GetRequestsTask extends AsyncTask<Void, String, Void> {
         this.context = context;
         this.cloudFitService = cloudFitService;
 
-        activityInterface = (ActivityInterface) context;
+        cloudFitDataHandler = (CloudFitDataHandler) context;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GetRequestsTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        activityInterface.saveRequests(requests);
+        cloudFitDataHandler.saveRequests(requests);
         super.onPostExecute(aVoid);
     }
 }

@@ -3,7 +3,7 @@ package com.alejandro_castilla.cloudfitforwear.asynctask;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.alejandro_castilla.cloudfitforwear.interfaces.ServiceInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.WearableStatusHandler;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -16,12 +16,12 @@ public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
     private final String TAG = CheckWearableConnectedTask.class.getSimpleName();
 
     private GoogleApiClient googleApiClient;
-    private ServiceInterface serviceInterface;
+    private WearableStatusHandler wearableStatusHandler;
     private boolean isWearableConnected = false;
 
-    public CheckWearableConnectedTask(ServiceInterface serviceInterface,
+    public CheckWearableConnectedTask(WearableStatusHandler wearableStatusHandler,
                                       GoogleApiClient googleApiClient) {
-        this.serviceInterface = serviceInterface;
+        this.wearableStatusHandler = wearableStatusHandler;
         this.googleApiClient = googleApiClient;
     }
 
@@ -45,7 +45,7 @@ public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
                 isWearableConnected = false;
             }
 
-            serviceInterface.updateWearableState(isWearableConnected);
+            wearableStatusHandler.updateWearableState(isWearableConnected);
 
             try {
                 Thread.sleep(10000);

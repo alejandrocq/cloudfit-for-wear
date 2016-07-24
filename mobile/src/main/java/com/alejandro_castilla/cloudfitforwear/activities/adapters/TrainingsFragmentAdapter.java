@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.TrainingDetailsActivity;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
-import com.alejandro_castilla.cloudfitforwear.interfaces.ActivityInterface;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.views.CardView;
@@ -86,7 +86,7 @@ public class TrainingsFragmentAdapter extends
     private static class ButtonClickListener implements View.OnClickListener {
 
         private Activity context;
-        private ActivityInterface activityInterface;
+        private CloudFitDataHandler cloudFitDataHandler;
         private int position;
         private short buttonType;
         private ArrayList<CalendarEvent> calendarEvents;
@@ -98,7 +98,7 @@ public class TrainingsFragmentAdapter extends
             this.position = position;
             this.calendarEvents = calendarEvents;
 
-            activityInterface = (ActivityInterface) context;
+            cloudFitDataHandler = (CloudFitDataHandler) context;
         }
 
         @Override
@@ -114,7 +114,7 @@ public class TrainingsFragmentAdapter extends
                     context.startActivity(startTrainingDetailsIntent);
                     break;
                 case StaticVariables.HIGHLIGHT_BUTTON:
-                    activityInterface
+                    cloudFitDataHandler
                             .downloadTrainingToBeSyncedWithWearable(calendarEvents.get(position));
                     break;
             }
