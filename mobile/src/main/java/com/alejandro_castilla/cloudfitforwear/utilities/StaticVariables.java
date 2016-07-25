@@ -50,6 +50,7 @@ public class StaticVariables {
      */
 
     public static final String BUNDLE_WEARABLE_STATE = "wearablestate";
+    public static final String BUNDLE_WEARABLE_TRAINING_DONE = "wearabletrainingdone";
 
     /**
      * Data Map Request Types

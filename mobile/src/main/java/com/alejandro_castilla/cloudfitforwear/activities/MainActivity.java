@@ -12,6 +12,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -63,6 +64,8 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     private Messenger wearableServiceMessenger;
     private boolean isWearableConnected;
 
+    private TrainingsDb db;
+
     /**
      * ServiceConnection to connect to CloudFit service.
      */
@@ -101,6 +104,33 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     showTrainingSentDialog();
                     break;
                 case StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE:
+                    Bundle b = (Bundle) msg.obj;
+                    Gson gson = new Gson();
+                    WearableTraining trDone = gson
+                            .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
+                                    WearableTraining.class);
+
+                    Toast.makeText(MainActivity.this, "Entrenamiento recibido:"+"\n"
+                            +"Tiempo total: "+trDone.getExercises().get(0).getRunning()
+                            .getTimeR()/1000, Toast.LENGTH_LONG).show();
+                    boolean res = db.insertTraining(trDone);
+
+                    if (res) {
+                        Log.d(TAG, "Training inserted on database");
+                        showTrainingReceivedDialog();
+                        //Training received correctly. Send an ACK to wearable device.
+                        try {
+                            Message ack = Message.obtain(null,
+                                    StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE_ACK);
+                            wearableServiceMessenger.send(ack);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        showTrainingReceivedErrorDialog();
+                    }
+
+
                     break;
             }
             super.handleMessage(msg);
@@ -112,7 +142,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     @Override
     public void init(Bundle savedInstanceState) {
 
-        TrainingsDb db = new TrainingsDb(this);
+        db = new TrainingsDb(this);
 
         trainingsFragment = new TrainingsFragment();
         requestsFragment = new RequestsFragment();
@@ -265,6 +295,11 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 StaticVariables.GET_SINGLE_TRAINING).execute();
     }
 
+    @Override
+    public CloudFitService getCloudFitService() {
+        return cloudFitService;
+    }
+
     ///////////////////
     /* Other methods */
     ///////////////////
@@ -275,6 +310,9 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 .content("Espere...")
                 .progress(true, 0)
                 .cancelable(false)
+                .titleColorRes(R.color.md_grey_800)
+                .contentColorRes(R.color.md_grey_800)
+                .backgroundColorRes(R.color.md_white_1000)
                 .build();
         sendingToWearableDialog.show();
         sendingToWearableDialogTimer(5000, sendingToWearableDialog);
@@ -300,16 +338,19 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     .title("Entrenamiento enviado correctamente")
                     .content(DialogDescription)
                     .positiveText("Entendido")
+                    .titleColorRes(R.color.md_grey_800)
+                    .contentColorRes(R.color.md_grey_800)
+                    .backgroundColorRes(R.color.md_white_1000)
                     .show();
         }
     }
 
     public void showTrainingNotSentDialog() {
-        String DialogDescription = "No se ha podido enviar el entrenamiento al reloj. " +
+        String dialogDescription = "No se ha podido enviar el entrenamiento al reloj. " +
                 "Compruebe si está conectado y si la aplicación CloudFit For Wear está abierta.";
         new MaterialDialog.Builder(MainActivity.this)
                 .title("Ha ocurrido un error")
-                .content(DialogDescription)
+                .content(dialogDescription)
                 .positiveText("Entendido")
                 .titleColorRes(R.color.md_grey_800)
                 .contentColorRes(R.color.md_grey_800)
@@ -317,8 +358,29 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 .show();
     }
 
-    @Override
-    public CloudFitService getCloudFitService() {
-        return cloudFitService;
+    public void showTrainingReceivedDialog() {
+        String dialogDescription = "El entrenamiento ha sido guardado correctamente. " +
+                "Los resultados del mismo están disponibles en la sección 'completados'";
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("Entrenamiento recibido")
+                .content(dialogDescription)
+                .positiveText("Entendido")
+                .titleColorRes(R.color.md_grey_800)
+                .contentColorRes(R.color.md_grey_800)
+                .backgroundColorRes(R.color.md_white_1000)
+                .show();
+    }
+
+    public void showTrainingReceivedErrorDialog() {
+        String dialogDescription = "El entrenamiento no ha podido ser procesado correctamente. " +
+                "Inténtelo de nuevo.";
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("Ha ocurrido un error")
+                .content(dialogDescription)
+                .positiveText("Entendido")
+                .titleColorRes(R.color.md_grey_800)
+                .contentColorRes(R.color.md_grey_800)
+                .backgroundColorRes(R.color.md_white_1000)
+                .show();
     }
 }

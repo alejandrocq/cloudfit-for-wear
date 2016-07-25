@@ -55,6 +55,9 @@ public class WearableService extends Service implements WearableStatusHandler, D
                         sendTrainingToWearable(wearableTrainingJSON);
                     }
                     break;
+                case StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE_ACK:
+                    sendACKToWearable();
+                    break;
             }
             super.handleMessage(msg);
         }
@@ -121,12 +124,12 @@ public class WearableService extends Service implements WearableStatusHandler, D
 
     }
 
-    public void startCheckWearableTask() {
+    private void startCheckWearableTask() {
         checkWearable = new CheckWearableConnectedTask(wearableStatusHandler, googleApiClient);
         checkWearable.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void sendTrainingToWearable (String wearableTrainingJSON) {
+    private void sendTrainingToWearable (String wearableTrainingJSON) {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(StaticVariables.TRAINING_FROM_HANDHELD);
         putDataMapRequest.getDataMap().putString(StaticVariables.WEARABLE_TRAINING,
@@ -143,6 +146,24 @@ public class WearableService extends Service implements WearableStatusHandler, D
             }
         });
         Log.d(TAG, "Sending training to wearable.");
+    }
+
+    private void sendACKToWearable() {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest
+                .create(StaticVariables.ACK_FROM_HANDHELD);
+        putDataMapRequest.getDataMap().putBoolean(StaticVariables.WEARABLE_TRAINING_DONE_ACK,
+                true);
+        putDataMapRequest.getDataMap().putLong("timestamp", System.currentTimeMillis());
+        PutDataRequest putDataRequest = putDataMapRequest.asPutDataRequest();
+        putDataRequest.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
+                Log.d(TAG, "ACK sent.");
+            }
+        });
     }
 
     /* Google API methods */
@@ -171,6 +192,22 @@ public class WearableService extends Service implements WearableStatusHandler, D
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }
+                } else if (item.getUri().getPath()
+                        .compareTo(StaticVariables.TRAINING_DONE_FROM_WEARABLE) == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    String trainingDone = dataMap.getString(StaticVariables.WEARABLE_TRAINING_DONE);
+
+                    Bundle b = new Bundle();
+                    b.putString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE, trainingDone);
+
+                    try {
+                        Message msg = Message.obtain(null,
+                                StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE);
+                        msg.obj = b;
+                        mainActivityMessenger.send(msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }

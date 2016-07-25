@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,11 +101,11 @@ public class TrainingsDb {
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     do {
-                        Long trainingId = cur.getLong(cur.getColumnIndex("ID"));
+                        Long cloudfitId = cur.getLong(cur.getColumnIndex("cloudfit_id"));
                         Long userId = cur.getLong(cur.getColumnIndex("user_id"));
                         String title = cur.getString(cur.getColumnIndex("title"));
 
-                        WearableTraining tr = new WearableTraining(title, trainingId, userId);
+                        WearableTraining tr = new WearableTraining(title, cloudfitId, userId);
 
                         tr.setStartDate(cur.getLong(cur.getColumnIndex("start_date")));
                         tr.setEndDate(cur.getLong(cur.getColumnIndex("end_date")));
@@ -144,9 +146,8 @@ public class TrainingsDb {
         return tr;
     }
 
-    //TODO insert exercises too (this training comes directly from wearable)
     public boolean insertTraining (WearableTraining tr) {
-        boolean res = false;
+        boolean res;
 
         try {
             openDb();
@@ -155,15 +156,76 @@ public class TrainingsDb {
                     + "," + "'" + tr.getTitle() + "'" + "," + "'" + tr.getStartDate() + "'" + ","
                     + "'" + tr.getEndDate() + "'" + "," + "'" + tr.getCloudFitId() + "'" + ","
                     + "'" + tr.getState() + "'" + ")";
-            Log.d(TAG, "QUERY INSERT: " + query);
+            Log.d(TAG, "QUERY INSERT TRAINING: " + query);
             res = execQuery(query);
+
+            //Get new training ID after insert it
+
+            long trainingId = -1;
+            query = "SELECT MAX(ID) AS ID FROM " + TABLE_TRAININGS;
+            Cursor cur = getQuery(query);
+            Log.d(TAG, query);
+
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    trainingId = cur.getLong(cur.getColumnIndex("ID"));
+                    Log.d(TAG, "NEW TRAINING ID: "+trainingId);
+                }
+                cur.close();
+            }
+
+            Gson gson = new Gson();
+
+            //Insert exercises
+
+            for (Exercise ex : tr.getExercises()) {
+                switch (ex.getType()) {
+                    case Exercise.TYPE_RUNNING:
+                        String runningJSON = gson.toJson(ex.getRunning());
+                        query = "INSERT INTO " + TABLE_RUNNING_EXERCISES + " (training_id," +
+                                "running_data_json) " + "VALUES (" + "'" + trainingId + "'" + ","
+                                + "'" + runningJSON + "'" + ")";
+                        Log.d(TAG, "QUERY INSERT RUNNING EXERCISE: "+query);
+                        res &= execQuery(query);
+                        break;
+                    case Exercise.TYPE_REST:
+                        String restJSON = gson.toJson(ex.getRest());
+                        query = "INSERT INTO " + TABLE_REST_EXERCISES + " (training_id," +
+                                "rest_data_json) " + "VALUES (" + "'" + trainingId + "'" + ","
+                                + "'" + restJSON + "'" + ")";
+                        Log.d(TAG, "QUERY INSERT REST EXERCISE: "+query);
+                        res &= execQuery(query);
+                        break;
+                    default:
+                        res = false;
+                        break;
+                }
+            }
+
             closeDb();
         } catch (Exception e) {
             e.printStackTrace();
             closeDb();
+            res = false;
         }
 
         return res;
+    }
+
+    public boolean checkIfTrainingAlreadyExistsOnDatabase (long cloudfitId) {
+        boolean res;
+
+
+
+        return false;
+    }
+
+    public void updateTrainingState (int state) {
+
+    }
+
+    public void deleteTraining (long trainingId) {
+
     }
 
 }
