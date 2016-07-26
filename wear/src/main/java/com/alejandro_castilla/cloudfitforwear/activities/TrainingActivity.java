@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -101,12 +102,12 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private int currentExerciseIndex;
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
+    private ArrayList<GPSLocation> GPSData;
 
     /* Location fields */
 
     private LocationManager locManager;
     private LocationListener locListener;
-    private ArrayList<Location> locations;
     private float totalDistance;
     private boolean firstLocationReceived;
 
@@ -397,7 +398,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void initLocation() {
         firstLocationReceived = false;
-        locations = new ArrayList<>();
+        GPSData = new ArrayList<>();
         totalDistance = 0;
 
         PackageManager pm = this.getPackageManager();
@@ -409,17 +410,24 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             locListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+                    long timeStamp = SystemClock.elapsedRealtime() - chronometer.getBase();
                     if (!firstLocationReceived) {
                         Log.d(TAG, "First location received.");
-                        locations.add(location);
+                        GPSLocation GPSLoc = new GPSLocation(location, System.currentTimeMillis(),
+                                timeStamp);
+                        GPSData.add(GPSLoc);
                         firstLocationReceived = true;
                         locationStatusTextView.setText("Recibiendo datos");
+                    } else {
+                        //Distance between last location and this new location (km) with two decimals
+                        DecimalFormat precision = new DecimalFormat("0.00");
+                        totalDistance += GPSData.get(GPSData.size()-1)
+                                .getLocation().distanceTo(location) / 1000;
+                        GPSLocation GPSLoc = new GPSLocation(location, System.currentTimeMillis(),
+                                timeStamp);
+                        GPSData.add(GPSLoc);
+                        distanceTextView.setText(precision.format(totalDistance));
                     }
-                    //Distance between last location and this new location (km) with two decimals
-                    DecimalFormat precision = new DecimalFormat("0.00");
-                    totalDistance += locations.get(locations.size()-1).distanceTo(location) / 1000;
-                    locations.add(location);
-                    distanceTextView.setText(precision.format(totalDistance));
 
                     //Stop exercise if max distance is reached
                     if (totalDistance > maxDistance && maxDistance != 0) {
@@ -530,6 +538,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
 
         exerciseInfoTextView.setText(Utilities.buildExerciseInfo(currentExercise));
+        currentExercise.setStartTime(System.currentTimeMillis());
     }
 
     private void checkSharedPreferencesAndParseTraining() {
@@ -593,6 +602,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void resetDataAndMoveToNextExercise() {
+        currentExercise.setEndTime(System.currentTimeMillis());
         maxDistance = 0;
         chronometer.stop();
         heartRateList = new ArrayList<>(); //Reset heart rate data
@@ -645,6 +655,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             currentExercise.getRunning().setDistanceR(totalDistance);
             currentExercise.getRunning().setTimeR(timeElapsed/1000); //Time is saved in seconds
             currentExercise.setHeartRateList(heartRateList);
+            currentExercise.setGPSData(GPSData);
             exercisesCompleted.add(currentExercise);
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             currentExercise.getRest().setRestr((int) (timeElapsed/1000));
