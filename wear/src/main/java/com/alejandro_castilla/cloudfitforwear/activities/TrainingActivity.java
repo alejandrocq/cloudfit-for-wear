@@ -559,7 +559,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
             prepareCurrentExercise();
 
-            training.setStartDate(SystemClock.elapsedRealtime());
+            training.setStartDate(System.currentTimeMillis());
             exercisesCompleted = new ArrayList<>();
 
         } else {
@@ -610,7 +610,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveTrainingDataAndFinish() {
-        training.setEndDate(SystemClock.elapsedRealtime());
+        training.setEndDate(System.currentTimeMillis());
         training.setState(WearableTraining.NOT_UPLOADED);
         training.setExercises(exercisesCompleted);
 
