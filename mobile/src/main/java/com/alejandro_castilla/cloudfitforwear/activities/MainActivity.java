@@ -109,7 +109,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     WearableTraining trDone = gson
                             .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
                                     WearableTraining.class);
-
 //                    Toast.makeText(MainActivity.this, "Entrenamiento recibido:"+"\n"
 //                            +"Tiempo total: "+trDone.getExercises().get(0).getRunning()
 //                            .getTimeR()/1000, Toast.LENGTH_LONG).show();

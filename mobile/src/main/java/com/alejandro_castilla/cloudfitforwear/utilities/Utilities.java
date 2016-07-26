@@ -9,10 +9,12 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup5;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.OptionalGroup1;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.HRModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
+import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Rest;
@@ -123,9 +125,6 @@ public class Utilities {
                     ex.setType(Exercise.TYPE_RUNNING);
                     Running running = new Running();
 
-                    Log.d("INFO", "ELEMENT ID: "+exerciseGroup1.getId());
-                    Log.d("INFO", "ELEMENT TYPE: "+exerciseGroup1.getType());
-
                     if (exerciseGroup1.getTimeP()>0) {
                         running.setTimeP(exerciseGroup1.getTimeP());
                         if (exerciseGroup1.getTimeMaxP()>0) {
@@ -170,6 +169,7 @@ public class Utilities {
 
         training.setId(tr.getCloudFitId());
         training.setTitle(tr.getTitle());
+        Log.d("INFO", "TRAINING START DATE: "+tr.getStartDate());
         training.setStartdate(tr.getStartDate());
         training.setEnddate(tr.getEndDate());
         training.setState(StaticReferences.TRAINING_TOUPLOAD);
@@ -192,6 +192,18 @@ public class Utilities {
                     running.setTimeP((long) ex.getRunning().getTimeP());
                     running.setTimeMaxP((int) ex.getRunning().getTimeMaxP());
                     running.setTimeR((long) ex.getRunning().getTimeR());
+                    running.setHeartRateData(heartRateToHRModel(ex.getHeartRateList()));
+
+                    if (ex.getRunning().getHeartRateMin() != -1
+                            && ex.getRunning().getHeartRateMax() != -1) {
+                        OptionalGroup1 optional = new OptionalGroup1();
+                        optional.setHrmin(ex.getRunning().getHeartRateMin());
+                        optional.setHrmax(ex.getRunning().getHeartRateMax());
+                        optional.setSaveall(true); //TODO Fix this
+
+                        running.setOptional(optional);
+                    }
+
                     elements.add(running);
                     break;
                 case Exercise.TYPE_REST:
@@ -210,6 +222,22 @@ public class Utilities {
         training.setElements(elements);
 
         return training;
+    }
+
+    public static ArrayList<HRModel> heartRateToHRModel (ArrayList<HeartRate> hrList) {
+        ArrayList<HRModel> hrModels = new ArrayList<>();
+
+        for (HeartRate hr : hrList) {
+            HRModel hrModel = new HRModel();
+            hrModel.setHr(hr.getValue());
+            hrModel.setTimestamp(hr.getTimeMark());
+            hrModel.setRr(0);
+            hrModel.setNamesensor("Zephyr Bioharness 3");
+            hrModel.setMacaddress("C8:3E:99:0D:DD:43"); //TODO This MAC should be gotten from Prefs.
+            hrModels.add(hrModel);
+        }
+
+        return hrModels;
     }
 
     public static String secondsToStandardFormat (long totalSeconds) {
