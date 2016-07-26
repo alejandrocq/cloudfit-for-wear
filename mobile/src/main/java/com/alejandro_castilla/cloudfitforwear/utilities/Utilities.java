@@ -122,6 +122,9 @@ public class Utilities {
                     ex.setType(Exercise.TYPE_RUNNING);
                     Running running = new Running();
 
+                    Log.d("INFO", "ELEMENT ID: "+exerciseGroup1.getId());
+                    Log.d("INFO", "ELEMENT TYPE: "+exerciseGroup1.getType());
+
                     if (exerciseGroup1.getTimeP()>0) {
                         running.setTimeP(exerciseGroup1.getTimeP());
                         if (exerciseGroup1.getTimeMaxP()>0) {
@@ -160,7 +163,52 @@ public class Utilities {
         return wearableTraining;
     }
 
+    public static Training buildTrainingToUpload (WearableTraining tr) {
+        Training training = new Training();
 
+        training.setId(tr.getCloudFitId());
+        training.setTitle(tr.getTitle());
+        training.setStartdate(tr.getStartDate());
+        training.setEnddate(tr.getEndDate());
+        training.setState(StaticReferences.TRAINING_TOUPLOAD);
+
+        //Build exercises groups and set the data
+
+        ArrayList<Element> elements = new ArrayList<>();
+
+        for (Exercise ex : tr.getExercises()) {
+            switch (ex.getType()) {
+                case Exercise.TYPE_RUNNING:
+                    ExerciseGroup1 running = new ExerciseGroup1();
+
+                    //TODO Set ID
+                    running.setTitle(ex.getTitle());
+                    running.setGroup(StaticReferences.EXERCISE_GROUP1);
+                    running.setType("running");
+                    running.setDistanceP(ex.getRunning().getDistanceP());
+                    running.setDistanceR(ex.getRunning().getDistanceR());
+                    running.setTimeP((long) ex.getRunning().getTimeP());
+                    running.setTimeMaxP((int) ex.getRunning().getTimeMaxP());
+                    running.setTimeR((long) ex.getRunning().getTimeR());
+                    elements.add(running);
+                    break;
+                case Exercise.TYPE_REST:
+                    ExerciseGroup5 rest = new ExerciseGroup5();
+
+                    //TODO Set ID
+                    rest.setTitle(ex.getTitle());
+                    rest.setGroup(StaticReferences.EXERCISE_GROUP5);
+                    rest.setType("rest");
+                    rest.setRestr(ex.getRest().getRestr());
+                    elements.add(rest);
+                    break;
+            }
+        }
+
+        training.setElements(elements);
+
+        return training;
+    }
 
     public static String secondsToStandardFormat (long totalSeconds) {
         String time;

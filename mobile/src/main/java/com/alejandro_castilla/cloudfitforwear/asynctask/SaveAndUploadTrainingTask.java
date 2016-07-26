@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
-import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
-import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDBFunctions;
 import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 
@@ -22,7 +20,7 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
     private CloudFitDataHandler cloudFitDataHandler;
 
     private Training training;
-    private boolean trainingSavedAndUploaded = true;
+    private boolean trainingSavedAndUploaded;
 
     public SaveAndUploadTrainingTask(Activity context, CloudFitService cloudFitService,
                                      CloudFitDataHandler cloudFitDataHandler,
@@ -41,12 +39,7 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         if (Utilities.checkInternetConnection(context)) {
-            trainingSavedAndUploaded &= CloudFitCloud.saveTraining(cloudFitService, training);
-
-            if (trainingSavedAndUploaded) {
-                zDBFunctions.changeStateTraining(training.getDB(), training.getId(),
-                        StaticReferences.TRAINING_DONE);
-            }
+            trainingSavedAndUploaded = CloudFitCloud.saveTraining(cloudFitService, training);
         } else {
             trainingSavedAndUploaded = false;
         }
@@ -58,6 +51,7 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
         if (trainingSavedAndUploaded) {
             Toast.makeText(context, "El entrenamiento ha sido guardado en CloudFit",
                     Toast.LENGTH_SHORT).show();
+            //TODO Update training state on db
         } else {
             Toast.makeText(context, "Error al guardar el entrenamiento",
                     Toast.LENGTH_SHORT).show();
