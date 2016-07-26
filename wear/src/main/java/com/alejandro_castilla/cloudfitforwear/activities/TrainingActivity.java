@@ -643,11 +643,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void saveExerciseData (long timeElapsed) {
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
             currentExercise.getRunning().setDistanceR(totalDistance);
-            currentExercise.getRunning().setTimeR(timeElapsed);
+            currentExercise.getRunning().setTimeR(timeElapsed/1000); //Time is saved in seconds
             currentExercise.setHeartRateList(heartRateList);
             exercisesCompleted.add(currentExercise);
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
-            currentExercise.getRest().setRestr((int) timeElapsed);
+            currentExercise.getRest().setRestr((int) (timeElapsed/1000));
             currentExercise.setHeartRateList(heartRateList);
             exercisesCompleted.add(currentExercise);
         }

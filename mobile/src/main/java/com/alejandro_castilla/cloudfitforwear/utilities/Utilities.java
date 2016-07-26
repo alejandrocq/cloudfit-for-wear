@@ -118,7 +118,8 @@ public class Utilities {
             switch (exerciseGroup.getGroup()) {
                 case StaticReferences.EXERCISE_GROUP1:
                     ExerciseGroup1 exerciseGroup1 = (ExerciseGroup1) exerciseGroup;
-                    ex = new Exercise(exerciseGroup1.getTitle());
+                    ex = new Exercise(exerciseGroup1.getTitle(), exerciseGroup1.getType(),
+                            exerciseGroup1.getId());
                     ex.setType(Exercise.TYPE_RUNNING);
                     Running running = new Running();
 
@@ -147,7 +148,8 @@ public class Utilities {
                     break;
                 case StaticReferences.EXERCISE_GROUP5:
                     ExerciseGroup5 exerciseGroup5 = (ExerciseGroup5) exerciseGroup;
-                    ex = new Exercise(exerciseGroup5.getTitle());
+                    ex = new Exercise(exerciseGroup5.getTitle(), exerciseGroup5.getType(),
+                            exerciseGroup5.getId());
                     ex.setType(Exercise.TYPE_REST);
 
                     Rest rest = new Rest();
@@ -181,10 +183,10 @@ public class Utilities {
                 case Exercise.TYPE_RUNNING:
                     ExerciseGroup1 running = new ExerciseGroup1();
 
-                    //TODO Set ID
                     running.setTitle(ex.getTitle());
                     running.setGroup(StaticReferences.EXERCISE_GROUP1);
-                    running.setType("running");
+                    running.setType(ex.getCloudFitType());
+                    running.setId(ex.getCloudFitId());
                     running.setDistanceP(ex.getRunning().getDistanceP());
                     running.setDistanceR(ex.getRunning().getDistanceR());
                     running.setTimeP((long) ex.getRunning().getTimeP());
@@ -195,10 +197,10 @@ public class Utilities {
                 case Exercise.TYPE_REST:
                     ExerciseGroup5 rest = new ExerciseGroup5();
 
-                    //TODO Set ID
                     rest.setTitle(ex.getTitle());
                     rest.setGroup(StaticReferences.EXERCISE_GROUP5);
-                    rest.setType("rest");
+                    rest.setType(ex.getCloudFitType());
+                    rest.setId(ex.getCloudFitId());
                     rest.setRestr(ex.getRest().getRestr());
                     elements.add(rest);
                     break;

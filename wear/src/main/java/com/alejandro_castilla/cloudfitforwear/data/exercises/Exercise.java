@@ -14,13 +14,20 @@ public class Exercise {
 
     private String title;
     private int type;
+    private String cloudFitType;
+    private long cloudFitId;
+
+    private long startTime;
+    private long endTime;
     private ArrayList<HeartRate> heartRateList;
 
     private Running running;
     private Rest rest;
 
-    public Exercise(String title) {
+    public Exercise(String title, String cloudFitType, long cloudFitId) {
         this.title = title;
+        this.cloudFitType = cloudFitType;
+        this.cloudFitId = cloudFitId;
         heartRateList = new ArrayList<>();
     }
 
@@ -62,5 +69,37 @@ public class Exercise {
 
     public void setRest(Rest rest) {
         this.rest = rest;
+    }
+
+    public String getCloudFitType() {
+        return cloudFitType;
+    }
+
+    public void setCloudFitType(String cloudFitType) {
+        this.cloudFitType = cloudFitType;
+    }
+
+    public long getCloudFitId() {
+        return cloudFitId;
+    }
+
+    public void setCloudFitId(long cloudFitId) {
+        this.cloudFitId = cloudFitId;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 }
