@@ -149,6 +149,11 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         //Not needed.
     }
 
+    @Override
+    public void updateTrainingsCompletedNotifications(int trainingsNumber) {
+        //Not needed.
+    }
+
     /* Material design library methods */
 
     @Override

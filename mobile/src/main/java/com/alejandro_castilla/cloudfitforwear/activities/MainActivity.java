@@ -146,7 +146,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         trainingsCompletedFragment = new TrainingsCompletedFragment();
 
         trainingsCompletedFragment.setDb(db);
-        trainingsCompletedFragment.checkTrainingsCompleted();
 
         account = new MaterialAccount(this.getResources(),"",
                 "", R.drawable.ic_user_default,
@@ -165,6 +164,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
 
         trainingsCompletedSection = newSection("Completados",
                 R.drawable.ic_action_done, trainingsCompletedFragment);
+        trainingsCompletedSection.setNotifications(db.getAllTrainings().size());
 
         this.addSection(trainingsCompletedSection);
 
@@ -290,6 +290,11 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
         new GetTrainingsTask(this, cloudFitService, calendarEvent.getId(),
                 StaticVariables.GET_SINGLE_TRAINING).execute();
+    }
+
+    @Override
+    public void updateTrainingsCompletedNotifications(int trainingsNumber) {
+        trainingsCompletedSection.setNotifications(trainingsNumber);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.alejandro_castilla.cloudfitforwear.activities.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsCompletedFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
+import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
@@ -27,6 +29,7 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
 
     private TrainingsDb db;
     private ArrayList<WearableTraining> trainingsCompleted;
+    private CloudFitDataHandler cloudFitDataHandler;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -40,18 +43,24 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
         recyclerView.setAdapter(trainingsCompletedFragmentAdapter);
         recyclerView.setHasFixedSize(true);
 
+        getTrainingsCompleted();
         checkNumberOfTrainingsAndUpdateLayout();
         trainingsCompletedFragmentAdapter.setTrainingsCompleted(trainingsCompleted);
 
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void checkTrainingsCompleted() {
+    public void getTrainingsCompleted() {
         trainingsCompleted = db.getAllTrainings();
 
         if (trainingsCompletedFragmentAdapter != null) {
             trainingsCompletedFragmentAdapter.setTrainingsCompleted(trainingsCompleted);
         }
+
+        if (cloudFitDataHandler != null) {
+            cloudFitDataHandler.updateTrainingsCompletedNotifications(trainingsCompleted.size());
+        }
+
     }
 
     public void checkNumberOfTrainingsAndUpdateLayout() {
@@ -75,8 +84,14 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
 
     @Override
     public void updateLayout() {
-        checkTrainingsCompleted();
+        getTrainingsCompleted();
         checkNumberOfTrainingsAndUpdateLayout();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        cloudFitDataHandler = (CloudFitDataHandler) activity;
     }
 
     @Override
@@ -96,7 +111,8 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
 
     @Override
     public void onRefresh() {
-        checkTrainingsCompleted();
+        getTrainingsCompleted();
+        checkNumberOfTrainingsAndUpdateLayout();
         setRefreshing(false);
     }
 }
