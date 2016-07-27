@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 
 /**
  * Created by alejandrocq on 11/05/16.
@@ -42,7 +43,15 @@ public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        Toast.makeText(context, "Resultado de la petición: " + result, Toast.LENGTH_SHORT).show();
+        if (result && accept == StaticReferences.REQUEST_ACCEPT) {
+            Toast.makeText(context, "Petición aceptada correctamente", Toast.LENGTH_SHORT).show();
+        } else if (result && accept == StaticReferences.REQUEST_CANCEL) {
+            Toast.makeText(context, "Petición rechazada correctamente", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Ha ocurrido un error. Inténtelo de nuevo.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
         new GetRequestsTask(context, cloudFitService).execute();
         super.onPostExecute(aVoid);
     }
