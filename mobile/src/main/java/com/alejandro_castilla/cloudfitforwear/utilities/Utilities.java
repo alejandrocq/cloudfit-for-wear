@@ -9,11 +9,13 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup5;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.OptionalGroup1;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.GPSModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.HRModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
+import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -169,7 +171,6 @@ public class Utilities {
 
         training.setId(tr.getCloudFitId());
         training.setTitle(tr.getTitle());
-        Log.d("INFO", "TRAINING START DATE: "+tr.getStartDate());
         training.setStartdate(tr.getStartDate());
         training.setEnddate(tr.getEndDate());
         training.setState(StaticReferences.TRAINING_TOUPLOAD);
@@ -192,7 +193,10 @@ public class Utilities {
                     running.setTimeP((long) ex.getRunning().getTimeP());
                     running.setTimeMaxP((int) ex.getRunning().getTimeMaxP());
                     running.setTimeR((long) ex.getRunning().getTimeR());
+                    running.setStarttime(ex.getStartTime());
+                    running.setEndtime(ex.getEndTime());
                     running.setHeartRateData(heartRateToHRModel(ex.getHeartRateList()));
+                    running.setGPSData(GPSDataToGPSModel(ex.getGPSData()));
 
                     if (ex.getRunning().getHeartRateMin() != -1
                             && ex.getRunning().getHeartRateMax() != -1) {
@@ -214,6 +218,8 @@ public class Utilities {
                     rest.setType(ex.getCloudFitType());
                     rest.setId(ex.getCloudFitId());
                     rest.setRestr(ex.getRest().getRestr());
+                    rest.setStarttime(ex.getStartTime());
+                    rest.setEndtime(ex.getEndTime());
                     elements.add(rest);
                     break;
             }
@@ -238,6 +244,23 @@ public class Utilities {
         }
 
         return hrModels;
+    }
+
+    public static ArrayList<GPSModel> GPSDataToGPSModel (ArrayList<GPSLocation> GPSData) {
+        ArrayList<GPSModel> GPSModels = new ArrayList<>();
+
+        for (GPSLocation l : GPSData) {
+            GPSModel model = new GPSModel();
+            model.setTimestamp(l.getTimeStamp());
+            model.setTime(l.getTime());
+            model.setAltitude(l.getLocation().getAltitude());
+            model.setLatitude(l.getLocation().getLatitude());
+            model.setLongitude(l.getLocation().getLongitude());
+            model.setSpeed(l.getLocation().getSpeed());
+            GPSModels.add(model);
+        }
+
+        return GPSModels;
     }
 
     public static String secondsToStandardFormat (long totalSeconds) {

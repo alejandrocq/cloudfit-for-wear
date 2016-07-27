@@ -17,6 +17,7 @@
         android:icon="@mipmap/ic_cloudfit"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:allowClearUserData="true"
         android:theme="@style/AppTheme">
 
         <service

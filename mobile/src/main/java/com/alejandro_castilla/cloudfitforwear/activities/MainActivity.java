@@ -21,7 +21,6 @@ import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsFrag
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetRequestsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetUserInfoTask;
-import com.alejandro_castilla.cloudfitforwear.asynctask.SaveAndUploadTrainingTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.CalendarEvent;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.RequestTrainer;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
@@ -65,6 +64,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     private boolean isWearableConnected;
 
     private TrainingsDb db;
+    private WearableTraining trDone;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -106,31 +106,26 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 case StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE:
                     Bundle b = (Bundle) msg.obj;
                     Gson gson = new Gson();
-                    WearableTraining trDone = gson
+                    trDone = gson
                             .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
                                     WearableTraining.class);
-//                    Toast.makeText(MainActivity.this, "Entrenamiento recibido:"+"\n"
-//                            +"Tiempo total: "+trDone.getExercises().get(0).getRunning()
-//                            .getTimeR()/1000, Toast.LENGTH_LONG).show();
+                    //TODO Check if training exists before insert.
                     boolean res = db.insertTraining(trDone);
 
-                    new SaveAndUploadTrainingTask(MainActivity.this, cloudFitService,
-                            MainActivity.this, Utilities.buildTrainingToUpload(trDone)).execute();
-
-//                    if (res) {
-//                        Log.d(TAG, "Training inserted on database");
-//                        showTrainingReceivedDialog();
-//                        //Training received correctly. Send an ACK to wearable device.
-//                        try {
-//                            Message ack = Message.obtain(null,
-//                                    StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE_ACK);
-//                            wearableServiceMessenger.send(ack);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        showTrainingReceivedErrorDialog();
-//                    }
+                    if (res) {
+                        Log.d(TAG, "Training inserted on database");
+                        showTrainingReceivedDialog();
+                        //Training received correctly. Send an ACK to wearable device.
+                        try {
+                            Message ack = Message.obtain(null,
+                                    StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE_ACK);
+                            wearableServiceMessenger.send(ack);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        showTrainingReceivedErrorDialog();
+                    }
 
 
                     break;

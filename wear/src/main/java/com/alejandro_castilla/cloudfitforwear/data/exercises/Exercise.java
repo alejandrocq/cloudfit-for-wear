@@ -31,6 +31,7 @@ public class Exercise {
         this.cloudFitType = cloudFitType;
         this.cloudFitId = cloudFitId;
         heartRateList = new ArrayList<>();
+        GPSData = new ArrayList<>();
     }
 
     public String getTitle() {
