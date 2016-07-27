@@ -252,7 +252,7 @@ public class Utilities {
         for (GPSLocation l : GPSData) {
             GPSModel model = new GPSModel();
             model.setTimestamp(l.getTimeStamp());
-            model.setTime(l.getTime());
+            model.setTime(l.getLocation().getTime());
             model.setAltitude(l.getLocation().getAltitude());
             model.setLatitude(l.getLocation().getLatitude());
             model.setLongitude(l.getLocation().getLongitude());

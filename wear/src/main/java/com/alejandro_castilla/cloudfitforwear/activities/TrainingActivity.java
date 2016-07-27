@@ -410,11 +410,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             locListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    long timeStamp = SystemClock.elapsedRealtime() - chronometer.getBase();
+                    long timeStamp = System.currentTimeMillis();
                     if (!firstLocationReceived) {
                         Log.d(TAG, "First location received.");
-                        GPSLocation GPSLoc = new GPSLocation(location, System.currentTimeMillis(),
-                                timeStamp);
+                        GPSLocation GPSLoc = new GPSLocation(location, timeStamp);
                         GPSData.add(GPSLoc);
                         firstLocationReceived = true;
                         locationStatusTextView.setText("Recibiendo datos");
@@ -423,8 +422,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         DecimalFormat precision = new DecimalFormat("0.00");
                         totalDistance += GPSData.get(GPSData.size()-1)
                                 .getLocation().distanceTo(location) / 1000;
-                        GPSLocation GPSLoc = new GPSLocation(location, System.currentTimeMillis(),
-                                timeStamp);
+                        GPSLocation GPSLoc = new GPSLocation(location, timeStamp);
                         GPSData.add(GPSLoc);
                         distanceTextView.setText(precision.format(totalDistance));
                     }

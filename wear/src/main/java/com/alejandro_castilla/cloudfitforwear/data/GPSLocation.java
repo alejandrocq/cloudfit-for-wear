@@ -7,12 +7,10 @@ import android.location.Location;
  */
 public class GPSLocation {
     private Location location;
-    private long time;
     private long timeStamp;
 
-    public GPSLocation(Location l, long time, long timeStamp) {
+    public GPSLocation(Location l, long timeStamp) {
         this.location = l;
-        this.time = time;
         this.timeStamp = timeStamp;
     }
 
@@ -22,14 +20,6 @@ public class GPSLocation {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     public long getTimeStamp() {
