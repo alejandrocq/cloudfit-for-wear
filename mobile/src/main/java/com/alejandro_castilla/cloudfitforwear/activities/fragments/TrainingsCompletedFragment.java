@@ -19,7 +19,8 @@ import java.util.ArrayList;
 /**
  * Created by alejandrocq on 24/06/16.
  */
-public class TrainingsCompletedFragment extends ScrollViewFragment {
+public class TrainingsCompletedFragment extends ScrollViewFragment
+        implements TrainingsCompletedFragmentAdapter.LayoutUpdater {
 
     private View view;
     private TrainingsCompletedFragmentAdapter trainingsCompletedFragmentAdapter;
@@ -32,7 +33,8 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
         this.view = view;
 
         trainingsCompletedFragmentAdapter =
-                new TrainingsCompletedFragmentAdapter(getActivity(), trainingsCompleted);
+                new TrainingsCompletedFragmentAdapter(getActivity(),
+                        TrainingsCompletedFragment.this, trainingsCompleted);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.trCompletedRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(trainingsCompletedFragmentAdapter);
@@ -69,6 +71,12 @@ public class TrainingsCompletedFragment extends ScrollViewFragment {
 
     public void setDb(TrainingsDb db) {
         this.db = db;
+    }
+
+    @Override
+    public void updateLayout() {
+        checkTrainingsCompleted();
+        checkNumberOfTrainingsAndUpdateLayout();
     }
 
     @Override

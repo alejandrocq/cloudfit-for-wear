@@ -209,9 +209,9 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         stopService(wearableServiceIntent);
     }
 
-    ////////////////////////////////
-    /* Activity interface methods */
-    ////////////////////////////////
+    //////////////////////////////
+    /* CloudFit Handler methods */
+    //////////////////////////////
 
     /**
      * Saves user info obtained from GetUserInfoTask on this activity.
@@ -357,7 +357,8 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
 
     public void showTrainingReceivedDialog() {
         String dialogDescription = "El entrenamiento ha sido guardado correctamente. " +
-                "Los resultados del mismo están disponibles en la sección 'completados'";
+                "Los resultados del mismo están disponibles en la sección de entrenamientos " +
+                "completados.";
         new MaterialDialog.Builder(MainActivity.this)
                 .title("Entrenamiento recibido")
                 .content(dialogDescription)
