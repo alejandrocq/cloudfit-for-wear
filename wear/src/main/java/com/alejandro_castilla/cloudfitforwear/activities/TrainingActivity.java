@@ -103,6 +103,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
     private ArrayList<GPSLocation> GPSData;
+    private ArrayList<Location> locations;
 
     /* Location fields */
 
@@ -399,6 +400,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void initLocation() {
         firstLocationReceived = false;
         GPSData = new ArrayList<>();
+        locations = new ArrayList<>();
         totalDistance = 0;
 
         PackageManager pm = this.getPackageManager();
@@ -413,17 +415,30 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     long timeStamp = System.currentTimeMillis();
                     if (!firstLocationReceived) {
                         Log.d(TAG, "First location received.");
-                        GPSLocation GPSLoc = new GPSLocation(location, timeStamp);
+                        GPSLocation GPSLoc = new GPSLocation(timeStamp);
+                        GPSLoc.setLatitude(location.getLatitude());
+                        GPSLoc.setLongitude(location.getLongitude());
+                        GPSLoc.setAltitude(location.getAltitude());
+                        GPSLoc.setTime(location.getTime());
+                        GPSLoc.setSpeed(location.getSpeed());
                         GPSData.add(GPSLoc);
+                        locations.add(location);
                         firstLocationReceived = true;
                         locationStatusTextView.setText("Recibiendo datos");
                     } else {
-                        //Distance between last location and this new location (km) with two decimals
+                        //Distance between last location and this new location (km)
+                        // with two decimals
                         DecimalFormat precision = new DecimalFormat("0.00");
-                        totalDistance += GPSData.get(GPSData.size()-1)
-                                .getLocation().distanceTo(location) / 1000;
-                        GPSLocation GPSLoc = new GPSLocation(location, timeStamp);
+                        totalDistance += locations.get(locations.size()-1)
+                                .distanceTo(location) / 1000;
+                        GPSLocation GPSLoc = new GPSLocation(timeStamp);
+                        GPSLoc.setLatitude(location.getLatitude());
+                        GPSLoc.setLongitude(location.getLongitude());
+                        GPSLoc.setAltitude(location.getAltitude());
+                        GPSLoc.setTime(location.getTime());
+                        GPSLoc.setSpeed(location.getSpeed());
                         GPSData.add(GPSLoc);
+                        locations.add(location);
                         distanceTextView.setText(precision.format(totalDistance));
                     }
 

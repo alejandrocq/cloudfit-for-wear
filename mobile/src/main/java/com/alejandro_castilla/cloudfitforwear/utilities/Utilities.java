@@ -252,11 +252,11 @@ public class Utilities {
         for (GPSLocation l : GPSData) {
             GPSModel model = new GPSModel();
             model.setTimestamp(l.getTimeStamp());
-            model.setTime(l.getLocation().getTime());
-            model.setAltitude(l.getLocation().getAltitude());
-            model.setLatitude(l.getLocation().getLatitude());
-            model.setLongitude(l.getLocation().getLongitude());
-            model.setSpeed(l.getLocation().getSpeed());
+            model.setTime(l.getTime());
+            model.setAltitude(l.getAltitude());
+            model.setLatitude(l.getLatitude());
+            model.setLongitude(l.getLongitude());
+            model.setSpeed(l.getSpeed());
             GPSModels.add(model);
         }
 

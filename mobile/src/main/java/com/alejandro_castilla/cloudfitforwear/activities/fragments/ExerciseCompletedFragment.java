@@ -1,13 +1,13 @@
 package com.alejandro_castilla.cloudfitforwear.activities.fragments;
 
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -136,13 +136,16 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
 
     @Override
     public void onMapReady(GoogleMap map) {
-        Location startLocation = exercise.getGPSData().get(0).getLocation();
-        LatLng l = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
-        map.addMarker(new MarkerOptions()
-        .position(l)
-        .title("Inicio ruta"));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 15));
-        mapView.onResume();
+        if (exercise.getGPSData().size()>0) {
+            GPSLocation startLocation = exercise.getGPSData().get(0);
+            LatLng l = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
+            map.addMarker(new MarkerOptions()
+                    .position(l)
+                    .title("Inicio ruta"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 15));
+            mapView.onResume();
+        }
+
     }
 
     /* Scroll view fragment methods */
