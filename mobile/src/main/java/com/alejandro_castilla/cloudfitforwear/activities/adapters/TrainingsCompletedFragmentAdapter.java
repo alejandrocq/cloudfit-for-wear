@@ -1,6 +1,7 @@
 package com.alejandro_castilla.cloudfitforwear.activities.adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,11 +12,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.activities.TrainingCompletedActivity;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.views.CardView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -110,8 +113,10 @@ public class TrainingsCompletedFragmentAdapter extends
         public void onClick(View v) {
             switch (buttonType) {
                 case StaticVariables.NORMAL_BUTTON:
-                    //TODO Launch training completed details activity
-
+                    Intent intent = new Intent(context, TrainingCompletedActivity.class);
+                    Gson gson = new Gson();
+                    intent.putExtra("training_completed", gson.toJson(training));
+                    context.startActivity(intent);
                     break;
                 case StaticVariables.HIGHLIGHT_BUTTON:
                     String dialogDescr = "¿Está seguro de que quiere eliminar el siguiente " +
