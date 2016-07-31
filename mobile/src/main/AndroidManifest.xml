@@ -26,6 +26,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDVjO7Tljj1OJzLBUcyLLp2FFzZ39wQ5Y8"/>
+
         <service
             android:name=".cloudfit.services.CloudFitService"
             android:exported="false" />

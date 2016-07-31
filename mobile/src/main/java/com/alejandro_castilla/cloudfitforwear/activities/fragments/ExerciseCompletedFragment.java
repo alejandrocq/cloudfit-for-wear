@@ -1,6 +1,7 @@
 package com.alejandro_castilla.cloudfitforwear.activities.fragments;
 
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -19,16 +20,24 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 /**
  * Created by alejandrocq on 31/07/16.
  */
-public class ExerciseCompletedFragment extends ScrollViewFragment {
+public class ExerciseCompletedFragment extends ScrollViewFragment implements OnMapReadyCallback {
 
     private WearableTraining training;
     private Exercise exercise;
+
+    private MapView mapView;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
         chart.getAxisRight().setDrawGridLines(false);
 
         if (exercise.getType() == Exercise.TYPE_RUNNING) {
-            if (exercise.getRunning().getHeartRateMin()>0) {
+            if (exercise.getRunning().getHeartRateMin() > 0) {
                 LimitLine hrMinLine = new LimitLine(exercise.getRunning().getHeartRateMin(),
                         "Frec. mín.");
                 hrMinLine.setLineColor(Color.RED);
@@ -67,7 +76,7 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
         ArrayList<Entry> hrValues = new ArrayList<>();
 
         for (HeartRate hr : exercise.getHeartRateList()) {
-            Entry hrEntry = new Entry(hr.getTimeMark()/1000, hr.getValue());
+            Entry hrEntry = new Entry(hr.getTimeMark() / 1000, hr.getValue());
             hrValues.add(hrEntry);
         }
 
@@ -101,11 +110,18 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
             sumHr += hr.getValue();
         }
 
-        int averageHr = sumHr/exercise.getHeartRateList().size();
-        averageHrTextView.setText(averageHr+" bpm (medio)");
+        int averageHr = sumHr / exercise.getHeartRateList().size();
+        averageHrTextView.setText(averageHr + " bpm (medio)");
 
-        maxHrTextView.setText((int) chart.getYMax()+" bpm (máx.)");
-        minHrTextView.setText((int) chart.getYMin()+" bpm (mín.)");
+        maxHrTextView.setText((int) chart.getYMax() + " bpm (máx.)");
+        minHrTextView.setText((int) chart.getYMin() + " bpm (mín.)");
+
+        /* Load map */
+
+        mapView = (MapView) view.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+
+        mapView.getMapAsync(this);
     }
 
     public void setExercise(Exercise exercise) {
@@ -114,6 +130,19 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
 
     public void setTraining(WearableTraining training) {
         this.training = training;
+    }
+
+    /* Google Maps API methods */
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        Location startLocation = exercise.getGPSData().get(0).getLocation();
+        LatLng l = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
+        map.addMarker(new MarkerOptions()
+        .position(l)
+        .title("Inicio ruta"));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 15));
+        mapView.onResume();
     }
 
     /* Scroll view fragment methods */

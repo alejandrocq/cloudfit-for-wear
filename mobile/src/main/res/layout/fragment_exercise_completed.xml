@@ -80,6 +80,20 @@
         android:layout_height="300dp"
         android:layout_below="@id/heartRateChartTitle"/>
 
+    <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/heartRateChart"/>
+
+    <!--Transparent image to get map scrolling working-->
+
+    <ImageView
+        android:id="@+id/transparent_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@color/transparent" />
+
     <!--<Button-->
         <!--android:id="@+id/syncButton"-->
         <!--android:layout_width="match_parent"-->
