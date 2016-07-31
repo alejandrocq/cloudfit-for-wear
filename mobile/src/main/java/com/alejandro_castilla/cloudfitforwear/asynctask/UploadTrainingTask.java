@@ -13,7 +13,7 @@ import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 /**
  * Created by alejandrocq on 14/05/16.
  */
-public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
+public class UploadTrainingTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
     private CloudFitService cloudFitService;
@@ -22,11 +22,9 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
     private Training training;
     private boolean trainingSavedAndUploaded;
 
-    public SaveAndUploadTrainingTask(Activity context, CloudFitService cloudFitService,
-                                     CloudFitDataHandler cloudFitDataHandler,
-                                     Training training) {
+    public UploadTrainingTask(Activity context, CloudFitDataHandler cloudFitDataHandler,
+                              Training training) {
         this.context = context;
-        this.cloudFitService = cloudFitService;
         this.cloudFitDataHandler = cloudFitDataHandler;
         this.training = training;
     }
@@ -39,7 +37,8 @@ public class SaveAndUploadTrainingTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         if (Utilities.checkInternetConnection(context)) {
-            trainingSavedAndUploaded = CloudFitCloud.saveTraining(cloudFitService, training);
+            trainingSavedAndUploaded = CloudFitCloud
+                    .saveTraining(cloudFitDataHandler.getCloudFitService(), training);
         } else {
             trainingSavedAndUploaded = false;
         }

@@ -1,12 +1,20 @@
 package com.alejandro_castilla.cloudfitforwear.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.ExerciseCompletedFragment;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
+import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
 import com.blunderer.materialdesignlibrary.activities.ViewPagerActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
@@ -33,9 +41,53 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_sync:
+
+                break;
+            case R.id.action_delete:
+                String dialogDescr = "¿Está seguro de que quiere eliminar este entrenamiento?";
+                new MaterialDialog.Builder(this)
+                        .title("Atención")
+                        .content(dialogDescr)
+                        .positiveText("Sí")
+                        .negativeText("Cancelar")
+                        .titleColorRes(R.color.md_grey_800)
+                        .contentColorRes(R.color.md_grey_800)
+                        .backgroundColorRes(R.color.md_white_1000)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog,
+                                                @NonNull DialogAction which) {
+                                TrainingsDb db = new TrainingsDb(TrainingCompletedActivity.this);
+                                boolean res = db.deleteTraining(training.getTrainingId());
+
+                                if (res) {
+                                    Toast.makeText(TrainingCompletedActivity.this,
+                                            "Entrenamiento eliminado correctamente",
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(TrainingCompletedActivity.this,
+                                            "Error al eliminar el entrenamiento",
+                                            Toast.LENGTH_LONG).show();
+                                }
+
+                                finish();
+                            }
+                        })
+                        .show();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.training_completed_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /* Material Design Library methods */
@@ -51,6 +103,7 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
         for (Exercise ex : training.getExercises()) {
             ExerciseCompletedFragment fragment = new ExerciseCompletedFragment();
             fragment.setExercise(ex);
+            fragment.setTraining(training);
             handler.addPage(ex.getTitle(), fragment);
         }
         return handler;

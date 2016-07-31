@@ -4,10 +4,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
+import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
+import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
  */
 public class ExerciseCompletedFragment extends ScrollViewFragment {
 
+    private WearableTraining training;
     private Exercise exercise;
 
     @Override
@@ -76,10 +80,40 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
         LineData data = new LineData(dataSets);
         chart.setData(data);
         chart.invalidate();
+
+        /*Set results*/
+
+        TextView timeElapsedTextView = (TextView) view.findViewById(R.id.timeElapsedText);
+        TextView averageHrTextView = (TextView) view.findViewById(R.id.averageHrText);
+        TextView maxHrTextView = (TextView) view.findViewById(R.id.maxHrText);
+        TextView minHrTextView = (TextView) view.findViewById(R.id.minHrText);
+
+        if (exercise.getType() == Exercise.TYPE_RUNNING) {
+            timeElapsedTextView
+                    .setText(Utilities.secondsToStringFormat(exercise.getRunning().getTimeR()));
+        } else {
+            timeElapsedTextView
+                    .setText(Utilities.secondsToStringFormat(exercise.getRest().getRestr()));
+        }
+
+        int sumHr = 0;
+        for (HeartRate hr : exercise.getHeartRateList()) {
+            sumHr += hr.getValue();
+        }
+
+        int averageHr = sumHr/exercise.getHeartRateList().size();
+        averageHrTextView.setText(averageHr+" bpm (medio)");
+
+        maxHrTextView.setText((int) chart.getYMax()+" bpm (máx.)");
+        minHrTextView.setText((int) chart.getYMin()+" bpm (mín.)");
     }
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
+    }
+
+    public void setTraining(WearableTraining training) {
+        this.training = training;
     }
 
     /* Scroll view fragment methods */

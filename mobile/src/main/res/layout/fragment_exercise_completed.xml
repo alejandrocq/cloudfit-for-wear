@@ -4,14 +4,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/timeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_time_clock"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"/>
+
+    <TextView
+        android:id="@+id/timeElapsedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"
+        android:layout_below="@id/timeIcon"/>
+
+    <ImageView
+        android:id="@+id/heartRateIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_heart"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/timeElapsedText"/>
+
+    <TextView
+        android:id="@+id/averageHrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"
+        android:layout_below="@id/heartRateIcon"/>
+
+    <TextView
+        android:id="@+id/maxHrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"
+        android:layout_below="@id/averageHrText"/>
+
+    <TextView
+        android:id="@+id/minHrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"
+        android:layout_below="@id/maxHrText"/>
+
     <TextView
         android:id="@+id/heartRateChartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ritmo cardíaco"
+        android:text="Gráfico de ritmo cardíaco"
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5sp"/>
+        android:layout_marginTop="10sp"
+        android:layout_below="@id/minHrText"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/heartRateChart"
@@ -19,23 +80,23 @@
         android:layout_height="300dp"
         android:layout_below="@id/heartRateChartTitle"/>
 
-    <Button
-        android:id="@+id/syncButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sincronizar entrenamiento"
-        android:textColor="@color/md_white_1000"
-        android:background="@color/md_blue_800"
-        android:layout_below="@id/heartRateChart"
-        android:layout_marginTop="20dp" />
+    <!--<Button-->
+        <!--android:id="@+id/syncButton"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Sincronizar entrenamiento"-->
+        <!--android:textColor="@color/md_white_1000"-->
+        <!--android:background="@color/md_blue_800"-->
+        <!--android:layout_below="@id/heartRateChart"-->
+        <!--android:layout_marginTop="20dp" />-->
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Eliminar entrenamiento"
-        android:textColor="@color/md_white_1000"
-        android:background="@color/md_red_700"
-        android:layout_below="@id/syncButton" />
+    <!--<Button-->
+        <!--android:id="@+id/deleteButton"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Eliminar entrenamiento"-->
+        <!--android:textColor="@color/md_white_1000"-->
+        <!--android:background="@color/md_red_700"-->
+        <!--android:layout_below="@id/syncButton" />-->
 
 </RelativeLayout >

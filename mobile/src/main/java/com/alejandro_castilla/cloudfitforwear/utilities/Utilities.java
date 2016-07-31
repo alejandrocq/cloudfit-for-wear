@@ -289,6 +289,16 @@ public class Utilities {
 
     }
 
+    public static String secondsToStringFormat (double totalSeconds) {
+        int hours = (int) totalSeconds / 3600;
+        int minutes = (int) (totalSeconds % 3600) / 60;
+        int seconds = (int) totalSeconds % 60;
+
+        String timeElapsed = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+        return timeElapsed;
+    }
+
     public static void checkAppDirectory() {
         File dir = new File (StaticVariables.APP_PATH);
 
