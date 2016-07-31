@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/heartRateChartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HOLA"
+        android:text="Ritmo cardíaco"
+        android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_marginTop="5sp"/>
 
-</RelativeLayout>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/heartRateChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/heartRateChartTitle"/>
+
+    <Button
+        android:id="@+id/syncButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sincronizar entrenamiento"
+        android:textColor="@color/md_white_1000"
+        android:background="@color/md_blue_800"
+        android:layout_below="@id/heartRateChart"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Eliminar entrenamiento"
+        android:textColor="@color/md_white_1000"
+        android:background="@color/md_red_700"
+        android:layout_below="@id/syncButton" />
+
+</RelativeLayout >

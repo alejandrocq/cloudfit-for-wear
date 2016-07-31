@@ -1,6 +1,8 @@
 package com.alejandro_castilla.cloudfitforwear.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.ExerciseCompletedFragment;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
@@ -18,6 +20,22 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /* Material Design Library methods */
