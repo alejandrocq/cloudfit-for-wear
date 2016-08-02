@@ -26,6 +26,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -142,9 +143,20 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             map.addMarker(new MarkerOptions()
                     .position(l)
                     .title("Inicio ruta"));
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 15));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 16));
             mapView.onResume();
         }
+
+        //Draw route
+
+        PolylineOptions polOptions = new PolylineOptions();
+
+        for (GPSLocation l : exercise.getGPSData()) {
+            polOptions.add(new LatLng(l.getLatitude(), l.getLongitude()));
+        }
+
+        map.addPolyline(polOptions);
+        mapView.onResume();
 
     }
 
