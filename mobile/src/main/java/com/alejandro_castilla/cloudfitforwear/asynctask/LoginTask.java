@@ -68,7 +68,8 @@ public class LoginTask extends AsyncTask<Void, String, Boolean> {
     protected void onPostExecute(Boolean result) {
         progressDialog.dismiss();
         String errorDialogDescription = "Ha ocurrido un error al iniciar la sesión. " +
-                "Compruebe su usuario y contraseña e inténtelo de nuevo.";
+                "Compruebe su usuario y contraseña e inténtelo de nuevo. " +
+                "¿Es correcta la URL de CloudFit?";
 
         if (result) {
             Intent startMainActivityIntent = new Intent(context, MainActivity.class);

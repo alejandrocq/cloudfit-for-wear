@@ -70,6 +70,11 @@ public class StaticVariables {
     public static final String WEARABLE_TRAINING_DONE = "wearabletrainingdone";
     public static final String WEARABLE_TRAINING_DONE_ACK = "wearabletrainingdoneack";
 
+    /**
+     * Preference keys
+     */
+
+    public static final String KEY_PREF_CLOUDFIT_URL = "cloudfit_url";
 
 
 

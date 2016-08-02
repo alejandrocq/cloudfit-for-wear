@@ -4,11 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,6 +21,7 @@ import com.alejandro_castilla.cloudfitforwear.asynctask.LoginTask;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.Utils;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.zDB;
+import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 import com.gc.materialdesign.views.ButtonFlat;
@@ -26,13 +31,10 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
-    private MaterialTextField userMaterialTextField;
-    private MaterialTextField passMaterialTextField;
     private EditText userTextField;
     private EditText passTextField;
-    private ButtonFlat loginButton;
 
-    private String username, password;
+    private String username, password, cloudFitUrl;
     private zDB db;
     private CloudFitService cloudFitService;
 
@@ -45,10 +47,11 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
             Log.d(TAG, "Connected to CloudFit service");
             CloudFitService.MyBinder cloudFitServiceBinder = (CloudFitService.MyBinder) service;
             cloudFitService = cloudFitServiceBinder.getService();
-
-//            Setting cloudFitSetting = zDBFunctions.getSetting(db);
-//            cloudFitService.getFit().setSetting(cloudFitSetting);
-
+            SharedPreferences prefs = PreferenceManager
+                    .getDefaultSharedPreferences(LoginActivity.this);
+            String cloudFitUrl = prefs.getString(StaticVariables.KEY_PREF_CLOUDFIT_URL,
+                    "http://cloudfit-for-wear.appspot.com");
+            cloudFitService.getFit().setUrl(cloudFitUrl);
         }
 
         @Override
@@ -76,34 +79,75 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login);
 
         setTitle(""); //Don't need an activity title here.
 
-        userMaterialTextField = (MaterialTextField) findViewById(R.id.userEditText);
-        passMaterialTextField = (MaterialTextField) findViewById(R.id.passEditText);
-        userTextField = userMaterialTextField.getEditText();
-        passTextField = passMaterialTextField.getEditText();
-        loginButton = (ButtonFlat) findViewById(R.id.loginButton);
+        MaterialTextField userMaterialTextField = (MaterialTextField)
+                findViewById(R.id.userEditText);
+        MaterialTextField passMaterialTextField = (MaterialTextField)
+                findViewById(R.id.passEditText);
+        ButtonFlat loginButton = (ButtonFlat) findViewById(R.id.loginButton);
+        ImageView settingsImgView = (ImageView) findViewById(R.id.settingsImg);
 
         checkCloudFitDatabase();
         Intent cloudFitServiceIntent = new Intent(LoginActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.checkInternetConnection(LoginActivity.this)) {
-                    username = userTextField.getText().toString();
-                    password = passTextField.getText().toString();
-                    new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
-                            .execute(); //Temporary trick to skip typing user and password
-                } else {
-                    showNoInternetConnectionDialog();
-                }
-            }
-        });
+        userTextField = userMaterialTextField.getEditText();
+        passTextField = passMaterialTextField.getEditText();
 
+        if (loginButton != null) {
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utilities.checkInternetConnection(LoginActivity.this)) {
+                        username = userTextField.getText().toString();
+                        password = passTextField.getText().toString();
+                        new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
+                                .execute(); //Temporary trick to skip typing user and password
+                    } else {
+                        showNoInternetConnectionDialog();
+                    }
+                }
+            });
+        } else {
+            Log.e(TAG, "Login button is null!");
+        }
+
+        if (settingsImgView != null) {
+            settingsImgView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(LoginActivity.this);
+                    String cloudFitUrl = prefs.getString(StaticVariables.KEY_PREF_CLOUDFIT_URL,
+                            "http://cloudfit-for-wear.appspot.com");
+                    new MaterialDialog.Builder(LoginActivity.this)
+                            .title("Configuración URL CloudFit")
+                            .content("Introduce aquí la URL de la plataforma CloudFit")
+                            .inputType(InputType.TYPE_CLASS_TEXT)
+                            .positiveText("Establecer URL")
+                            .input("URL de CloudFit", cloudFitUrl,
+                                    new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    SharedPreferences.Editor prefsEditor =
+                                            PreferenceManager.getDefaultSharedPreferences
+                                                    (LoginActivity.this).edit();
+                                    prefsEditor.putString(StaticVariables.KEY_PREF_CLOUDFIT_URL,
+                                            input.toString());
+                                    prefsEditor.apply();
+                                    cloudFitService.getFit().setUrl(input.toString());
+                                    Toast.makeText(LoginActivity.this,
+                                            "URL establecida correctamente",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }).show();
+                }
+            });
+        } else {
+            Log.e(TAG, "Settings image is null!");
+        }
 
     }
 
