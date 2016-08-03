@@ -234,7 +234,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 dotsPageIndicator.setPager(gridViewPager);
 
                 checkSharedPreferencesAndParseTraining();
-                heartRateList = new ArrayList<>();
 
                 //Check necessary permissions and request them
 
@@ -631,10 +630,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void resetDataAndMoveToNextExercise() {
-        currentExercise.setEndTime(System.currentTimeMillis());
         maxDistance = 0;
-        chronometer.stop();
         heartRateList = new ArrayList<>(); //Reset heart rate data
+        GPSData = new ArrayList<>(); //Reset location data
+        chronometer.stop();
         currentExerciseIndex++;
 
         if (currentExerciseIndex == training.getExercises().size()) { //No more exercises
@@ -685,6 +684,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void saveExerciseData (long timeElapsed) {
+        currentExercise.setEndTime(System.currentTimeMillis());
+
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
             currentExercise.getRunning().setDistanceR(totalDistance);
             currentExercise.getRunning().setTimeR(timeElapsed/1000); //Time is saved in seconds
