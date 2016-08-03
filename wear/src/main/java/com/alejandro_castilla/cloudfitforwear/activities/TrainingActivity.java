@@ -427,17 +427,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             locListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    long timeStamp = System.currentTimeMillis();
                     if (!firstLocationReceived) {
                         Log.d(TAG, "First location received.");
-                        GPSLocation GPSLoc = new GPSLocation(timeStamp);
-                        GPSLoc.setLatitude(location.getLatitude());
-                        GPSLoc.setLongitude(location.getLongitude());
-                        GPSLoc.setAltitude(location.getAltitude());
-                        GPSLoc.setTime(location.getTime());
-                        GPSLoc.setSpeed(location.getSpeed());
-                        GPSData.add(GPSLoc);
-                        locations.add(location);
+                        saveGPSData(location);
                         firstLocationReceived = true;
                         locationStatusTextView.setText("Recibiendo datos");
                     } else {
@@ -446,14 +438,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         DecimalFormat precision = new DecimalFormat("0.00");
                         totalDistance += locations.get(locations.size()-1)
                                 .distanceTo(location) / 1000;
-                        GPSLocation GPSLoc = new GPSLocation(timeStamp);
-                        GPSLoc.setLatitude(location.getLatitude());
-                        GPSLoc.setLongitude(location.getLongitude());
-                        GPSLoc.setAltitude(location.getAltitude());
-                        GPSLoc.setTime(location.getTime());
-                        GPSLoc.setSpeed(location.getSpeed());
-                        GPSData.add(GPSLoc);
-                        locations.add(location);
+                        saveGPSData(location);
                         distanceTextView.setText(precision.format(totalDistance));
                     }
 
@@ -496,9 +481,23 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 finish();
             }
         }
+    }
 
+    private void saveHeartRate(long timeMark, int heartRate) {
+        HeartRate hr = new HeartRate(timeMark, heartRate);
+        heartRateList.add(hr);
+    }
 
-
+    private void saveGPSData (Location l) {
+        long timeStamp = System.currentTimeMillis();
+        GPSLocation GPSLoc = new GPSLocation(timeStamp);
+        GPSLoc.setLatitude(l.getLatitude());
+        GPSLoc.setLongitude(l.getLongitude());
+        GPSLoc.setAltitude(l.getAltitude());
+        GPSLoc.setTime(l.getTime());
+        GPSLoc.setSpeed(l.getSpeed());
+        GPSData.add(GPSLoc);
+        locations.add(l);
     }
 
     private void stopServices() {
@@ -522,8 +521,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 maxDistance = running.getDistanceP();
                 Log.d(TAG, "Distance set");
-
-                //TODO Save distance and check when it's covered (GPS)
             } else if (running.getTimeP() != -1.0) {
 
                 if (running.getTimeMaxP() != -1.0) {
@@ -543,6 +540,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         }
                     });
                 }
+
             }
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             final Rest rest = currentExercise.getRest();
@@ -561,7 +559,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 }
             });
         } else {
-            //TODO Handle this situation (exercise not supported or another error)
+            Toast.makeText(this, "Ha ocurrido un error al preparar el entrenamiento",
+                    Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -580,8 +579,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         String trDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
 
         if (!tr.equals("")) {
-            //Training available.
-            if (!trDone.equals("")) {
+            //Training available
+            if (!trDone.equals("")) { //A training completed exists and needs an action
                 Intent intent = new Intent(TrainingActivity.this, MainActivity.class);
                 startActivity(intent);
                 Toast.makeText(this, "Sincroniza y/o elimina " +
@@ -647,6 +646,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         prepareCurrentExercise();
         startChronometerAndUpdateInfo(true, SystemClock.elapsedRealtime()); //Reset chronometer
 
+        //If session is paused, update layout and session status
+        if (sessionPaused) {
+            pauseActionImgView.setVisibility(View.VISIBLE);
+            resumeActionImgView.setVisibility(View.GONE);
+            pauseActionTextView.setVisibility(View.VISIBLE);
+            resumeActionTextView.setVisibility(View.GONE);
+
+            sessionPaused = false; //Session is started again
+        }
+
     }
 
     private void saveTrainingDataAndFinish() {
@@ -673,11 +682,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 ConfirmationActivity.SUCCESS_ANIMATION);
 
         finish();
-    }
-
-    private void saveHeartRate(long timeMark, int heartRate) {
-        HeartRate hr = new HeartRate(timeMark, heartRate);
-        heartRateList.add(hr);
     }
 
     private void saveExerciseData (long timeElapsed) {
