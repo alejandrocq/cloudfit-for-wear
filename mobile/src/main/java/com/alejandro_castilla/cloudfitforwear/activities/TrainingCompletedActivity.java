@@ -126,6 +126,12 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(cloudFitServiceConnection);
+    }
+
     /* Material Design Library methods */
 
     @Override
