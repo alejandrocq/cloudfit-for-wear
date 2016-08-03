@@ -139,7 +139,6 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
         for (Exercise ex : training.getExercises()) {
             ExerciseCompletedFragment fragment = new ExerciseCompletedFragment();
             fragment.setExercise(ex);
-            fragment.setTraining(training);
             handler.addPage(ex.getTitle(), fragment);
         }
         return handler;

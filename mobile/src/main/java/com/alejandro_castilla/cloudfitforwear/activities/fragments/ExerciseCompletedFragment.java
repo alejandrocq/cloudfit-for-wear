@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
-import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
@@ -35,7 +34,6 @@ import java.util.ArrayList;
  */
 public class ExerciseCompletedFragment extends ScrollViewFragment implements OnMapReadyCallback {
 
-    private WearableTraining training;
     private Exercise exercise;
 
     private MapView mapView;
@@ -44,8 +42,17 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /* Draw heart rate chart */
+        drawHeartRateChart(view);
+        calculateResultsAndUpdateViews(view);
 
+        /* Load Google map */
+
+        mapView = (MapView) view.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+    }
+
+    private void drawHeartRateChart(View view) {
         LineChart chart = (LineChart) view.findViewById(R.id.heartRateChart);
         chart.setDescription("Tiempo (s)");
 
@@ -90,9 +97,9 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         LineData data = new LineData(dataSets);
         chart.setData(data);
         chart.invalidate();
+    }
 
-        /*Set results*/
-
+    private void calculateResultsAndUpdateViews(View view) {
         TextView timeElapsedTextView = (TextView) view.findViewById(R.id.timeElapsedText);
         TextView averageHrTextView = (TextView) view.findViewById(R.id.averageHrText);
         TextView maxHrTextView = (TextView) view.findViewById(R.id.maxHrText);
@@ -116,29 +123,38 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         int averageHr = 0;
 
         if (exercise.getHeartRateList().size()>0) {
-            maxHr = (int) chart.getYMax();
-            minHr = (int) chart.getYMin();
+            maxHr = getHeartRateMax(exercise.getHeartRateList());
+            minHr = getHeartRateMin(exercise.getHeartRateList());
             averageHr = sumHr / exercise.getHeartRateList().size();
         }
 
         averageHrTextView.setText(averageHr + " bpm (medio)");
         maxHrTextView.setText(maxHr + " bpm (máx.)");
         minHrTextView.setText(minHr + " bpm (mín.)");
+    }
 
-        /* Load map */
+    private int getHeartRateMax (ArrayList<HeartRate> hrList) {
+        int maxValue = hrList.get(0).getValue();
 
-        mapView = (MapView) view.findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
+        for (HeartRate hr : hrList) {
+            if (hr.getValue() > maxValue) maxValue = hr.getValue();
+        }
 
-        mapView.getMapAsync(this);
+        return maxValue;
+    }
+
+    private int getHeartRateMin (ArrayList<HeartRate> hrList) {
+        int minValue = hrList.get(0).getValue();
+
+        for (HeartRate hr : hrList) {
+            if (hr.getValue() < minValue) minValue = hr.getValue();
+        }
+
+        return minValue;
     }
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
-    }
-
-    public void setTraining(WearableTraining training) {
-        this.training = training;
     }
 
     /* Google Maps API methods */
