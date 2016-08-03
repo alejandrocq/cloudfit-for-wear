@@ -78,7 +78,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     /* Preferences fields */
 
+    private boolean heartRateEnabled;
     private boolean zephyrEnabled;
+    private boolean locationEnabled;
 
     /* Status fields */
 
@@ -344,8 +346,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     protected void onDestroy() {
         stopServices();
 
-        if (!zephyrEnabled) {
-            sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
+        if (heartRateEnabled) {
+            if (!zephyrEnabled) {
+                sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
+            }
         }
 
         try {
@@ -360,7 +364,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void initSensors() {
-        if (zephyrEnabled) {
+        if (heartRateEnabled && zephyrEnabled) {
             // Start bluetooth and Zephyr sensor services
             infoTextView.setText("Conectando con el sensor...");
 
@@ -377,7 +381,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             bindService(zephyrServiceIntent, zephyrServiceConnection,
                     Context.BIND_AUTO_CREATE);
             zephyrServiceBinded = true;
-        } else {
+        } else if (heartRateEnabled) {
             //Initialize internal heart rate sensor (if it's available)
             infoTextView.setText("Iniciando pulsómetro...");
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -394,10 +398,21 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             }
             sensorManager.registerListener(TrainingActivity.this, heartRateInternalSensor,
                     SensorManager.SENSOR_DELAY_UI);
+        } else {
+            //Start without heart rate sensors
+            startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
+            chronoAllowedToStart = false;
+            pauseActionImgView.setOnClickListener(TrainingActivity.this);
+            heartSensorStatusTextView.setText("Desactivado");
         }
     }
 
     private void initLocation() {
+        if (!locationEnabled) {
+            locationStatusTextView.setText("Desactivado");
+            return;
+        }
+
         firstLocationReceived = false;
         GPSData = new ArrayList<>();
         locations = new ArrayList<>();
@@ -557,7 +572,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void checkSharedPreferencesAndParseTraining() {
         //Check if the user wants to use Zephyr Sensor
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        heartRateEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_HEART_RATE_ENABLED, false);
         zephyrEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_ZEPHYR_ENABLED, false);
+        locationEnabled = prefs.getBoolean(StaticVariables.KEY_PREF_LOCATION_ENABLED, false);
 
         String tr = prefs.getString(StaticVariables.KEY_TRAINING_TO_BE_DONE, "");
         String trDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
