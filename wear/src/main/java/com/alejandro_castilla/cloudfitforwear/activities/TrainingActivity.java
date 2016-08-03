@@ -363,6 +363,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void initSensors() {
+        heartRateList = new ArrayList<>();
         if (heartRateEnabled && zephyrEnabled) {
             // Start bluetooth and Zephyr sensor services
             infoTextView.setText("Conectando con el sensor...");
@@ -407,13 +408,14 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void initLocation() {
+        GPSData = new ArrayList<>();
+
         if (!locationEnabled) {
             locationStatusTextView.setText("Desactivado");
             return;
         }
 
         firstLocationReceived = false;
-        GPSData = new ArrayList<>();
         locations = new ArrayList<>();
         totalDistance = 0;
 
