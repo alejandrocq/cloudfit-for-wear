@@ -111,16 +111,19 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             sumHr += hr.getValue();
         }
 
+        int maxHr = 0;
+        int minHr = 0;
         int averageHr = 0;
 
         if (exercise.getHeartRateList().size()>0) {
+            maxHr = (int) chart.getYMax();
+            minHr = (int) chart.getYMin();
             averageHr = sumHr / exercise.getHeartRateList().size();
         }
 
         averageHrTextView.setText(averageHr + " bpm (medio)");
-
-        maxHrTextView.setText((int) chart.getYMax() + " bpm (máx.)");
-        minHrTextView.setText((int) chart.getYMin() + " bpm (mín.)");
+        maxHrTextView.setText(maxHr + " bpm (máx.)");
+        minHrTextView.setText(minHr + " bpm (mín.)");
 
         /* Load map */
 
