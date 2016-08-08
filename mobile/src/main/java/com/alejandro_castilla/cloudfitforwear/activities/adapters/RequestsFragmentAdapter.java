@@ -1,6 +1,7 @@
 package com.alejandro_castilla.cloudfitforwear.activities.adapters;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,13 +102,13 @@ public class RequestsFragmentAdapter extends
                     new ReplyToRequestTask(context, cloudFitService,
                             Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
                             requests.get(position).getTrainerid(), StaticReferences.REQUEST_ACCEPT)
-                            .execute();
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
                 case StaticVariables.HIGHLIGHT_BUTTON:
                     new ReplyToRequestTask(context, cloudFitService,
                             Long.parseLong(cloudFitService.getFit().getSetting().getUserID()),
                             requests.get(position).getTrainerid(), StaticReferences.REQUEST_CANCEL)
-                            .execute();
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
             }
         }
