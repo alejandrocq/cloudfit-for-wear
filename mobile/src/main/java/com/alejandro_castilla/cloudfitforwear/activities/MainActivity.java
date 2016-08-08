@@ -127,7 +127,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                         showTrainingReceivedErrorDialog();
                     }
 
-
+                    trainingsCompletedSection.setNotifications(db.getAllTrainings().size());
                     break;
             }
             super.handleMessage(msg);
