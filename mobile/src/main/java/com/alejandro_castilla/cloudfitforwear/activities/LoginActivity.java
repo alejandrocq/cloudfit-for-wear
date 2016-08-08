@@ -1,13 +1,18 @@
 package com.alejandro_castilla.cloudfitforwear.activities;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +35,7 @@ import com.github.florent37.materialtextfield.MaterialTextField;
 public class LoginActivity extends com.blunderer.materialdesignlibrary.activities.Activity {
 
     private final String TAG = LoginActivity.class.getSimpleName();
+    private final int PERMISSIONS_REQUEST_CODE = 0xFF;
 
     private EditText userTextField;
     private EditText passTextField;
@@ -60,25 +66,11 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         }
     };
 
-    /**
-     * Checks if directory and database are created. If not, creates all of them.
-     */
-    private void checkCloudFitDatabase() {
-        //Database for CloudFit API
-        Utils.checkDataBaseTimestamp();
-        boolean res = Utils.checkDirectory();
-        if (!res) {
-            Toast.makeText(this, "Ha ocurrido un error al acceder al sistema de archivos",
-                    Toast.LENGTH_LONG).show();
-            finish();
-        }
-        db = new zDB(this);
-        db.open();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkPermissions();
 
         setTitle(""); //Don't need an activity title here.
 
@@ -89,7 +81,6 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
         ButtonFlat loginButton = (ButtonFlat) findViewById(R.id.loginButton);
         ImageView settingsImgView = (ImageView) findViewById(R.id.settingsImg);
 
-        checkCloudFitDatabase();
         Intent cloudFitServiceIntent = new Intent(LoginActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
@@ -152,10 +143,72 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        boolean permissionsGranted = true;
+
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE:
+
+                for (int result : grantResults) {
+                    if (!(result == PackageManager.PERMISSION_GRANTED)) {
+                        permissionsGranted = false;
+                    }
+                }
+
+                if (permissionsGranted) {
+                    checkCloudFitDatabase();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Permisos insuficientes",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
+                break;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         unbindService(cloudFitServiceConnection);
         db.close();
         super.onDestroy();
+    }
+
+    /**
+     * Checks if directory and database are created. If not, creates all of them.
+     */
+    private void checkCloudFitDatabase() {
+        //Database for CloudFit API
+        Utils.checkDataBaseTimestamp();
+        boolean res = Utils.checkDirectory();
+        if (!res) {
+            Toast.makeText(this, "Ha ocurrido un error al acceder al sistema de archivos",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+        db = new zDB(this);
+        db.open();
+    }
+
+    private void checkPermissions() {
+        boolean readGranted = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean writeGranted = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+        if (!readGranted || !writeGranted) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+            Log.d(TAG, "Permissions requested");
+        } else {
+            checkCloudFitDatabase();
+        }
     }
 
     public void showNoInternetConnectionDialog() {
