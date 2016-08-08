@@ -40,7 +40,7 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     private EditText userTextField;
     private EditText passTextField;
 
-    private String username, password, cloudFitUrl;
+    private String username, password;
     private zDB db;
     private CloudFitService cloudFitService;
 
@@ -115,7 +115,7 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
                             "http://cloudfit-for-wear.appspot.com");
                     new MaterialDialog.Builder(LoginActivity.this)
                             .title("Configuración URL CloudFit")
-                            .content("Introduce aquí la URL de la plataforma CloudFit")
+                            .content("Introduzca aquí la URL de la plataforma CloudFit")
                             .inputType(InputType.TYPE_CLASS_TEXT)
                             .positiveText("Establecer URL")
                             .input("URL de CloudFit", cloudFitUrl,
