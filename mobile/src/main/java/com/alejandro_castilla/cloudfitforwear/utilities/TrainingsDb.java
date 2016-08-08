@@ -142,15 +142,23 @@ public class TrainingsDb {
 
     public boolean insertTraining (WearableTraining tr) {
         boolean res;
+        String query;
         Gson gson = new Gson();
 
         try {
-            openDb();
-            String query = "INSERT INTO " + TABLE_TRAININGS + " (training_data_json) "
-                    + "VALUES (" + "'" + gson.toJson(tr) + "'" + ")";
-            Log.d(TAG, "QUERY INSERT TRAINING: " + query);
-            res = execQuery(query);
+            if (!checkIfTrainingAlreadyExistsOnDatabase(tr.getCloudFitId())) {
+                query = "INSERT INTO " + TABLE_TRAININGS + " (training_data_json) "
+                        + "VALUES (" + "'" + gson.toJson(tr) + "'" + ")";
+                Log.d(TAG, "QUERY INSERT TRAINING: " + query);
+            } else {
+                Long trId = getTrainingIdFromCloudFitId(tr.getCloudFitId());
+                query = "UPDATE " + TABLE_TRAININGS + " SET training_data_json='"
+                        + gson.toJson(tr) + "' WHERE ID=" + trId;
+                Log.d(TAG, "QUERY UPDATE TRAINING: " + query);
+            }
 
+            openDb();
+            res = execQuery(query);
             closeDb();
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,11 +170,27 @@ public class TrainingsDb {
     }
 
     public boolean checkIfTrainingAlreadyExistsOnDatabase (long cloudfitId) {
-        boolean res;
+        ArrayList<WearableTraining> trainings = getAllTrainings();
 
-
+        for (WearableTraining tr : trainings) {
+            if (tr.getCloudFitId() == cloudfitId) {
+                return true;
+            }
+        }
 
         return false;
+    }
+
+    public long getTrainingIdFromCloudFitId (long cloudfitId) {
+        ArrayList<WearableTraining> trainings = getAllTrainings();
+
+        for (WearableTraining tr : trainings) {
+            if (tr.getCloudFitId() == cloudfitId) {
+                return tr.getTrainingId();
+            }
+        }
+
+        return -1;
     }
 
     public void updateTrainingState (int state) {

@@ -109,7 +109,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     trDone = gson
                             .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
                                     WearableTraining.class);
-                    //TODO Check if training exists before insert.
                     boolean res = db.insertTraining(trDone);
 
                     if (res) {
