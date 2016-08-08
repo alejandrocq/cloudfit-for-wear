@@ -8,6 +8,7 @@
         android:id="@+id/requestsCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
         app:mdl_title="Petición"
         app:mdl_description=""
         app:mdl_normalButton="Aceptar"
