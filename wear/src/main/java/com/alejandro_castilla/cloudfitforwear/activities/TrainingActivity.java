@@ -234,6 +234,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 dotsPageIndicator.setPager(gridViewPager);
 
                 checkSharedPreferencesAndParseTraining();
+                if (isFinishing()) return; //Avoid execution of unnecessary code
 
                 //Check necessary permissions and request them
 
