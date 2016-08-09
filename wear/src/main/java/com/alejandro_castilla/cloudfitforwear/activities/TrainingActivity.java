@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -60,6 +61,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private final String TAG = TrainingActivity.class.getSimpleName();
     private final int PERMISSIONS_REQUEST_CODE = 0xFF;
+
+    private PowerManager.WakeLock wakeLock;
 
     /*Fields for the views used on the layout*/
 
@@ -107,6 +110,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private ArrayList<GPSLocation> GPSLocationsList;
     private ArrayList<Location> locations;
     private ArrayList<ACCData> accDataList;
+    private long accReferenceTimeStamp;
 
     /* Location fields */
 
@@ -260,6 +264,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         });
 
         setAmbientEnabled();
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "CloudFit For Wear");
+        wakeLock.acquire();
     }
 
     @Override
@@ -356,12 +365,15 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             e.printStackTrace();
         }
 
+        wakeLock.release();
+
         super.onDestroy();
     }
 
     private void initSensors() {
         heartRateList = new ArrayList<>();
         accDataList = new ArrayList<>();
+        accReferenceTimeStamp = 0;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -702,7 +714,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             currentExercise.getRest().setRestr((int) (timeElapsed/1000));
             currentExercise.setHeartRateList(heartRateList);
-            currentExercise.setAccDataList(accDataList);
             exercisesCompleted.add(currentExercise);
         }
     }
@@ -714,13 +725,15 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
-                if (!sessionPaused) {
+                //Save acc data every 1 second using a time as reference
+                if (!sessionPaused && (System.currentTimeMillis() - accReferenceTimeStamp) > 1000) {
                     ACCData accData = new ACCData();
                     accData.setxValue(event.values[0]);
                     accData.setyValue(event.values[1]);
                     accData.setzValue(event.values[2]);
                     accData.setTimeStamp(System.currentTimeMillis());
                     accDataList.add(accData);
+                    accReferenceTimeStamp = System.currentTimeMillis();
                 }
                 break;
             case Sensor.TYPE_HEART_RATE:
