@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingActivityGridPagerAdapter;
+import com.alejandro_castilla.cloudfitforwear.data.ACCData;
 import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
@@ -94,7 +95,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Internal sensors fields */
 
     private SensorManager sensorManager;
-    private Sensor heartRateInternalSensor;
 
     /* Data fields */
 
@@ -104,8 +104,9 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private int currentExerciseIndex;
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
-    private ArrayList<GPSLocation> GPSData;
+    private ArrayList<GPSLocation> GPSLocationsList;
     private ArrayList<Location> locations;
+    private ArrayList<ACCData> accDataList;
 
     /* Location fields */
 
@@ -345,12 +346,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         stopServices();
-
-        if (heartRateEnabled) {
-            if (!zephyrEnabled) {
-                sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
-            }
-        }
+        sensorManager.unregisterListener(this); //Listener for internal heart rate sensor and acc
 
         try {
             if (locManager != null) {
@@ -365,6 +361,13 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void initSensors() {
         heartRateList = new ArrayList<>();
+        accDataList = new ArrayList<>();
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(TrainingActivity.this, accSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
+
         if (heartRateEnabled && zephyrEnabled) {
             // Start bluetooth and Zephyr sensor services
             infoTextView.setText("Conectando con el sensor...");
@@ -385,8 +388,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         } else if (heartRateEnabled) {
             //Initialize internal heart rate sensor (if it's available)
             infoTextView.setText("Iniciando pulsómetro...");
-            sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            heartRateInternalSensor = sensorManager
+            Sensor heartRateInternalSensor = sensorManager
                     .getDefaultSensor(Sensor.TYPE_HEART_RATE);
             if (heartRateInternalSensor == null) {
                 Intent intent = new Intent (TrainingActivity.this, MainActivity.class);
@@ -409,7 +411,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void initLocation() {
-        GPSData = new ArrayList<>();
+        GPSLocationsList = new ArrayList<>();
 
         if (!locationEnabled) {
             locationStatusTextView.setText("Desactivado");
@@ -498,7 +500,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         GPSLoc.setAltitude(l.getAltitude());
         GPSLoc.setTime(l.getTime());
         GPSLoc.setSpeed(l.getSpeed());
-        GPSData.add(GPSLoc);
+        GPSLocationsList.add(GPSLoc);
         locations.add(l);
     }
 
@@ -635,7 +637,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private void resetDataAndMoveToNextExercise() {
         maxDistance = 0;
         heartRateList = new ArrayList<>(); //Reset heart rate data
-        GPSData = new ArrayList<>(); //Reset location data
+        GPSLocationsList = new ArrayList<>(); //Reset location data
+        accDataList = new ArrayList<>(); //Reset acc data
         chronometer.stop();
         currentExerciseIndex++;
 
@@ -693,33 +696,51 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             currentExercise.getRunning().setDistanceR(totalDistance);
             currentExercise.getRunning().setTimeR(timeElapsed/1000); //Time is saved in seconds
             currentExercise.setHeartRateList(heartRateList);
-            currentExercise.setGPSData(GPSData);
+            currentExercise.setGPSData(GPSLocationsList);
+            currentExercise.setAccDataList(accDataList);
             exercisesCompleted.add(currentExercise);
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             currentExercise.getRest().setRestr((int) (timeElapsed/1000));
             currentExercise.setHeartRateList(heartRateList);
+            currentExercise.setAccDataList(accDataList);
             exercisesCompleted.add(currentExercise);
         }
     }
 
-    /* Methods for internal heart rate sensor */
+    /* Methods for internal sensors */
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
-        chronoAllowedToStart = false;
-        pauseActionImgView.setOnClickListener(TrainingActivity.this);
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                if (!sessionPaused) {
+                    ACCData accData = new ACCData();
+                    accData.setxValue(event.values[0]);
+                    accData.setyValue(event.values[1]);
+                    accData.setzValue(event.values[2]);
+                    accData.setTimeStamp(System.currentTimeMillis());
+                    accDataList.add(accData);
+                }
+                break;
+            case Sensor.TYPE_HEART_RATE:
+                startChronometerAndUpdateInfo(chronoAllowedToStart, SystemClock.elapsedRealtime());
+                chronoAllowedToStart = false;
+                pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
-        if (!sessionPaused) {
-            float heartRateFloat = event.values[0];
-            int heartRateInt = Math.round(heartRateFloat);
-            long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+                if (!sessionPaused) {
+                    float heartRateFloat = event.values[0];
+                    int heartRateInt = Math.round(heartRateFloat);
+                    long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
 
-            saveHeartRate(timeMark, heartRateInt);
+                    saveHeartRate(timeMark, heartRateInt);
 
-            heartRateTextView.setText(Integer.toString(heartRateInt));
+                    heartRateTextView.setText(Integer.toString(heartRateInt));
+                }
+                break;
         }
+
+
     }
 
     @Override

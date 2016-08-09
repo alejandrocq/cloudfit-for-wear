@@ -1,5 +1,6 @@
 package com.alejandro_castilla.cloudfitforwear.data.exercises;
 
+import com.alejandro_castilla.cloudfitforwear.data.ACCData;
 import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 
@@ -22,6 +23,7 @@ public class Exercise {
     private long endTime;
     private ArrayList<HeartRate> heartRateList;
     private ArrayList<GPSLocation> GPSData;
+    private ArrayList<ACCData> accDataList;
 
     private Running running;
     private Rest rest;
@@ -112,5 +114,13 @@ public class Exercise {
 
     public void setGPSData(ArrayList<GPSLocation> GPSData) {
         this.GPSData = GPSData;
+    }
+
+    public ArrayList<ACCData> getAccDataList() {
+        return accDataList;
+    }
+
+    public void setAccDataList(ArrayList<ACCData> accDataList) {
+        this.accDataList = accDataList;
     }
 }
