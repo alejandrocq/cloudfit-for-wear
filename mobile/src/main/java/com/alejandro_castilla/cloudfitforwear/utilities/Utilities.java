@@ -9,12 +9,14 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup1;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.ExerciseGroup5;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.exercises.OptionalGroup1;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.ACCModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.GPSModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.HRModel;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Element;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
+import com.alejandro_castilla.cloudfitforwear.data.AccData;
 import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
@@ -199,6 +201,7 @@ public class Utilities {
                     running.setEndtime(ex.getEndTime());
                     running.setHeartRateData(heartRateToHRModel(ex.getHeartRateList()));
                     running.setGPSData(GPSDataToGPSModel(ex.getGPSData()));
+                    running.setAccDataList(ACCDataToACCModel(ex.getAccDataList()));
 
                     if (ex.getRunning().getHeartRateMin() != -1
                             && ex.getRunning().getHeartRateMax() != -1) {
@@ -263,6 +266,21 @@ public class Utilities {
         }
 
         return GPSModels;
+    }
+
+    public static ArrayList<ACCModel> ACCDataToACCModel (ArrayList<AccData> accDataList) {
+        ArrayList<ACCModel> ACCModels = new ArrayList<>();
+
+        for (AccData accData : accDataList) {
+            ACCModel model = new ACCModel();
+            model.setTimestamp(accData.getTimeStamp());
+            model.setX_AXIS(accData.getxValue());
+            model.setY_AXIS(accData.getyValue());
+            model.setZ_AXIS(accData.getzValue());
+            ACCModels.add(model);
+        }
+
+        return ACCModels;
     }
 
     public static String secondsToStandardFormat (long totalSeconds) {
