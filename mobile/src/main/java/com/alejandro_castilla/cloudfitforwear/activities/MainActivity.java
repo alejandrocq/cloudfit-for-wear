@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
 import it.neokree.materialnavigationdrawer.elements.MaterialSection;
+import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionListener;
 
 public class MainActivity extends MaterialNavigationDrawer implements CloudFitDataHandler {
 
@@ -152,11 +153,23 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 R.drawable.ic_running_background);
         this.addAccount(account);
 
+        MaterialSection closeSessionSection = newSection("Cerrar sesión",
+                R.drawable.ic_action_exit);
+        closeSessionSection.setOnClickListener(new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        this.addAccountSection(closeSessionSection);
+
         trainingsSection = newSection("Entrenamientos", R.drawable.ic_action_event,
                 trainingsFragment);
         requestsSection = newSection("Peticiones", R.drawable.ic_social_group_add,
                 requestsFragment);
-        //TODO complete intent with settings activity
         this.addSection(trainingsSection);
         this.addSection(requestsSection);
 
