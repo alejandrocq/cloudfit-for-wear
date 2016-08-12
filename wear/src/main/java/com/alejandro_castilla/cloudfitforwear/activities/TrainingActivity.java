@@ -106,6 +106,8 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     private int currentExerciseIndex;
     private double maxDistance;
     private long accReferenceTimeStamp;
+    private int heartRateMax;
+    private int heartRateMin;
 
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
@@ -179,6 +181,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                         String heartRateString = msg.getData().getString("heartratestring");
                         long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
                         int heartRateInt = Integer.parseInt(heartRateString);
+                        checkHeartRate(heartRateInt);
                         saveHeartRate(timeMark, heartRateInt);
                         heartRateTextView.setText(heartRateString);
                     }
@@ -425,7 +428,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void initLocation() {
         GPSLocationsList = new ArrayList<>();
-        maxDistance = 0;
 
         if (!locationEnabled) {
             locationStatusTextView.setText("Desactivado");
@@ -506,6 +508,22 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         heartRateList.add(hr);
     }
 
+    private void checkHeartRate (int hrValue) {
+        if (heartRateMin != 0) {
+
+            if (hrValue < heartRateMin) {
+                infoTextView.setText("¡Frec. cardíaca muy baja!");
+                Utilities.vibrate(this, 2000);
+            }
+
+            if (hrValue > heartRateMax) {
+                infoTextView.setText("¡Frec. cardíaca demasiado alta!");
+                Utilities.vibrate(this, 2000);
+            }
+
+        }
+    }
+
     private void saveGPSData (Location l) {
         long timeStamp = System.currentTimeMillis();
         GPSLocation GPSLoc = new GPSLocation(timeStamp);
@@ -533,12 +551,15 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void prepareCurrentExercise() {
+        maxDistance = 0;
+        heartRateMin = 0;
+        heartRateMax = 0;
+
         if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
             final Running running = currentExercise.getRunning();
 
             if (running.getDistanceP() != -1.0 && running.getDistanceP() != 0.0) {
                 maxDistance = running.getDistanceP();
-                Log.d(TAG, "Distance set");
             } else if (running.getTimeP() != -1.0) {
 
                 if (running.getTimeMaxP() != -1.0) {
@@ -560,6 +581,15 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 }
 
             }
+
+            if (running.getHeartRateMin() > 0) {
+                heartRateMin = running.getHeartRateMin();
+            }
+
+            if (running.getHeartRateMax() > 0) {
+                heartRateMax = running.getHeartRateMax();
+            }
+
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
             final Rest rest = currentExercise.getRest();
 
@@ -749,6 +779,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                     int heartRateInt = Math.round(heartRateFloat);
                     long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
 
+                    checkHeartRate(heartRateInt);
                     saveHeartRate(timeMark, heartRateInt);
 
                     heartRateTextView.setText(Integer.toString(heartRateInt));
