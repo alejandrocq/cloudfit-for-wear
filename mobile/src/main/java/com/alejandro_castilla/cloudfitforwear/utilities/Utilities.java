@@ -1,6 +1,7 @@
 package com.alejandro_castilla.cloudfitforwear.utilities;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -281,6 +282,26 @@ public class Utilities {
         }
 
         return ACCModels;
+    }
+
+    public static float calculateTotalDistance (ArrayList<GPSLocation> locations) {
+        float totalDistance = 0;
+
+        for (int i = 0; i < locations.size(); i++) {
+            if (i+1 == locations.size()) break;
+
+            Location loc1 = new Location("Location 1");
+            loc1.setLatitude(locations.get(i).getLatitude());
+            loc1.setLongitude(locations.get(i).getLongitude());
+
+            Location loc2 = new Location("Location 2");
+            loc2.setLatitude(locations.get(i+1).getLatitude());
+            loc2.setLongitude(locations.get(i+1).getLongitude());
+
+            totalDistance += loc1.distanceTo(loc2) / 1000; //In kilometers
+        }
+
+        return totalDistance;
     }
 
     public static String secondsToStandardFormat (long totalSeconds) {

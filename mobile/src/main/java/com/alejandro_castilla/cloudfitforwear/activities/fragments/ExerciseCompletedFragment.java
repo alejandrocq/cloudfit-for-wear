@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -27,11 +28,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 31/07/16.
- */
 public class ExerciseCompletedFragment extends ScrollViewFragment implements OnMapReadyCallback {
 
     private Exercise exercise;
@@ -42,14 +41,14 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        drawHeartRateChart(view);
-        calculateResultsAndUpdateViews(view);
-
         /* Load Google map */
 
         mapView = (MapView) view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        drawHeartRateChart(view);
+        calculateResultsAndUpdateViews(view);
     }
 
     private void drawHeartRateChart(View view) {
@@ -105,12 +104,27 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         TextView maxHrTextView = (TextView) view.findViewById(R.id.maxHrText);
         TextView minHrTextView = (TextView) view.findViewById(R.id.minHrText);
 
+        ImageView distanceIcon = (ImageView) view.findViewById(R.id.distanceIcon);
+        TextView distanceTextView = (TextView) view.findViewById(R.id.distanceText);
+        TextView mapTitleTextView = (TextView) view.findViewById(R.id.mapTitle);
+
         if (exercise.getType() == Exercise.TYPE_RUNNING) {
             timeElapsedTextView
                     .setText(Utilities.secondsToStringFormat(exercise.getRunning().getTimeR()));
-        } else {
+
+            DecimalFormat precision = new DecimalFormat("0.00");
+            String totalDistance = precision.format(Utilities
+                    .calculateTotalDistance(exercise.getGPSData()));
+            distanceTextView.setText(totalDistance +" (km)");
+        } else if (exercise.getType() == Exercise.TYPE_REST) {
             timeElapsedTextView
                     .setText(Utilities.secondsToStringFormat(exercise.getRest().getRestr()));
+
+            //We don't need location results on rest exercises
+            distanceIcon.setVisibility(View.GONE);
+            distanceTextView.setVisibility(View.GONE);
+            mapTitleTextView.setVisibility(View.GONE);
+            mapView.setVisibility(View.GONE);
         }
 
         int sumHr = 0;
