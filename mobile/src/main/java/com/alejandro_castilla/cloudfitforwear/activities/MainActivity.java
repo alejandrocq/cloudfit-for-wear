@@ -167,11 +167,8 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
 
         this.addSection(trainingsCompletedSection);
 
-        MaterialSection settingsSection = newSection("Configuración", R.drawable.ic_action_settings,
-                new Intent());
         MaterialSection aboutSection = newSection("Acerca de", R.drawable.ic_action_help,
                 new Intent());
-        this.addBottomSection(settingsSection);
         this.addBottomSection(aboutSection);
 
         ActionBar actionBar = getSupportActionBar();
