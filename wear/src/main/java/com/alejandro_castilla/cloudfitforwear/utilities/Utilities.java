@@ -11,9 +11,6 @@ import android.support.wearable.activity.ConfirmationActivity;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 
-/**
- * Created by alejandrocq on 6/07/16.
- */
 public class Utilities {
 
     public static String buildExerciseInfo (Exercise ex) {
@@ -22,10 +19,10 @@ public class Utilities {
         switch (ex.getType()) {
             case Exercise.TYPE_RUNNING:
                 if (ex.getRunning().getTimeP()>0) {
-                    exInfo += "Tiempo min.: "
+                    exInfo += "Tiempo mín.: "
                             + secondsToStandardFormat(ex.getRunning().getTimeP()) + "\n";
                     if (ex.getRunning().getTimeMaxP()>0) {
-                        exInfo += "Tiempo max.: "
+                        exInfo += "Tiempo máx.: "
                                 + secondsToStandardFormat(ex.getRunning().getTimeMaxP()) + "\n";
                     }
                 } else if (ex.getRunning().getDistanceP() != -1.0) {
@@ -34,9 +31,9 @@ public class Utilities {
                 }
 
                 if (ex.getRunning().getHeartRateMin()>0 && ex.getRunning().getHeartRateMax()>0) {
-                    exInfo += "Frec. min.: "
+                    exInfo += "Frec. mín.: "
                             + ex.getRunning().getHeartRateMin() + "\n"
-                            + "Frec. max.: " + ex.getRunning().getHeartRateMax()
+                            + "Frec. máx.: " + ex.getRunning().getHeartRateMax()
                             + "\n";
                 }
                 break;

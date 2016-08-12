@@ -22,13 +22,13 @@
             android:background="@color/md_white_1000">
 
             <ImageView
+                android:id="@+id/imgcloudfit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_cloudfit"
                 android:layout_marginTop="46dp"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/imgcloudfit" />
+                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/startInfoText"
@@ -39,15 +39,16 @@
                 android:layout_marginTop="12sp"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/md_black_1000"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
+
             <ImageView
+                android:id="@+id/settingsImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_settings"
-                android:id="@+id/settingsImg"
                 android:layout_below="@id/startInfoText"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="12sp"/>
+                android:layout_marginTop="12sp" />
 
         </RelativeLayout>
 
@@ -81,7 +82,7 @@
 
         </RelativeLayout>
 
-        <!--Layout for previous practices action-->
+        <!--Layout for training completed-->
 
         <RelativeLayout
             android:id="@+id/syncTrainingLayout"

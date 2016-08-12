@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.MainActivity"
     tools:deviceIds="wear_round"
     android:background="@color/md_white_1000">
@@ -22,40 +22,33 @@
             android:background="@color/md_white_1000">
 
             <ImageView
+                android:id="@+id/imgcloudfit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_cloudfit"
                 android:layout_marginTop="46dp"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/imgcloudfit" />
+                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/startInfoText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sin entrenamientos disponibles"
+                android:text="@string/text_training_not_available"
                 android:textSize="18sp"
                 android:layout_below="@id/imgcloudfit"
                 android:layout_marginTop="12sp"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/md_black_1000"/>
+
             <ImageView
+                android:id="@+id/settingsImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_settings"
-                android:id="@+id/settingsImg"
                 android:layout_below="@id/startInfoText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="18sp"/>
-            <!--<ImageView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:src="@drawable/ic_sync_black_24dp"-->
-                <!--android:id="@+id/imgsync"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_toStartOf="@+id/imgcloudfit"-->
-                <!--android:layout_marginBottom="41dp" />-->
 
         </RelativeLayout>
 
@@ -89,7 +82,7 @@
 
         </RelativeLayout>
 
-        <!--Layout for previous practices action-->
+        <!--Layout for training completed-->
 
         <RelativeLayout
             android:id="@+id/syncTrainingLayout"
@@ -117,6 +110,76 @@
                 android:textSize="18sp"
                 android:textColor="@color/md_black_1000"
                 android:textAlignment="center"/>
+
+            <!--Items to sync training to the handheld-->
+
+            <TextView
+                android:id="@+id/trainingCompletedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_training_completed"
+                android:textSize="18sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/uploadActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_file_cloud_upload"
+                android:visibility="gone"
+                android:layout_below="@id/trainingCompletedText"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/uploadActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_send_to_handheld"
+                android:textSize="17sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_below="@id/uploadActionImg"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/deleteActionImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_action_delete"
+                android:visibility="gone"
+                android:layout_marginTop="15sp"
+                android:layout_below="@id/uploadActionText" />
+
+            <TextView
+                android:id="@+id/deleteActionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_delete"
+                android:textSize="17sp"
+                android:textAlignment="center"
+                android:textColor="@color/md_grey_800"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_below="@id/deleteActionImg"
+                android:visibility="gone"/>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/uploadProgressView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:indicator="BallSpinFadeLoader"
+                app:indicator_color="@color/md_blue_500"
+                android:layout_toEndOf="@id/uploadActionImg"
+                android:layout_alignTop="@id/uploadActionImg"
+                android:layout_alignBottom="@id/uploadActionImg"/>
 
         </RelativeLayout>
 
