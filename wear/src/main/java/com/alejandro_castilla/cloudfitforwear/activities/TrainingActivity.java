@@ -359,7 +359,11 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         stopServices();
-        sensorManager.unregisterListener(this); //Listener for internal heart rate sensor and acc
+
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this); //Listener for internal heart rate sensor
+                                                    // and acc
+        }
 
         try {
             if (locManager != null) {
