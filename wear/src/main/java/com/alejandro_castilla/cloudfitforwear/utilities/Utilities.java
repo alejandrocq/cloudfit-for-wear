@@ -84,7 +84,7 @@ public class Utilities {
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         //Don't need the ID for the moment, so we set it to 0
         manager.notify(0, builder.build());
-        vibrate(ctx, 300);
+        vibrate(ctx, 1000);
     }
 
     public static void vibrate (Context ctx, int millis) {

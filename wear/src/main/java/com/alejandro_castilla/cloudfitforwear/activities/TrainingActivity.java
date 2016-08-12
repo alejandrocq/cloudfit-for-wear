@@ -102,15 +102,16 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     /* Data fields */
 
     private WearableTraining training;
-    private double maxDistance = 0;
     private Exercise currentExercise;
     private int currentExerciseIndex;
+    private double maxDistance;
+    private long accReferenceTimeStamp;
+
     private ArrayList<Exercise> exercisesCompleted;
     private ArrayList<HeartRate> heartRateList;
     private ArrayList<GPSLocation> GPSLocationsList;
     private ArrayList<Location> locations;
     private ArrayList<ACCData> accDataList;
-    private long accReferenceTimeStamp;
 
     /* Location fields */
 
@@ -424,6 +425,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void initLocation() {
         GPSLocationsList = new ArrayList<>();
+        maxDistance = 0;
 
         if (!locationEnabled) {
             locationStatusTextView.setText("Desactivado");
@@ -651,6 +653,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         heartRateList = new ArrayList<>(); //Reset heart rate data
         GPSLocationsList = new ArrayList<>(); //Reset location data
         accDataList = new ArrayList<>(); //Reset acc data
+
         chronometer.stop();
         currentExerciseIndex++;
 
