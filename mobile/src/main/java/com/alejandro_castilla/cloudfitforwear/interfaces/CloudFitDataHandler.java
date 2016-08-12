@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public interface CloudFitDataHandler {
 
-    void saveUserInfo(User cloudFitUser);
+    void saveUserInfoAndUpdateData(User cloudFitUser);
     void saveRequests(ArrayList<RequestTrainer> requests);
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
     void saveAndParseTraining(Training training);

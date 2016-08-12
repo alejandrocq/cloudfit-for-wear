@@ -109,7 +109,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     trDone = gson
                             .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
                                     WearableTraining.class);
-                    boolean res = db.insertTraining(trDone);
+                    boolean res = db.insertTraining(trDone, cloudFitUser.getId());
 
                     if (res) {
                         Log.d(TAG, "Training inserted on database");
@@ -126,7 +126,8 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                         showTrainingReceivedErrorDialog();
                     }
 
-                    trainingsCompletedSection.setNotifications(db.getAllTrainings().size());
+                    trainingsCompletedSection.setNotifications(db
+                            .getAllTrainings(cloudFitUser.getId()).size());
                     break;
             }
             super.handleMessage(msg);
@@ -163,7 +164,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
 
         trainingsCompletedSection = newSection("Completados",
                 R.drawable.ic_action_done, trainingsCompletedFragment);
-        trainingsCompletedSection.setNotifications(db.getAllTrainings().size());
 
         this.addSection(trainingsCompletedSection);
 
@@ -217,7 +217,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
      * @param cloudFitUser User data from CloudFit platform.
      */
     @Override
-    public void saveUserInfo(User cloudFitUser) {
+    public void saveUserInfoAndUpdateData(User cloudFitUser) {
         this.cloudFitUser = cloudFitUser;
 
         if (cloudFitUser == null) {
@@ -242,6 +242,10 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
             account.setTitle(cloudFitUser.getName());
             account.setSubTitle(cloudFitUser.getEmail());
             notifyAccountDataChanged();
+
+            trainingsCompletedFragment.setCloudFitUser(cloudFitUser);
+            trainingsCompletedSection.setNotifications(db
+                    .getAllTrainings(cloudFitUser.getId()).size());
 
         }
     }

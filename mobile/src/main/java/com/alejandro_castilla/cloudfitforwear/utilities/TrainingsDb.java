@@ -88,7 +88,7 @@ public class TrainingsDb {
         return res;
     }
 
-    public ArrayList<WearableTraining> getAllTrainings() {
+    public ArrayList<WearableTraining> getAllTrainings(long userId) {
         try {
             openDb();
             ArrayList<WearableTraining> trainings = new ArrayList<>();
@@ -106,9 +106,8 @@ public class TrainingsDb {
 
                         WearableTraining tr = gson.fromJson(trJSON, WearableTraining.class);
                         tr.setTrainingId(trID);
-                        trainings.add(tr);
 
-                        Log.d(TAG, "TRAINING: "+tr.getTitle());
+                        if (tr.getUserId() == userId) trainings.add(tr);
 
                     } while (cur.moveToNext());
                 }
@@ -140,18 +139,20 @@ public class TrainingsDb {
         return tr;
     }
 
-    public boolean insertTraining (WearableTraining tr) {
+    public boolean insertTraining (WearableTraining tr, long cloudFitUserId) {
         boolean res;
         String query;
         Gson gson = new Gson();
 
+        tr.setUserId(cloudFitUserId);
+
         try {
-            if (!checkIfTrainingAlreadyExistsOnDatabase(tr.getCloudFitId())) {
+            if (!checkIfTrainingAlreadyExistsOnDatabase(tr.getCloudFitId(), cloudFitUserId)) {
                 query = "INSERT INTO " + TABLE_TRAININGS + " (training_data_json) "
                         + "VALUES (" + "'" + gson.toJson(tr) + "'" + ")";
                 Log.d(TAG, "QUERY INSERT TRAINING: " + query);
             } else {
-                Long trId = getTrainingIdFromCloudFitId(tr.getCloudFitId());
+                Long trId = getTrainingIdFromCloudFitId(tr.getCloudFitId(), cloudFitUserId);
                 query = "UPDATE " + TABLE_TRAININGS + " SET training_data_json='"
                         + gson.toJson(tr) + "' WHERE ID=" + trId;
                 Log.d(TAG, "QUERY UPDATE TRAINING: " + query);
@@ -169,8 +170,8 @@ public class TrainingsDb {
         return res;
     }
 
-    public boolean checkIfTrainingAlreadyExistsOnDatabase (long cloudfitId) {
-        ArrayList<WearableTraining> trainings = getAllTrainings();
+    public boolean checkIfTrainingAlreadyExistsOnDatabase (long cloudfitId, long cloudFitUserId) {
+        ArrayList<WearableTraining> trainings = getAllTrainings(cloudFitUserId);
 
         for (WearableTraining tr : trainings) {
             if (tr.getCloudFitId() == cloudfitId) {
@@ -181,8 +182,8 @@ public class TrainingsDb {
         return false;
     }
 
-    public long getTrainingIdFromCloudFitId (long cloudfitId) {
-        ArrayList<WearableTraining> trainings = getAllTrainings();
+    public long getTrainingIdFromCloudFitId (long cloudfitId, long cloudFitUserId) {
+        ArrayList<WearableTraining> trainings = getAllTrainings(cloudFitUserId);
 
         for (WearableTraining tr : trainings) {
             if (tr.getCloudFitId() == cloudfitId) {

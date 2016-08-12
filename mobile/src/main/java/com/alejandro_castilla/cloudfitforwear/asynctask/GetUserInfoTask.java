@@ -42,7 +42,7 @@ public class GetUserInfoTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        cloudFitDataHandler.saveUserInfo(cloudFitUser);
+        cloudFitDataHandler.saveUserInfoAndUpdateData(cloudFitUser);
         super.onPostExecute(aVoid);
     }
 }

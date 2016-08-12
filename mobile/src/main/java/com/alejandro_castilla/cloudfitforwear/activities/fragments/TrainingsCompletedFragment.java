@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsCompletedFragmentAdapter;
+import com.alejandro_castilla.cloudfitforwear.cloudfit.models.User;
 import com.alejandro_castilla.cloudfitforwear.data.WearableTraining;
 import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 import com.alejandro_castilla.cloudfitforwear.utilities.TrainingsDb;
@@ -18,9 +19,6 @@ import com.blunderer.materialdesignlibrary.fragments.ScrollViewFragment;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 24/06/16.
- */
 public class TrainingsCompletedFragment extends ScrollViewFragment
         implements TrainingsCompletedFragmentAdapter.LayoutUpdater {
 
@@ -28,6 +26,7 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
     private TrainingsCompletedFragmentAdapter trainingsCompletedFragmentAdapter;
 
     private TrainingsDb db;
+    private User cloudFitUser;
     private ArrayList<WearableTraining> trainingsCompleted;
     private CloudFitDataHandler cloudFitDataHandler;
 
@@ -51,7 +50,7 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
     }
 
     public void getTrainingsCompleted() {
-        trainingsCompleted = db.getAllTrainings();
+        trainingsCompleted = db.getAllTrainings(cloudFitUser.getId());
 
         if (trainingsCompletedFragmentAdapter != null) {
             trainingsCompletedFragmentAdapter.setTrainingsCompleted(trainingsCompleted);
@@ -80,6 +79,10 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
 
     public void setDb(TrainingsDb db) {
         this.db = db;
+    }
+
+    public void setCloudFitUser(User cloudFitUser) {
+        this.cloudFitUser = cloudFitUser;
     }
 
     @Override

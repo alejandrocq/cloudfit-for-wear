@@ -125,7 +125,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     }
 
     @Override
-    public void saveUserInfo(User cloudFitUser) {
+    public void saveUserInfoAndUpdateData(User cloudFitUser) {
         //Not needed.
     }
 
