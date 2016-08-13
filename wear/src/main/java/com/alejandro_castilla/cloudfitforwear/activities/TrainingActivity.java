@@ -668,7 +668,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             pauseActionImgView.setOnClickListener(TrainingActivity.this);
             finishExerciseButton.setOnClickListener(TrainingActivity.this);
 
-            heartSensorStatusTextView.setText("Recibiendo datos");
+            if (heartRateEnabled) heartSensorStatusTextView.setText("Recibiendo datos");
 
             if (currentExercise.getType() == Exercise.TYPE_RUNNING) {
                 infoTextView.setText("Entrenamiento iniciado");
