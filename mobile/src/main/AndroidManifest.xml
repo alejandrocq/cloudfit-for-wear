@@ -17,7 +17,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <uses-feature android:name="android.hardware.type.watch" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.type.watch"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -26,9 +28,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDVjO7Tljj1OJzLBUcyLLp2FFzZ39wQ5Y8"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDVjO7Tljj1OJzLBUcyLLp2FFzZ39wQ5Y8" />
 
         <service
             android:name=".cloudfit.services.CloudFitService"
@@ -53,9 +55,12 @@
             android:theme="@style/NavigationDrawerTheme" />
         <activity
             android:name=".activities.TrainingDetailsActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TrainingCompletedActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AboutActivity"
             android:screenOrientation="portrait"/>
     </application>
 

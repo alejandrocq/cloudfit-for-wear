@@ -12,5 +12,11 @@
     <string name="text_info_no_trainings_completed">No has completado ningún entrenamiento aún.
     Cuando un entrenamiento haya sido sincronizado desde el reloj, lo verás aquí.</string>
 
+    <string name="about_text">Esta aplicación ha sido desarrollada para el trabajo de fin de grado titulado \"Integración de aplicaciones y servicios para pulseras inteligentes en la plataforma CloudFit\", del Grado en Ingeniería de Tecnologías de Telecomunicación de la Universidad de Granada. Sirve de adaptación de los servicios de la plataforma CloudFit para dispositivos vestibles tales como pulseras inteligentes o smartwatches.</string>
+
+    <string name="about_author">
+        Alejandro Castilla Quesada \nalejandro-castilla.com \ncontacto@alejandro-castilla.com
+    </string>
+
 
 </resources>
