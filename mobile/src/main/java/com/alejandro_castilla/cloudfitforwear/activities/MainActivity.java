@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alejandro_castilla.cloudfitforwear.AboutActivity;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.RequestsFragment;
 import com.alejandro_castilla.cloudfitforwear.activities.fragments.TrainingsCompletedFragment;

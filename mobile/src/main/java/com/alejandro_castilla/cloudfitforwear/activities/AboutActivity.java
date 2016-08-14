@@ -1,9 +1,10 @@
-package com.alejandro_castilla.cloudfitforwear;
+package com.alejandro_castilla.cloudfitforwear.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.alejandro_castilla.cloudfitforwear.R;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 

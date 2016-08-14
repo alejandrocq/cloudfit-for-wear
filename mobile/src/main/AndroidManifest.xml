@@ -60,7 +60,7 @@
             android:name=".activities.TrainingCompletedActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AboutActivity"
+            android:name=".activities.AboutActivity"
             android:screenOrientation="portrait"/>
     </application>
 
