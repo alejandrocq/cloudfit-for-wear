@@ -12,6 +12,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -255,6 +256,12 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
             trainingsCompletedSection.setNotifications(db
                     .getAllTrainings(cloudFitUser.getId()).size());
 
+        } else if (cloudFitUser.getRol() == StaticReferences.ROL_TRAINER) {
+            Toast.makeText(this, "Esta aplicación no está disponible para entrenadores",
+                    Toast.LENGTH_LONG).show();
+            Intent startLogin = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(startLogin);
+            finish();
         }
     }
 
