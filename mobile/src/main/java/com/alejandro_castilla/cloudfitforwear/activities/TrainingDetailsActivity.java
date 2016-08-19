@@ -113,7 +113,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     ////////////////////////////////
 
     @Override
-    public void saveAndParseTraining(Training training) {
+    public void parseTrainingAndSendToWearable(Training training) {
         Log.d(TAG, "Training title: "+ training.getTitle());
         this.training = training;
 

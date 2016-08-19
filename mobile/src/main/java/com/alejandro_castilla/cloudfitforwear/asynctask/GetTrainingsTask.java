@@ -78,7 +78,7 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
                     cloudFitDataHandler.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
-                cloudFitDataHandler.saveAndParseTraining(training);
+                cloudFitDataHandler.parseTrainingAndSendToWearable(training);
                 break;
             case StaticVariables.GET_TRAINING_NOT_DONE:
                 // TODO do something here if needed

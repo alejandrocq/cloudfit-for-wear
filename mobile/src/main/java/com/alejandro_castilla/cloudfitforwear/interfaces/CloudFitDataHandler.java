@@ -17,7 +17,7 @@ public interface CloudFitDataHandler {
     void saveUserInfoAndUpdateData(User cloudFitUser);
     void saveRequests(ArrayList<RequestTrainer> requests);
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
-    void saveAndParseTraining(Training training);
+    void parseTrainingAndSendToWearable(Training training);
     void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent);
     void updateTrainingsCompletedNotifications(int trainingsNumber);
 

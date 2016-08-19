@@ -57,7 +57,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     private MaterialAccount account;
 
     private CloudFitService cloudFitService;
-    private Intent cloudFitServiceIntent;
     private User cloudFitUser;
 
     private Intent wearableServiceIntent;
@@ -65,7 +64,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     private boolean isWearableConnected;
 
     private TrainingsDb db;
-    private WearableTraining trDone;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -107,7 +105,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 case StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE:
                     Bundle b = (Bundle) msg.obj;
                     Gson gson = new Gson();
-                    trDone = gson
+                    WearableTraining trDone = gson
                             .fromJson(b.getString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE),
                                     WearableTraining.class);
                     boolean res = db.insertTraining(trDone, cloudFitUser.getId());
@@ -189,7 +187,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
             actionBar.setIcon(R.drawable.ic_cloudfit_actionbar);
         }
 
-        cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
+        Intent cloudFitServiceIntent = new Intent(MainActivity.this, CloudFitService.class);
         bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
         wearableServiceIntent = new Intent (MainActivity.this, WearableService.class);
@@ -275,7 +273,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     }
 
     @Override
-    public void saveAndParseTraining(Training training) {
+    public void parseTrainingAndSendToWearable(Training training) {
         showSendingToWearableDialog();
 
         try {
