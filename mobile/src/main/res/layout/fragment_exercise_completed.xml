@@ -100,6 +100,17 @@
         android:layout_marginTop="5sp"
         android:layout_below="@id/distanceIcon"/>
 
+    <Button
+        android:id="@+id/buttonOpenMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Abrir mapa a pantalla completa"
+        android:textColor="@color/md_white_1000"
+        android:background="@color/md_blue_800"
+        android:layout_below="@id/distanceText"
+        android:layout_marginTop="5sp"
+        android:layout_centerHorizontal="true"/>
+
     <TextView
         android:id="@+id/mapTitle"
         android:layout_width="wrap_content"
@@ -108,7 +119,7 @@
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5sp"
-        android:layout_below="@id/distanceText"/>
+        android:layout_below="@id/buttonOpenMap"/>
 
     <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"

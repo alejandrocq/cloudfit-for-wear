@@ -1,13 +1,16 @@
 package com.alejandro_castilla.cloudfitforwear.activities.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
+import com.alejandro_castilla.cloudfitforwear.activities.MapActivity;
 import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
@@ -27,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -44,8 +48,10 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         /* Load Google map */
 
         mapView = (MapView) view.findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        if (mapView != null) {
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(this);
+        }
 
         drawHeartRateChart(view);
         calculateResultsAndUpdateViews(view);
@@ -108,6 +114,8 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         TextView distanceTextView = (TextView) view.findViewById(R.id.distanceText);
         TextView mapTitleTextView = (TextView) view.findViewById(R.id.mapTitle);
 
+        Button btnOpenMap = (Button) view.findViewById(R.id.buttonOpenMap);
+
         if (exercise.getType() == Exercise.TYPE_RUNNING) {
             timeElapsedTextView
                     .setText(Utilities.secondsToStringFormat(exercise.getRunning().getTimeR()));
@@ -116,6 +124,15 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             String totalDistance = precision.format(Utilities
                     .calculateTotalDistance(exercise.getGPSData()));
             distanceTextView.setText(totalDistance +" (km)");
+
+            btnOpenMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), MapActivity.class);
+                    intent.putExtra("exercise", new Gson().toJson(exercise));
+                    startActivity(intent);
+                }
+            });
         } else if (exercise.getType() == Exercise.TYPE_REST) {
             timeElapsedTextView
                     .setText(Utilities.secondsToStringFormat(exercise.getRest().getRestr()));
@@ -125,6 +142,7 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             distanceTextView.setVisibility(View.GONE);
             mapTitleTextView.setVisibility(View.GONE);
             mapView.setVisibility(View.GONE);
+            btnOpenMap.setVisibility(View.GONE);
         }
 
         int sumHr = 0;
@@ -177,16 +195,24 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
     public void onMapReady(GoogleMap map) {
         if (exercise.getGPSData().size()>0) {
             GPSLocation startLocation = exercise.getGPSData().get(0);
-            LatLng l = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
+            LatLng l1 = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
             map.addMarker(new MarkerOptions()
-                    .position(l)
-                    .title("Inicio ruta"));
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 16));
+                    .position(l1)
+                    .title("Inicio de la ruta"));
+
+            int endIndex = exercise.getGPSData().size() - 1;
+            GPSLocation endLocation = exercise.getGPSData().get(endIndex);
+            LatLng l2 = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
+            map.addMarker(new MarkerOptions()
+                    .position(l2)
+                    .title("Final de la ruta"));
+
+            //Move camera to start location
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l1, 15));
             mapView.onResume();
         }
 
         //Draw route
-
         PolylineOptions polOptions = new PolylineOptions();
 
         for (GPSLocation l : exercise.getGPSData()) {
