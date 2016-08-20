@@ -16,6 +16,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -71,9 +72,13 @@ public class WearableService extends Service implements DataApi.DataListener,
     }
 
     public void sendTrainingDoneToHandheld(String training) {
+
+        Asset trainingAsset = Asset.createFromBytes(training.getBytes());
+
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(StaticVariables.TRAINING_DONE_FROM_WEARABLE);
-        putDataMapRequest.getDataMap().putString(StaticVariables.WEARABLE_TRAINING_DONE, training);
+        putDataMapRequest.getDataMap().putAsset(StaticVariables.WEARABLE_TRAINING_DONE,
+                trainingAsset);
         putDataMapRequest.getDataMap().putLong("timestamp", System.currentTimeMillis());
         PutDataRequest putDataRequest = putDataMapRequest.asPutDataRequest();
         putDataRequest.setUrgent();

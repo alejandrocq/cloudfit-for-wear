@@ -19,6 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -28,6 +29,11 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 public class WearableService extends Service implements WearableStatusHandler, DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -196,19 +202,43 @@ public class WearableService extends Service implements WearableStatusHandler, D
                 } else if (item.getUri().getPath()
                         .compareTo(StaticVariables.TRAINING_DONE_FROM_WEARABLE) == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    String trainingDone = dataMap.getString(StaticVariables.WEARABLE_TRAINING_DONE);
+                    final Asset trainingAsset = dataMap
+                            .getAsset(StaticVariables.WEARABLE_TRAINING_DONE);
 
-                    Bundle b = new Bundle();
-                    b.putString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE, trainingDone);
+                    //This thread downloads the asset and sends a message to MainActivity.
+                    Thread getTrainingDoneData = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ConnectionResult result =
+                                    googleApiClient.blockingConnect(5000, TimeUnit.MILLISECONDS);
+                            if (!result.isSuccess()) {
+                                Log.d(TAG, "Problem with connection");
+                                return;
+                            }
 
-                    try {
-                        Message msg = Message.obtain(null,
-                                StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE);
-                        msg.obj = b;
-                        mainActivityMessenger.send(msg);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                            InputStream input = Wearable.DataApi
+                                    .getFdForAsset(googleApiClient, trainingAsset).await()
+                                    .getInputStream();
+
+                            try {
+                                String trainingDone = new String(IOUtils.toByteArray(input),
+                                        "UTF-8");
+                                Bundle b = new Bundle();
+                                b.putString(StaticVariables.BUNDLE_WEARABLE_TRAINING_DONE,
+                                        trainingDone);
+
+                                Message msg = Message.obtain(null,
+                                        StaticVariables.MSG_TRAINING_RECEIVED_FROM_WEARABLE);
+                                msg.obj = b;
+                                mainActivityMessenger.send(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    getTrainingDoneData.start();
+
                 }
             }
         }

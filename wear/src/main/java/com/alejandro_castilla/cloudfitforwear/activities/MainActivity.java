@@ -140,7 +140,6 @@ public class MainActivity extends WearableActivity implements WearableHandler {
             uploadProgressView.setVisibility(View.GONE);
             Utilities.showConfirmation(this, "Entrenamiento enviado correctamente",
                     ConfirmationActivity.SUCCESS_ANIMATION);
-            deleteTrainingDone();
             checkTrainingsAndUpdateLayout();
         } else {
             Toast.makeText(this, "Ha ocurrido un error", Toast.LENGTH_LONG).show();
