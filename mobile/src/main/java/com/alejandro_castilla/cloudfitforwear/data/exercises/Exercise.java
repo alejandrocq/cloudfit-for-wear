@@ -19,7 +19,7 @@ public class Exercise {
     private long startTime;
     private long endTime;
     private ArrayList<HeartRate> heartRateList;
-    private ArrayList<GPSLocation> GPSData;
+    private ArrayList<GPSLocation> GPSLocationsList;
     private ArrayList<AccData> accDataList;
 
     private Running running;
@@ -30,7 +30,7 @@ public class Exercise {
         this.cloudFitType = cloudFitType;
         this.cloudFitId = cloudFitId;
         heartRateList = new ArrayList<>();
-        GPSData = new ArrayList<>();
+        GPSLocationsList = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -105,12 +105,12 @@ public class Exercise {
         this.endTime = endTime;
     }
 
-    public ArrayList<GPSLocation> getGPSData() {
-        return GPSData;
+    public ArrayList<GPSLocation> getGPSLocationsList() {
+        return GPSLocationsList;
     }
 
-    public void setGPSData(ArrayList<GPSLocation> GPSData) {
-        this.GPSData = GPSData;
+    public void setGPSLocationsList(ArrayList<GPSLocation> GPSLocationsList) {
+        this.GPSLocationsList = GPSLocationsList;
     }
 
     public ArrayList<AccData> getAccDataList() {

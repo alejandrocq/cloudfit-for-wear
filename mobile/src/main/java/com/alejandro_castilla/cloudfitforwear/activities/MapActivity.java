@@ -46,15 +46,15 @@ public class MapActivity extends com.blunderer.materialdesignlibrary.activities.
 
     @Override
     public void onMapReady(GoogleMap map) {
-        if (exercise.getGPSData().size()>0) {
-            GPSLocation startLocation = exercise.getGPSData().get(0);
+        if (exercise.getGPSLocationsList().size()>0) {
+            GPSLocation startLocation = exercise.getGPSLocationsList().get(0);
             LatLng l1 = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
             map.addMarker(new MarkerOptions()
                     .position(l1)
                     .title("Inicio de la ruta"));
 
-            int endIndex = exercise.getGPSData().size() - 1;
-            GPSLocation endLocation = exercise.getGPSData().get(endIndex);
+            int endIndex = exercise.getGPSLocationsList().size() - 1;
+            GPSLocation endLocation = exercise.getGPSLocationsList().get(endIndex);
             LatLng l2 = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
             map.addMarker(new MarkerOptions()
                     .position(l2)
@@ -68,7 +68,7 @@ public class MapActivity extends com.blunderer.materialdesignlibrary.activities.
         //Draw route
         PolylineOptions polOptions = new PolylineOptions();
 
-        for (GPSLocation l : exercise.getGPSData()) {
+        for (GPSLocation l : exercise.getGPSLocationsList()) {
             polOptions.add(new LatLng(l.getLatitude(), l.getLongitude()));
         }
 

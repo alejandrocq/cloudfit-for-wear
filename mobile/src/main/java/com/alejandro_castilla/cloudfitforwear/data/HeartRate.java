@@ -1,25 +1,21 @@
 package com.alejandro_castilla.cloudfitforwear.data;
 
-/**
- * Created by alejandrocq on 29/06/16.
- */
-
 public class HeartRate {
 
-    private long timeMark;
+    private long timeStamp;
     private int value;
 
-    public HeartRate(long timeMark, int value) {
-        this.timeMark = timeMark;
+    public HeartRate(long timeStamp, int value) {
+        this.timeStamp = timeStamp;
         this.value = value;
     }
 
-    public long getTimeMark() {
-        return timeMark;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setTimeMark(long timeMark) {
-        this.timeMark = timeMark;
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public int getValue() {
@@ -32,6 +28,6 @@ public class HeartRate {
 
     @Override
     public String toString() {
-        return "Time: " + timeMark + "\n" + "Heart Rate: " + value + "\n";
+        return "Time: " + timeStamp + "\n" + "Heart Rate: " + value + "\n";
     }
 }

@@ -198,7 +198,7 @@ public class Utilities {
                     running.setStarttime(ex.getStartTime());
                     running.setEndtime(ex.getEndTime());
                     running.setHeartRateData(heartRateToHRModel(ex.getHeartRateList()));
-                    running.setGPSData(GPSDataToGPSModel(ex.getGPSData()));
+                    running.setGPSData(GPSDataToGPSModel(ex.getGPSLocationsList()));
                     running.setAccDataList(ACCDataToACCModel(ex.getAccDataList()));
 
                     if (ex.getRunning().getHeartRateMin() != -1
@@ -239,7 +239,7 @@ public class Utilities {
         for (HeartRate hr : hrList) {
             HRModel hrModel = new HRModel();
             hrModel.setHr(hr.getValue());
-            hrModel.setTimestamp(hr.getTimeMark());
+            hrModel.setTimestamp(hr.getTimeStamp());
             hrModel.setRr(0);
             hrModel.setNamesensor("Zephyr Bioharness 3");
             hrModel.setMacaddress("C8:3E:99:0D:DD:43"); //TODO This MAC should be gotten from Prefs.

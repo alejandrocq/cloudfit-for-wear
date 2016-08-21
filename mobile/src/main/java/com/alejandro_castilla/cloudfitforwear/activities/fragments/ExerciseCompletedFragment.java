@@ -91,9 +91,9 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         List<Entry> hrValues = new ArrayList<>();
 
         for (HeartRate hr : exercise.getHeartRateList()) {
-//            Log.d(TAG, "DATA ENTRY X: " + hr.getTimeMark() / 1000 + " DATA ENTRY Y: "
+//            Log.d(TAG, "DATA ENTRY X: " + hr.getTimeStamp() / 1000 + " DATA ENTRY Y: "
 //                    + hr.getValue());
-            Entry hrEntry = new Entry(hr.getTimeMark() / 1000, hr.getValue());
+            Entry hrEntry = new Entry(hr.getTimeStamp() / 1000, hr.getValue());
             hrValues.add(hrEntry);
         }
 
@@ -124,7 +124,7 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
 
             DecimalFormat precision = new DecimalFormat("0.00");
             String totalDistance = precision.format(Utilities
-                    .calculateTotalDistance(exercise.getGPSData()));
+                    .calculateTotalDistance(exercise.getGPSLocationsList()));
             distanceTextView.setText(totalDistance +" (km)");
 
             btnOpenMap.setOnClickListener(new View.OnClickListener() {
@@ -195,15 +195,15 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
 
     @Override
     public void onMapReady(GoogleMap map) {
-        if (exercise.getGPSData().size()>0) {
-            GPSLocation startLocation = exercise.getGPSData().get(0);
+        if (exercise.getGPSLocationsList().size()>0) {
+            GPSLocation startLocation = exercise.getGPSLocationsList().get(0);
             LatLng l1 = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
             map.addMarker(new MarkerOptions()
                     .position(l1)
                     .title("Inicio de la ruta"));
 
-            int endIndex = exercise.getGPSData().size() - 1;
-            GPSLocation endLocation = exercise.getGPSData().get(endIndex);
+            int endIndex = exercise.getGPSLocationsList().size() - 1;
+            GPSLocation endLocation = exercise.getGPSLocationsList().get(endIndex);
             LatLng l2 = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
             map.addMarker(new MarkerOptions()
                     .position(l2)
@@ -217,7 +217,7 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
         //Draw route
         PolylineOptions polOptions = new PolylineOptions();
 
-        for (GPSLocation l : exercise.getGPSData()) {
+        for (GPSLocation l : exercise.getGPSLocationsList()) {
             polOptions.add(new LatLng(l.getLatitude(), l.getLongitude()));
         }
 
