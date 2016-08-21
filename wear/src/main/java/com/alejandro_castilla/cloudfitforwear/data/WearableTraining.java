@@ -4,16 +4,7 @@ import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 25/05/16.
- */
 public class WearableTraining {
-
-    //TODO Move inner classes to single classes
-    //TODO Every exercise should have a Heart Rate List
-
-    public static final int NOT_UPLOADED = 0;
-    public static final int UPLOADED = 1;
 
     private String title;
     private long trainingId;
@@ -21,7 +12,6 @@ public class WearableTraining {
     private long startDate;
     private long endDate;
     private long cloudFitId;
-    private int state;
 
     private ArrayList<Exercise> exercises;
 
@@ -30,8 +20,6 @@ public class WearableTraining {
         this.cloudFitId = cloudFitId;
         this.userId = userId;
     }
-
-    /* Get and set methods */
 
     public String getTitle() {
         return title;
@@ -63,14 +51,6 @@ public class WearableTraining {
 
     public void setCloudFitId(long cloudFitId) {
         this.cloudFitId = cloudFitId;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
     }
 
     public long getTrainingId() {

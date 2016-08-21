@@ -6,9 +6,6 @@ import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 6/07/16.
- */
 public class Exercise {
 
     public static final int TYPE_RUNNING = 1;
@@ -22,7 +19,7 @@ public class Exercise {
     private long startTime;
     private long endTime;
     private ArrayList<HeartRate> heartRateList;
-    private ArrayList<GPSLocation> GPSData;
+    private ArrayList<GPSLocation> GPSLocationsList;
     private ArrayList<ACCData> accDataList;
 
     private Running running;
@@ -33,7 +30,7 @@ public class Exercise {
         this.cloudFitType = cloudFitType;
         this.cloudFitId = cloudFitId;
         heartRateList = new ArrayList<>();
-        GPSData = new ArrayList<>();
+        GPSLocationsList = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -108,12 +105,12 @@ public class Exercise {
         this.endTime = endTime;
     }
 
-    public ArrayList<GPSLocation> getGPSData() {
-        return GPSData;
+    public ArrayList<GPSLocation> getGPSLocationsList() {
+        return GPSLocationsList;
     }
 
-    public void setGPSData(ArrayList<GPSLocation> GPSData) {
-        this.GPSData = GPSData;
+    public void setGPSLocationsList(ArrayList<GPSLocation> GPSLocationsList) {
+        this.GPSLocationsList = GPSLocationsList;
     }
 
     public ArrayList<ACCData> getAccDataList() {

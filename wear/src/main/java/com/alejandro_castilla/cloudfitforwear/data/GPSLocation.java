@@ -1,8 +1,5 @@
 package com.alejandro_castilla.cloudfitforwear.data;
 
-/**
- * Created by alejandrocq on 26/07/16.
- */
 public class GPSLocation {
     private long timeStamp;
     private double latitude;

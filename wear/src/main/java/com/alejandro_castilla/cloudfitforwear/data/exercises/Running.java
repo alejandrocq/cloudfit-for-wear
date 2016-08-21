@@ -1,8 +1,5 @@
 package com.alejandro_castilla.cloudfitforwear.data.exercises;
 
-/**
- * Created by alejandrocq on 6/07/16.
- */
 public class Running {
     /* Parameters set by the trainer */
     private double distanceP = -1.0;

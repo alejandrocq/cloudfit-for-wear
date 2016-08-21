@@ -1,8 +1,5 @@
 package com.alejandro_castilla.cloudfitforwear.data;
 
-/**
- * Created by alejandrocq on 9/08/16.
- */
 public class ACCData {
 
     private double xValue;

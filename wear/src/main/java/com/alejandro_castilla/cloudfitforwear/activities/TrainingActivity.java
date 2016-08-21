@@ -714,7 +714,6 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
     private void saveTrainingDataAndFinish() {
         training.setEndDate(System.currentTimeMillis());
-        training.setState(WearableTraining.NOT_UPLOADED);
         training.setExercises(exercisesCompleted);
 
         Gson gson = new Gson();
@@ -745,7 +744,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             currentExercise.getRunning().setDistanceR(totalDistance);
             currentExercise.getRunning().setTimeR(timeElapsed/1000); //Time is saved in seconds
             currentExercise.setHeartRateList(heartRateList);
-            currentExercise.setGPSData(GPSLocationsList);
+            currentExercise.setGPSLocationsList(GPSLocationsList);
             currentExercise.setAccDataList(accDataList);
             exercisesCompleted.add(currentExercise);
         } else if (currentExercise.getType() == Exercise.TYPE_REST) {
