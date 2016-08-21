@@ -14,10 +14,10 @@ import java.util.ArrayList;
  */
 public interface CloudFitDataHandler {
 
-    void saveUserInfoAndUpdateData(User cloudFitUser);
+    void processUserData(User cloudFitUser);
     void saveRequests(ArrayList<RequestTrainer> requests);
     void updateTrainingsList(ArrayList<CalendarEvent> calendarEvents);
-    void parseTrainingAndSendToWearable(Training training);
+    void processTrainingDownloaded(Training training);
     void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent);
     void updateTrainingsCompletedNotifications(int trainingsNumber);
 

@@ -93,7 +93,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
             switch (msg.what) {
                 case StaticVariables.MSG_WEARABLESERVICE_MESSENGER:
                     wearableServiceMessenger = (Messenger) msg.obj;
-                    Log.d(TAG, "Messenger from WearableService received.");
                     break;
                 case StaticVariables.MSG_WEARABLE_STATE:
                     Bundle bundle = (Bundle) msg.obj;
@@ -112,7 +111,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                     boolean res = db.insertTraining(trDone, cloudFitUser.getId());
 
                     if (res) {
-                        Log.d(TAG, "Training inserted on database");
                         showTrainingReceivedDialog();
                         //Training received correctly. Send an ACK to wearable device.
                         try {
@@ -138,7 +136,6 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
 
     @Override
     public void init(Bundle savedInstanceState) {
-
         db = new TrainingsDb(this);
 
         trainingsFragment = new TrainingsFragment();
@@ -198,21 +195,18 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
         startService(wearableServiceIntent);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop");
         stopService(wearableServiceIntent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
         unbindService(cloudFitServiceConnection);
         stopService(wearableServiceIntent);
     }
@@ -221,22 +215,16 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     /* CloudFit Handler methods */
     //////////////////////////////
 
-    /**
-     * Saves user info obtained from GetUserInfoTask on this activity.
-     * @param cloudFitUser User data from CloudFit platform.
-     */
     @Override
-    public void saveUserInfoAndUpdateData(User cloudFitUser) {
+    public void processUserData(User cloudFitUser) {
         this.cloudFitUser = cloudFitUser;
 
         if (cloudFitUser == null) {
-            //Temporary solution when activity gets killed by Android.
-            Log.d(TAG, "cloudFitUser null");
+            //Session has expired.
             Intent restartIntent = new Intent (MainActivity.this, LoginActivity.class);
             startActivity(restartIntent);
             finish();
         } else if (cloudFitUser.getRol() == StaticReferences.ROL_USER) {
-            Log.d(TAG, "ROL USER OK");
             this.cloudFitUser.setUsername(cloudFitService.getFit().getSetting().getUsername());
             cloudFitService.getFit().getSetting().setUserID(cloudFitUser.getId()+"");
             zDBFunctions.saveSetting(cloudFitService.getDB(),
@@ -276,36 +264,23 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         trainingsSection.setNotifications(calendarEvents.size());
         trainingsFragment.setCalendarEvents(calendarEvents);
         trainingsFragment.setRefreshing(false);
-
     }
 
     @Override
-    public void parseTrainingAndSendToWearable(Training training) {
-        showSendingToWearableDialog();
+    public void processTrainingDownloaded(Training training) {
+        Log.d(TAG, "Parsing training with ID: " + training.getId());
+        WearableTraining wearableTraining;
+        wearableTraining = Utilities.trainingToWearableTraining(training, cloudFitUser);
 
-        try {
-            Log.d(TAG, "Parsing training with ID: " + training.getId());
-            WearableTraining wearableTraining;
-            wearableTraining = Utilities.trainingToWearableTraining(training, cloudFitUser);
-            Gson gson = new Gson();
-            String wearableTrainingJSON = gson.toJson(wearableTraining);
+        Gson gson = new Gson();
+        String wearableTrainingJSON = gson.toJson(wearableTraining);
 
-            if (isWearableConnected) {
-                Message msg = Message.obtain(null, StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE);
-                msg.obj = wearableTrainingJSON;
-                wearableServiceMessenger.send(msg);
-            } else {
-                sendingToWearableDialog.dismiss();
-                showTrainingNotSentDialog();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        sendTrainingToWearable(wearableTrainingJSON);
     }
 
     @Override
     public void downloadTrainingToBeSyncedWithWearable(CalendarEvent calendarEvent) {
+        showSendingToWearableDialog();
         new GetTrainingsTask(this, cloudFitService, calendarEvent.getId(),
                 StaticVariables.GET_SINGLE_TRAINING).execute();
     }
@@ -324,7 +299,22 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
     /* Other methods */
     ///////////////////
 
-    public void showSendingToWearableDialog() {
+    private void sendTrainingToWearable(String trJson) {
+        try {
+            if (isWearableConnected) {
+                Message msg = Message.obtain(null, StaticVariables.MSG_SEND_TRAINING_TO_WEARABLE);
+                msg.obj = trJson;
+                wearableServiceMessenger.send(msg);
+            } else {
+                sendingToWearableDialog.dismiss();
+                showTrainingNotSentDialog();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showSendingToWearableDialog() {
         sendingToWearableDialog = new MaterialDialog.Builder(this)
                 .title("Enviando entrenamiento al reloj")
                 .content("Espere...")
@@ -338,7 +328,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         sendingToWearableDialogTimer(5000, sendingToWearableDialog);
     }
 
-    public void sendingToWearableDialogTimer(long time, final MaterialDialog dialog) {
+    private void sendingToWearableDialogTimer(long time, final MaterialDialog dialog) {
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 if (!dialog.isCancelled()) {
@@ -350,7 +340,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         }, time);
     }
 
-    public void showTrainingSentDialog() {
+    private void showTrainingSentDialog() {
         if (isWearableConnected) {
             String DialogDescription = "El entrenamiento ha sido enviado correctamente al reloj." +
                     " Puede comenzarlo en cualquier momento.";
@@ -365,7 +355,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
         }
     }
 
-    public void showTrainingNotSentDialog() {
+    private void showTrainingNotSentDialog() {
         String dialogDescription = "No se ha podido enviar el entrenamiento al reloj. " +
                 "Compruebe si está conectado y si la aplicación CloudFit For Wear está abierta.";
         new MaterialDialog.Builder(MainActivity.this)
@@ -378,7 +368,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 .show();
     }
 
-    public void showTrainingReceivedDialog() {
+    private void showTrainingReceivedDialog() {
         String dialogDescription = "El entrenamiento ha sido guardado correctamente. " +
                 "Los resultados del mismo están disponibles en la sección de entrenamientos " +
                 "completados.";
@@ -392,7 +382,7 @@ public class MainActivity extends MaterialNavigationDrawer implements CloudFitDa
                 .show();
     }
 
-    public void showTrainingReceivedErrorDialog() {
+    private void showTrainingReceivedErrorDialog() {
         String dialogDescription = "El entrenamiento no ha podido ser procesado correctamente. " +
                 "Inténtelo de nuevo.";
         new MaterialDialog.Builder(MainActivity.this)

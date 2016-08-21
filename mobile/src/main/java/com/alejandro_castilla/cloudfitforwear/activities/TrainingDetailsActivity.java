@@ -113,7 +113,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     ////////////////////////////////
 
     @Override
-    public void parseTrainingAndSendToWearable(Training training) {
+    public void processTrainingDownloaded(Training training) {
         Log.d(TAG, "Training title: "+ training.getTitle());
         this.training = training;
 
@@ -125,7 +125,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     }
 
     @Override
-    public void saveUserInfoAndUpdateData(User cloudFitUser) {
+    public void processUserData(User cloudFitUser) {
         //Not needed.
     }
 
