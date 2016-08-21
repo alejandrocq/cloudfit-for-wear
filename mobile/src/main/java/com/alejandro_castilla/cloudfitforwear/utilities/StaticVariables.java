@@ -5,9 +5,6 @@ import android.os.Environment;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.TrainingsFragmentAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
 
-/**
- * Created by alejandrocq on 14/05/16.
- */
 public class StaticVariables {
 
     public static final String APP_NAME = "CloudFitForWear";

@@ -34,19 +34,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by alejandrocq on 14/05/16.
- */
 public class Utilities {
+
+    private static final String TAG = Utilities.class.getSimpleName();
 
     public static boolean checkInternetConnection(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        boolean connected = networkInfo != null && networkInfo.isConnectedOrConnecting();
-
-        return connected;
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
     public static String dateOnMillisToString(long dateOnMillis) {
@@ -348,17 +345,16 @@ public class Utilities {
         }
     }
 
-    public static void writeAssetFile(Context c, String file, String path) {
+    public static void writeAssetFile(Context c, String file, String outputFilePath) {
         try {
-            if (new File(path).exists()) {
-                Log.d("UTILS", "File path: " + path);
+            if (new File(outputFilePath).exists()) {
+                Log.d(TAG, "Asset file " + file + " already exists on " + outputFilePath);
                 return;
             }
 
             InputStream input = c.getAssets().open(file);
-            String outputFile = path;
 
-            OutputStream output = new FileOutputStream(outputFile);
+            OutputStream output = new FileOutputStream(outputFilePath);
 
             byte[] buffer = new byte[1024];
             int length;

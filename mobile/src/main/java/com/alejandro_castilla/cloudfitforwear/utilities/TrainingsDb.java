@@ -11,9 +11,6 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 25/06/16.
- */
 public class TrainingsDb {
 
     private final String TAG = TrainingsDb.class.getSimpleName();
@@ -22,9 +19,6 @@ public class TrainingsDb {
     private final String DATABASE_FULL_PATH = StaticVariables.APP_PATH + DATABASE_NAME;
 
     private final String TABLE_TRAININGS = "trainings";
-    private final String TABLE_RUNNING_EXERCISES = "running_exercises";
-    private final String TABLE_REST_EXERCISES = "rest_exercises";
-
 
     private SQLiteDatabase db;
 
@@ -129,16 +123,6 @@ public class TrainingsDb {
 
     }
 
-    /**
-     * Gets training exercises from database and completes training data.
-     * @param tr
-     * @return Training completed.
-     */
-    public WearableTraining buildTrainingComplete (WearableTraining tr) {
-        //TODO Query exercises tables and build the training object
-        return tr;
-    }
-
     public boolean insertTraining (WearableTraining tr, long cloudFitUserId) {
         boolean res;
         String query;
@@ -192,10 +176,6 @@ public class TrainingsDb {
         }
 
         return -1;
-    }
-
-    public void updateTrainingState (int state) {
-
     }
 
     public boolean deleteTraining (long trainingId) {
