@@ -22,7 +22,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -34,8 +33,11 @@ import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExerciseCompletedFragment extends ScrollViewFragment implements OnMapReadyCallback {
+
+    private final String TAG = ExerciseCompletedFragment.class.getSimpleName();
 
     private Exercise exercise;
 
@@ -86,20 +88,20 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             }
         }
 
-        ArrayList<Entry> hrValues = new ArrayList<>();
+        List<Entry> hrValues = new ArrayList<>();
 
         for (HeartRate hr : exercise.getHeartRateList()) {
+//            Log.d(TAG, "DATA ENTRY X: " + hr.getTimeMark() / 1000 + " DATA ENTRY Y: "
+//                    + hr.getValue());
             Entry hrEntry = new Entry(hr.getTimeMark() / 1000, hr.getValue());
             hrValues.add(hrEntry);
         }
 
-        LineDataSet hrDataSet = new LineDataSet(hrValues, "Ritmo cardíaco");
+        LineDataSet hrDataSet = new LineDataSet(hrValues, "Heart");
         hrDataSet.setColor(getResources().getColor(R.color.md_grey_700));
         hrDataSet.setCircleColor(getResources().getColor(R.color.md_red_800));
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(hrDataSet);
 
-        LineData data = new LineData(dataSets);
+        LineData data = new LineData(hrDataSet);
         chart.setData(data);
         chart.invalidate();
     }
