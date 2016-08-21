@@ -13,32 +13,27 @@ import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 10/05/16.
- */
-
 public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
 
-    private Activity context;
     private CloudFitDataHandler cloudFitDataHandler;
     private CloudFitService cloudFitService;
     private short taskType;
 
     private Training training;
-    private long trainingid;
+    private long trainingId;
     private String trainingString;
 
     private ArrayList<CalendarEvent> calendarEvents;
 
     public GetTrainingsTask(Activity context,
-                            CloudFitService cloudFitService, long trainingid, short taskType) {
+                            CloudFitService cloudFitService,
+                            long trainingId,
+                            short taskType) {
 
-        this.context = context;
         this.cloudFitDataHandler = (CloudFitDataHandler) context;
         this.cloudFitService = cloudFitService;
-        this.trainingid = trainingid;
+        this.trainingId = trainingId;
         this.taskType = taskType;
-
     }
 
     @Override
@@ -54,17 +49,15 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
                 calendarEvents = CloudFitCloud.getTrainings(cloudFitService);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
-                training = CloudFitCloud.downloadAndParseTraining(cloudFitService, trainingid);
-//                CloudFitCloud.updateTrainingPerforming(cloudFitService, trainingid, 1);
-                // TODO update training state
+                training = CloudFitCloud.downloadAndParseTraining(cloudFitService, trainingId);
                 break;
             case StaticVariables.GET_TRAINING_NOT_DONE:
-                trainingid = zDBFunctions.getTrainingNotDone(cloudFitService.getDB(),
+                trainingId = zDBFunctions.getTrainingNotDone(cloudFitService.getDB(),
                         Long.parseLong(cloudFitService.getFit().getSetting().getUserID()));
-                training = CloudFitCloud.downloadAndParseTraining(cloudFitService, trainingid);
+                training = CloudFitCloud.downloadAndParseTraining(cloudFitService, trainingId);
                 break;
             case StaticVariables.GET_TRAINING_DONE:
-                trainingString = CloudFitCloud.getTrainingDone(cloudFitService, trainingid);
+                trainingString = CloudFitCloud.getTrainingDone(cloudFitService, trainingId);
                 break;
         }
         return null;
@@ -74,8 +67,7 @@ public class GetTrainingsTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         switch (taskType) {
             case StaticVariables.GET_ALL_TRAININGS:
-//                    cloudFitDataHandler.stopRefreshing();
-                    cloudFitDataHandler.updateTrainingsList(calendarEvents);
+                cloudFitDataHandler.updateTrainingsList(calendarEvents);
                 break;
             case StaticVariables.GET_SINGLE_TRAINING:
                 cloudFitDataHandler.processTrainingDownloaded(training);

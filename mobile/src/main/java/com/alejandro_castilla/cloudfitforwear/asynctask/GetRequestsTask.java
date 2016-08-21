@@ -10,21 +10,15 @@ import com.alejandro_castilla.cloudfitforwear.interfaces.CloudFitDataHandler;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 28/05/16.
- */
 public class GetRequestsTask extends AsyncTask<Void, String, Void> {
 
-    private Activity context;
     private CloudFitDataHandler cloudFitDataHandler;
     private CloudFitService cloudFitService;
 
     private ArrayList<RequestTrainer> requests;
 
     public GetRequestsTask(Activity context, CloudFitService cloudFitService) {
-        this.context = context;
         this.cloudFitService = cloudFitService;
-
         cloudFitDataHandler = (CloudFitDataHandler) context;
     }
 

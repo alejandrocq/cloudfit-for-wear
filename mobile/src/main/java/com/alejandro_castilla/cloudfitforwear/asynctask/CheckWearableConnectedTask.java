@@ -8,16 +8,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-/**
- * Created by alejandrocq on 16/05/16.
- */
 public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
 
     private final String TAG = CheckWearableConnectedTask.class.getSimpleName();
 
     private GoogleApiClient googleApiClient;
     private WearableStatusHandler wearableStatusHandler;
-    private boolean isWearableConnected = false;
 
     public CheckWearableConnectedTask(WearableStatusHandler wearableStatusHandler,
                                       GoogleApiClient googleApiClient) {
@@ -33,8 +29,9 @@ public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
-        while (!this.isCancelled()) {
+        boolean isWearableConnected;
 
+        while (!this.isCancelled()) {
             NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi
                     .getConnectedNodes(googleApiClient).await();
 
@@ -50,13 +47,12 @@ public class CheckWearableConnectedTask extends AsyncTask<Void, Void, Void> {
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.d(TAG, "CheckWearableConnectedTask interrupted");
             }
 
         }
 
         return null;
-
     }
 
     @Override

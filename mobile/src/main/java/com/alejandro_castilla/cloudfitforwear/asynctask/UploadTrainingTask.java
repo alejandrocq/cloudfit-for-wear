@@ -10,9 +10,6 @@ import com.alejandro_castilla.cloudfitforwear.cloudfit.trainings.Training;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
 
-/**
- * Created by alejandrocq on 14/05/16.
- */
 public class UploadTrainingTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
@@ -57,7 +54,6 @@ public class UploadTrainingTask extends AsyncTask<Void, String, Void> {
         if (trainingSavedAndUploaded) {
             Toast.makeText(context, "El entrenamiento ha sido guardado en CloudFit",
                     Toast.LENGTH_SHORT).show();
-            //TODO Update training state on db
         } else {
             Toast.makeText(context, "Error al guardar el entrenamiento",
                     Toast.LENGTH_SHORT).show();

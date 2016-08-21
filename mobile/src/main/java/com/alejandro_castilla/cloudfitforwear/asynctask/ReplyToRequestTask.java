@@ -2,30 +2,30 @@ package com.alejandro_castilla.cloudfitforwear.asynctask;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.cloudfit.services.CloudFitService;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.CloudFitCloud;
 import com.alejandro_castilla.cloudfitforwear.cloudfit.utilities.StaticReferences;
 
-/**
- * Created by alejandrocq on 11/05/16.
- */
 public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
 
     private Activity context;
     private CloudFitService cloudFitService;
-    private long userid, trainerid;
+    private long userId, trainerId;
     private int accept;
     private boolean result;
 
-    public ReplyToRequestTask(Activity context, CloudFitService cloudFitService, long userid,
-                              long trainerid, int accept) {
+    public ReplyToRequestTask(Activity context,
+                              CloudFitService cloudFitService,
+                              long userId,
+                              long trainerId,
+                              int accept) {
+
         this.context = context;
         this.cloudFitService = cloudFitService;
-        this.userid = userid;
-        this.trainerid = trainerid;
+        this.userId = userId;
+        this.trainerId = trainerId;
         this.accept = accept;
     }
 
@@ -36,8 +36,7 @@ public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.d("ReplyTask", "User ID: " + userid);
-        result = CloudFitCloud.responseRequest(cloudFitService, trainerid, userid, accept);
+        result = CloudFitCloud.responseRequest(cloudFitService, trainerId, userId, accept);
         return null;
     }
 
@@ -52,7 +51,10 @@ public class ReplyToRequestTask extends AsyncTask<Void, String, Void> {
                     Toast.LENGTH_SHORT).show();
         }
 
-        new GetRequestsTask(context, cloudFitService).execute();
+        //Update requests
+        new GetRequestsTask(context, cloudFitService)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         super.onPostExecute(aVoid);
     }
 }
