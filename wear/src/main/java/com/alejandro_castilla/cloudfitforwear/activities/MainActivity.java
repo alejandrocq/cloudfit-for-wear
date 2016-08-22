@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.wearable.activity.ConfirmationActivity;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.MainActivityGridPagerAdapter;
@@ -34,6 +34,8 @@ public class MainActivity extends WearableActivity implements WearableHandler {
 
     private Intent wearableServiceIntent;
     private WearableService wearableService;
+
+    private boolean trainingDoneSent;
 
     /* Layout Views */
     private TextView
@@ -137,12 +139,13 @@ public class MainActivity extends WearableActivity implements WearableHandler {
     @Override
     public void showTrainingSentConfirmationAndUpdateData(boolean result) {
         if (result) {
+            trainingDoneSent = true;
             uploadProgressView.setVisibility(View.GONE);
             Utilities.showConfirmation(this, "Entrenamiento enviado correctamente",
                     ConfirmationActivity.SUCCESS_ANIMATION);
             checkTrainingsAndUpdateLayout();
         } else {
-            Toast.makeText(this, "Ha ocurrido un error", Toast.LENGTH_LONG).show();
+            trainingDoneSent = false;
         }
     }
 
@@ -172,6 +175,20 @@ public class MainActivity extends WearableActivity implements WearableHandler {
             setTrainingNotCompletedLayoutVisibility(View.VISIBLE);
             setTrainingCompletedLayoutVisibility(View.GONE);
         }
+    }
+
+    private void setSendingToHandheldTimeout(long time) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!trainingDoneSent) {
+                    Utilities.showConfirmation(MainActivity.this,
+                            "Error al enviar el entrenamiento",
+                            ConfirmationActivity.FAILURE_ANIMATION);
+                    uploadProgressView.setVisibility(View.GONE);
+                }
+            }
+        }, time);
     }
 
     private void setTrainingNotCompletedLayoutVisibility(int visibility) {
@@ -212,7 +229,9 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                     startActivity(settings);
                     break;
                 case R.id.uploadActionImg:
+                    trainingDoneSent = false;
                     uploadProgressView.setVisibility(View.VISIBLE);
+                    setSendingToHandheldTimeout(10000);
                     SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(MainActivity.this);
                     String trainingDone = prefs.getString(StaticVariables.KEY_TRAINING_DONE, "");
