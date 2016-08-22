@@ -104,36 +104,11 @@
         android:id="@+id/buttonOpenMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Abrir mapa a pantalla completa"
+        android:text="Consultar mapa con ruta"
         android:textColor="@color/md_white_1000"
         android:background="@color/md_blue_800"
         android:layout_below="@id/distanceText"
         android:layout_marginTop="5sp"
         android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/mapTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ruta seguida"
-        android:textSize="20sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5sp"
-        android:layout_below="@id/buttonOpenMap"/>
-
-    <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="10sp"
-        android:layout_below="@id/mapTitle"/>
-
-    <!--Transparent image to get map scrolling working-->
-
-    <ImageView
-        android:id="@+id/transparent_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@color/transparent" />
 
 </RelativeLayout >

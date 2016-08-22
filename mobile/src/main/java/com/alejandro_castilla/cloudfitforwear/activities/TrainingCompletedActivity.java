@@ -157,7 +157,7 @@ public class TrainingCompletedActivity extends ViewPagerActivity {
 
     @Override
     public boolean showViewPagerIndicator() {
-        return true;
+        return false;
     }
 
     @Override

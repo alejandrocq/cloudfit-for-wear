@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.MapActivity;
-import com.alejandro_castilla.cloudfitforwear.data.GPSLocation;
 import com.alejandro_castilla.cloudfitforwear.data.HeartRate;
 import com.alejandro_castilla.cloudfitforwear.data.exercises.Exercise;
 import com.alejandro_castilla.cloudfitforwear.utilities.Utilities;
@@ -22,38 +21,21 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExerciseCompletedFragment extends ScrollViewFragment implements OnMapReadyCallback {
+public class ExerciseCompletedFragment extends ScrollViewFragment {
 
     private final String TAG = ExerciseCompletedFragment.class.getSimpleName();
 
     private Exercise exercise;
 
-    private MapView mapView;
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        /* Load Google map */
-
-        mapView = (MapView) view.findViewById(R.id.map);
-        if (mapView != null) {
-            mapView.onCreate(savedInstanceState);
-            mapView.getMapAsync(this);
-        }
 
         drawHeartRateChart(view);
         calculateResultsAndUpdateViews(view);
@@ -114,7 +96,6 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
 
         ImageView distanceIcon = (ImageView) view.findViewById(R.id.distanceIcon);
         TextView distanceTextView = (TextView) view.findViewById(R.id.distanceText);
-        TextView mapTitleTextView = (TextView) view.findViewById(R.id.mapTitle);
 
         Button btnOpenMap = (Button) view.findViewById(R.id.buttonOpenMap);
 
@@ -142,8 +123,6 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
             //We don't need location results on rest exercises
             distanceIcon.setVisibility(View.GONE);
             distanceTextView.setVisibility(View.GONE);
-            mapTitleTextView.setVisibility(View.GONE);
-            mapView.setVisibility(View.GONE);
             btnOpenMap.setVisibility(View.GONE);
         }
 
@@ -189,41 +168,6 @@ public class ExerciseCompletedFragment extends ScrollViewFragment implements OnM
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
-    }
-
-    /* Google Maps API methods */
-
-    @Override
-    public void onMapReady(GoogleMap map) {
-        if (exercise.getGPSLocationsList().size()>0) {
-            GPSLocation startLocation = exercise.getGPSLocationsList().get(0);
-            LatLng l1 = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
-            map.addMarker(new MarkerOptions()
-                    .position(l1)
-                    .title("Inicio de la ruta"));
-
-            int endIndex = exercise.getGPSLocationsList().size() - 1;
-            GPSLocation endLocation = exercise.getGPSLocationsList().get(endIndex);
-            LatLng l2 = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
-            map.addMarker(new MarkerOptions()
-                    .position(l2)
-                    .title("Final de la ruta"));
-
-            //Move camera to start location
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(l1, 15));
-            mapView.onResume();
-        }
-
-        //Draw route
-        PolylineOptions polOptions = new PolylineOptions();
-
-        for (GPSLocation l : exercise.getGPSLocationsList()) {
-            polOptions.add(new LatLng(l.getLatitude(), l.getLongitude()));
-        }
-
-        map.addPolyline(polOptions);
-        mapView.onResume();
-
     }
 
     /* Scroll view fragment methods */
