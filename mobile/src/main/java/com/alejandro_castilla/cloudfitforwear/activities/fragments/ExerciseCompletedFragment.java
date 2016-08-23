@@ -71,19 +71,23 @@ public class ExerciseCompletedFragment extends ScrollViewFragment {
         }
 
         List<Entry> hrValues = new ArrayList<>();
+        List<String> xValues = new ArrayList<>();
+
+        int hrValueIndex = 0;
 
         for (HeartRate hr : exercise.getHeartRateList()) {
 //            Log.d(TAG, "DATA ENTRY X: " + hr.getTimeStamp() / 1000 + " DATA ENTRY Y: "
 //                    + hr.getValue());
-            Entry hrEntry = new Entry(hr.getTimeStamp() / 1000, hr.getValue());
+            Entry hrEntry = new Entry(hr.getValue(), hrValueIndex++);
+            xValues.add(Long.toString(hr.getTimeStamp()/1000));
             hrValues.add(hrEntry);
         }
 
-        LineDataSet hrDataSet = new LineDataSet(hrValues, "Heart");
-        hrDataSet.setColor(getResources().getColor(R.color.md_grey_700));
+        LineDataSet hrDataSet = new LineDataSet(hrValues, "Ritmo cardíaco");
+        hrDataSet.setColor(getResources().getColor(R.color.md_red_800));
         hrDataSet.setCircleColor(getResources().getColor(R.color.md_red_800));
 
-        LineData data = new LineData(hrDataSet);
+        LineData data = new LineData(xValues, hrDataSet);
         chart.setData(data);
         chart.invalidate();
     }
