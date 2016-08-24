@@ -135,8 +135,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
             BluetoothService.BluetoothServiceBinder bluetoothServiceBinder =
                     (BluetoothService.BluetoothServiceBinder) service;
             bluetoothService = bluetoothServiceBinder.getService();
-            bluetoothService.findBluetoothDevice("C8:3E:99:0D:DD:43");
-            //TODO This mac address should be synced from the phone(and stored on SharedPreferences)
+            bluetoothService.findBluetoothDevice("C8:3E:99:0D:DD:43"); //Zephyr Bioharness 3 MAC
         }
 
         @Override
@@ -199,7 +198,7 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
         }
     };
 
-    private Messenger practiceActivityMessenger = new Messenger(messageHandler);
+    private Messenger trainingActivityMessenger = new Messenger(messageHandler);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,14 +394,14 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
 
             Intent bluetoothServiceIntent = new Intent(TrainingActivity.this,
                     BluetoothService.class);
-            bluetoothServiceIntent.putExtra("messenger", practiceActivityMessenger);
+            bluetoothServiceIntent.putExtra("messenger", trainingActivityMessenger);
             bindService(bluetoothServiceIntent, bluetoothServiceConnection,
                     Context.BIND_AUTO_CREATE);
             bluetoothServiceBinded = true;
 
             Intent zephyrServiceIntent = new Intent(TrainingActivity.this,
                     ZephyrService.class);
-            zephyrServiceIntent.putExtra("messenger", practiceActivityMessenger);
+            zephyrServiceIntent.putExtra("messenger", trainingActivityMessenger);
             bindService(zephyrServiceIntent, zephyrServiceConnection,
                     Context.BIND_AUTO_CREATE);
             zephyrServiceBinded = true;
@@ -495,16 +494,10 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
             } catch (SecurityException e) { //This exception is thrown with insufficient permissions
                 e.printStackTrace();
-                locationStatusTextView.setText("No disponible");
+                locationStatusTextView.setText("Error permisos");
             }
         } else {
-            locationStatusTextView.setText("No disponible");
-            if (maxDistance != 0) { //Exercise has a maximum distance (GPS needed)
-                Toast.makeText(this, "Este ejercicio necesita GPS", Toast.LENGTH_LONG).show();
-                Toast.makeText(this, "Si este dispositivo cuenta con GPS, " +
-                        "comprueba los permisos de la aplicación", Toast.LENGTH_LONG).show();
-                finish();
-            }
+            locationStatusTextView.setText("GPS no disponible");
         }
     }
 
@@ -687,9 +680,13 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void resetDataAndMoveToNextExercise() {
-        maxDistance = 0;
         heartRateList = new ArrayList<>(); //Reset heart rate data
+
         GPSLocationsList = new ArrayList<>(); //Reset location data
+        maxDistance = 0;
+        totalDistance = 0;
+        distanceTextView.setText("0.00");
+
         accDataList = new ArrayList<>(); //Reset acc data
 
         chronometer.stop();
