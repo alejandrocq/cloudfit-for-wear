@@ -92,7 +92,7 @@ public class WearableService extends Service implements DataApi.DataListener,
         });
     }
 
-    private void sendACKToHandheld () {
+    public void sendACKToHandheld () {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(StaticVariables.ACK_FROM_WEARABLE);
         putDataMapRequest.getDataMap().putBoolean(StaticVariables.WEARABLE_TRAINING_ACK,
@@ -153,7 +153,6 @@ public class WearableService extends Service implements DataApi.DataListener,
                                 WearableTraining.class);
                         Log.d(TAG, "TRAINING NAME: " + tr.getTitle());
                         handler.saveWearableTraining(tr);
-                        sendACKToHandheld();
                     }
                 } else if (item.getUri().getPath()
                         .compareTo(StaticVariables.ACK_FROM_HANDHELD) == 0) {

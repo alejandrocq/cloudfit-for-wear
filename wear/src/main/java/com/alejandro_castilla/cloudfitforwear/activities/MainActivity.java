@@ -136,6 +136,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
         Utilities.showConfirmation(this, "Entrenamiento recibido",
                 ConfirmationActivity.SUCCESS_ANIMATION);
         checkTrainingsAndUpdateLayout();
+        wearableService.sendACKToHandheld();
     }
 
     @Override
