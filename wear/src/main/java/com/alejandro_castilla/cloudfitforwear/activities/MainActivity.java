@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.MainActivityGridPagerAdapter;
@@ -36,6 +37,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
     private WearableService wearableService;
 
     private boolean trainingDoneSent;
+    private int deleteSafeCounter = 0;
 
     /* Layout Views */
     private TextView
@@ -238,11 +240,19 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                     wearableService.sendTrainingDoneToHandheld(trainingDone);
                     break;
                 case R.id.deleteActionImg:
-                    deleteTrainingDone();
-                    Utilities.showConfirmation(MainActivity.this,
-                            "Entrenamiento eliminado correctamente",
-                            ConfirmationActivity.SUCCESS_ANIMATION);
-                    checkTrainingsAndUpdateLayout();
+                    if (deleteSafeCounter == 0) {
+                        deleteSafeCounter++;
+                        Toast.makeText(MainActivity.this,
+                                "Pulse de nuevo si quiere eliminar este entrenamiento",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        deleteTrainingDone();
+                        Utilities.showConfirmation(MainActivity.this,
+                                "Entrenamiento eliminado correctamente",
+                                ConfirmationActivity.SUCCESS_ANIMATION);
+                        checkTrainingsAndUpdateLayout();
+                        deleteSafeCounter = 0;
+                    }
                     break;
             }
         }
