@@ -177,13 +177,14 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                             SystemClock.elapsedRealtime());
                     chronoAllowedToStart = false; //Starts chronometer only one time
 
+                    String heartRateString = msg.getData().getString("heartratestring");
+                    long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+                    int heartRateInt = Integer.parseInt(heartRateString);
+                    heartRateTextView.setText(heartRateString);
+
                     if (!sessionPaused) {
-                        String heartRateString = msg.getData().getString("heartratestring");
-                        long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        int heartRateInt = Integer.parseInt(heartRateString);
                         checkHeartRate(heartRateInt);
                         saveHeartRate(timeMark, heartRateInt);
-                        heartRateTextView.setText(heartRateString);
                     }
                     break;
                 case StaticVariables.DEVICE_NOT_FOUND:
@@ -513,19 +514,22 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
     }
 
     private void checkHeartRate (int hrValue) {
-        if (heartRateMin != 0) {
 
-            if (hrValue < heartRateMin) {
-                infoTextView.setText("¡Frec. cardíaca muy baja!");
-                Utilities.vibrate(this, 2000);
-            }
-
-            if (hrValue > heartRateMax) {
-                infoTextView.setText("¡Frec. cardíaca demasiado alta!");
-                Utilities.vibrate(this, 2000);
-            }
-
+        if (hrValue < heartRateMin && heartRateMin != 0) {
+            infoTextView.setText("¡Frec. cardíaca muy baja!");
+            Utilities.vibrate(this, 2000);
         }
+
+        if (hrValue > heartRateMax && heartRateMax != 0) {
+            infoTextView.setText("¡Frec. cardíaca alta!");
+            Utilities.vibrate(this, 500);
+        }
+
+        //Normal heart rate
+        if (hrValue < heartRateMax && hrValue > heartRateMin) {
+            infoTextView.setText("Entrenamiento iniciado");
+        }
+
     }
 
     private void saveGPSData (Location l) {
@@ -777,15 +781,14 @@ public class TrainingActivity extends WearableActivity implements View.OnClickLi
                 chronoAllowedToStart = false;
                 pauseActionImgView.setOnClickListener(TrainingActivity.this);
 
-                if (!sessionPaused) {
-                    float heartRateFloat = event.values[0];
-                    int heartRateInt = Math.round(heartRateFloat);
-                    long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+                float heartRateFloat = event.values[0];
+                int heartRateInt = Math.round(heartRateFloat);
+                long timeMark = SystemClock.elapsedRealtime() - chronometer.getBase();
+                heartRateTextView.setText(Integer.toString(heartRateInt));
 
+                if (!sessionPaused) {
                     checkHeartRate(heartRateInt);
                     saveHeartRate(timeMark, heartRateInt);
-
-                    heartRateTextView.setText(Integer.toString(heartRateInt));
                 }
                 break;
         }
