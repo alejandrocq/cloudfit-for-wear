@@ -19,9 +19,6 @@ import com.blunderer.materialdesignlibrary.views.CardView;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 26/05/16.
- */
 public class RequestsFragmentAdapter extends
         RecyclerView.Adapter<RequestsFragmentAdapter.ViewHolder> {
 

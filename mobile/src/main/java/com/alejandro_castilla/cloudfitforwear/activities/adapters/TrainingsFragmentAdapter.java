@@ -18,9 +18,6 @@ import com.blunderer.materialdesignlibrary.views.CardView;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 19/05/16.
- */
 public class TrainingsFragmentAdapter extends
         RecyclerView.Adapter<TrainingsFragmentAdapter.ViewHolder> {
 
@@ -45,12 +42,9 @@ public class TrainingsFragmentAdapter extends
 
     @Override
     public TrainingsFragmentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.trainings_cardview, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override

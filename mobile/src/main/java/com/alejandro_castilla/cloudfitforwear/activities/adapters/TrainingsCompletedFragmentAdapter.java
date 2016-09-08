@@ -22,9 +22,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 24/06/16.
- */
 public class TrainingsCompletedFragmentAdapter extends
         RecyclerView.Adapter<TrainingsCompletedFragmentAdapter.ViewHolder> {
 

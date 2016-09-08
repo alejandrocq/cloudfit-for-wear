@@ -94,8 +94,8 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
                     if (Utilities.checkInternetConnection(LoginActivity.this)) {
                         username = userTextField.getText().toString();
                         password = passTextField.getText().toString();
-                        new LoginTask(LoginActivity.this, cloudFitService, "alejandrocq", "asdf")
-                                .execute(); //Temporary trick to skip typing user and password
+                        new LoginTask(LoginActivity.this, cloudFitService, username, password)
+                                .execute();
                     } else {
                         showNoInternetConnectionDialog();
                     }

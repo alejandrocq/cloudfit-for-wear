@@ -15,9 +15,6 @@ import com.blunderer.materialdesignlibrary.views.CardView;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 22/05/16.
- */
 public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdapter.ViewHolder> {
 
     private final String TAG = ExercisesListAdapter.class.getSimpleName();
