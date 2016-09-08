@@ -241,8 +241,8 @@ public class Utilities {
             hrModel.setHr(hr.getValue());
             hrModel.setTimestamp(hr.getTimeStamp());
             hrModel.setRr(0);
-            hrModel.setNamesensor("Zephyr Bioharness 3");
-            hrModel.setMacaddress("C8:3E:99:0D:DD:43"); //TODO This MAC should be gotten from Prefs.
+            hrModel.setNamesensor("Wearable");
+            hrModel.setMacaddress("");
             hrModels.add(hrModel);
         }
 
