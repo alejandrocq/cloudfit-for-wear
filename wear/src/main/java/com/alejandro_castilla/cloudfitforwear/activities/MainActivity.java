@@ -101,7 +101,7 @@ public class MainActivity extends WearableActivity implements WearableHandler {
                 uploadProgressView = (AVLoadingIndicatorView) findViewById(R.id.uploadProgressView);
 
                 gridViewPager = (GridViewPager) stub.findViewById(R.id.pager);
-                gridViewPager.setAdapter(new MainActivityGridPagerAdapter(MainActivity.this));
+                gridViewPager.setAdapter(new MainActivityGridPagerAdapter());
                 gridViewPager.setOffscreenPageCount(2);
                 DotsPageIndicator dotsPageIndicator = (DotsPageIndicator)
                         findViewById(R.id.page_indicator);

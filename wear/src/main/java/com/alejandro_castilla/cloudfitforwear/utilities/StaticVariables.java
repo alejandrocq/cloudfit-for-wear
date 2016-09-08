@@ -1,8 +1,5 @@
 package com.alejandro_castilla.cloudfitforwear.utilities;
 
-/**
- * Created by alejandrocq on 14/05/16.
- */
 public class StaticVariables {
 
     /**
@@ -13,12 +10,6 @@ public class StaticVariables {
     public static final int DEVICE_FOUND = 2;
     public static final int DEVICE_NOT_FOUND = 3;
     public static final int ZEPHYR_HEART_RATE = 4;
-
-    /**
-     * Bundle strings
-     */
-
-
 
     /**
      * Data Map Request Types
@@ -47,6 +38,4 @@ public class StaticVariables {
     public static final String KEY_PREF_LOCATION_ENABLED = "pref_location_enabled";
     public static final String KEY_TRAINING_TO_BE_DONE = "training_to_be_done";
     public static final String KEY_TRAINING_DONE = "training_done";
-
-
 }

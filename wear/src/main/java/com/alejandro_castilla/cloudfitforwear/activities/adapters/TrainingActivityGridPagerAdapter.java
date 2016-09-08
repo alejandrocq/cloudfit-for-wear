@@ -6,9 +6,6 @@ import android.view.ViewGroup;
 
 import com.alejandro_castilla.cloudfitforwear.R;
 
-/**
- * Created by alejandrocq on 24/04/16.
- */
 public class TrainingActivityGridPagerAdapter extends GridPagerAdapter {
 
     private final int[] layoutsIDs = {

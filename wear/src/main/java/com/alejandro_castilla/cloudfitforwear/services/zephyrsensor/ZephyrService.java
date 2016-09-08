@@ -18,9 +18,6 @@ import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import zephyr.android.BioHarnessBT.BTClient;
 
-/**
- * Created by alejandrocq on 4/04/16.
- */
 public class ZephyrService extends Service {
 
     private static final String TAG = ZephyrService.class.getSimpleName();
@@ -31,7 +28,6 @@ public class ZephyrService extends Service {
     BTClient _bt;
     NewConnectedListener _NConnListener;
     private boolean connected = false;
-//    ZephyrProtocol _protocol;
 
     private Messenger messenger;
 

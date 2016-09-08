@@ -20,10 +20,6 @@ import com.alejandro_castilla.cloudfitforwear.utilities.StaticVariables;
 
 import java.util.ArrayList;
 
-/**
- * Created by alejandrocq on 16/03/16.
- */
-
 public class BluetoothService extends Service {
 
     public enum BluetoothStatus { IDLE, NOT_SUPPORTED }
