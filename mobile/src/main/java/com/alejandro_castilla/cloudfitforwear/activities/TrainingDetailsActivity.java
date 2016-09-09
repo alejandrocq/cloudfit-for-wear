@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alejandro_castilla.cloudfitforwear.R;
@@ -35,13 +38,9 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     private final String TAG = TrainingDetailsActivity.class.getSimpleName();
 
     private long trainingID;
-    private Training training;
-    private ArrayList<ExerciseGroup> exercises = new ArrayList<>();
+    private ArrayList<ExerciseGroup> exercises;
 
     private ExercisesListAdapter exercisesListAdapter;
-    private RecyclerView recyclerView;
-
-    private CloudFitService cloudFitService;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -51,7 +50,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "Connected to CloudFit service");
             CloudFitService.MyBinder cloudFitServiceBinder = (CloudFitService.MyBinder) service;
-            cloudFitService = cloudFitServiceBinder.getService();
+            CloudFitService cloudFitService = cloudFitServiceBinder.getService();
             new GetTrainingsTask(TrainingDetailsActivity.this,
                     cloudFitService, trainingID, StaticVariables.GET_SINGLE_TRAINING).execute();
         }
@@ -65,7 +64,6 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_training_details);
         setTitle(getIntent().getStringExtra("trainingname"));
 
         ActionBar actionBar = getSupportActionBar();
@@ -83,8 +81,9 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
             bindService(startCloudFitServiceIntent, cloudFitServiceConnection, BIND_AUTO_CREATE);
         }
 
+        exercises = new ArrayList<>();
         exercisesListAdapter = new ExercisesListAdapter(this, exercises);
-        recyclerView = (RecyclerView) findViewById(R.id.trDetailsRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.trDetailsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(exercisesListAdapter);
         recyclerView.setHasFixedSize(true);
@@ -108,20 +107,30 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         unbindService(cloudFitServiceConnection);
     }
 
-    ////////////////////////////////
-    /* Activity interface methods */
-    ////////////////////////////////
+    public void checkNumberOfExercisesAndUpdateLayout() {
+        ImageView img = (ImageView) findViewById(R.id.imgInfo);
+        TextView txt = (TextView) findViewById(R.id.textNoTrainingsCompleted);
+
+        if (exercises.size()>0) {
+            img.setVisibility(View.GONE);
+            txt.setVisibility(View.GONE);
+        } else {
+            img.setVisibility(View.VISIBLE);
+            txt.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /////////////////////////////
+    /* CloudFitHandler methods */
+    /////////////////////////////
 
     @Override
     public void processTrainingDownloaded(Training training) {
         Log.d(TAG, "Training title: "+ training.getTitle());
-        this.training = training;
-
         exercises = Utilities.createExercisesListFromElement(training.getElements());
-
+        checkNumberOfExercisesAndUpdateLayout();
         exercisesListAdapter.setExercises(exercises);
         exercisesListAdapter.notifyDataSetChanged();
-
     }
 
     @Override

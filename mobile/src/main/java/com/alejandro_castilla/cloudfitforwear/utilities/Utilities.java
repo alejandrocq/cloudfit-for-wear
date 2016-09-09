@@ -62,8 +62,12 @@ public class Utilities {
 
         for (Element element : elements) {
             if (element instanceof ExerciseGroup) {
-                ExerciseGroup exerciseGroup = (ExerciseGroup) element;
-                exercises.add(exerciseGroup);
+                ExerciseGroup ex = (ExerciseGroup) element;
+                // Check if exercise is compatible
+                if (ex.getGroup().equals(StaticReferences.EXERCISE_GROUP1) ||
+                        ex.getGroup().equals(StaticReferences.EXERCISE_GROUP5)) {
+                    exercises.add(ex);
+                }
             }
         }
 
