@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alejandro_castilla.cloudfitforwear.R;
 import com.alejandro_castilla.cloudfitforwear.activities.adapters.ExercisesListAdapter;
 import com.alejandro_castilla.cloudfitforwear.asynctask.GetTrainingsTask;
@@ -41,6 +42,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
     private ArrayList<ExerciseGroup> exercises;
 
     private ExercisesListAdapter exercisesListAdapter;
+    private MaterialDialog downloadingTrainingDialog;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -79,6 +81,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
             Log.d(TAG, "Trying to get training with ID: "+trainingID);
             Intent startCloudFitServiceIntent = new Intent (this, CloudFitService.class);
             bindService(startCloudFitServiceIntent, cloudFitServiceConnection, BIND_AUTO_CREATE);
+            showDownloadingTrainingDialog();
         }
 
         exercises = new ArrayList<>();
@@ -120,6 +123,20 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         }
     }
 
+    private void showDownloadingTrainingDialog() {
+        downloadingTrainingDialog = new MaterialDialog.Builder(this)
+                .title("Descargando datos del entrenamiento")
+                .content("Espere...")
+                .progress(true, 0)
+                .cancelable(false)
+                .titleColorRes(R.color.md_grey_800)
+                .contentColorRes(R.color.md_grey_800)
+                .backgroundColorRes(R.color.md_white_1000)
+                .build();
+
+        downloadingTrainingDialog.show();
+    }
+
     /////////////////////////////
     /* CloudFitHandler methods */
     /////////////////////////////
@@ -131,6 +148,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         checkNumberOfExercisesAndUpdateLayout();
         exercisesListAdapter.setExercises(exercises);
         exercisesListAdapter.notifyDataSetChanged();
+        downloadingTrainingDialog.dismiss();
     }
 
     @Override
