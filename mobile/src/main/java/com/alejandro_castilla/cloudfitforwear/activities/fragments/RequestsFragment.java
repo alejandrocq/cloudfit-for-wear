@@ -63,6 +63,7 @@ public class RequestsFragment extends ScrollViewFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(requestsFragmentAdapter);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
 
         checkNumberOfRequestsAndUpdateLayout();
 

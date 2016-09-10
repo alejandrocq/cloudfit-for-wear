@@ -90,6 +90,7 @@ public class TrainingDetailsActivity extends ScrollViewActivity implements Cloud
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(exercisesListAdapter);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
 
     }
 

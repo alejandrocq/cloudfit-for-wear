@@ -41,6 +41,7 @@ public class TrainingsCompletedFragment extends ScrollViewFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(trainingsCompletedFragmentAdapter);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
 
         getTrainingsCompleted();
         checkNumberOfTrainingsAndUpdateLayout();
