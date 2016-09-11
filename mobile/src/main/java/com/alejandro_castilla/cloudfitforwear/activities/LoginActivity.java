@@ -43,6 +43,7 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     private String username, password;
     private zDB db;
     private CloudFitService cloudFitService;
+    private boolean cloudFitServiceBinded;
 
     /**
      * ServiceConnection to connect to CloudFit service.
@@ -70,6 +71,7 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        cloudFitServiceBinded = false;
         checkPermissions();
 
         setTitle(""); //Don't need an activity title here.
@@ -80,9 +82,6 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
                 findViewById(R.id.passEditText);
         ButtonFlat loginButton = (ButtonFlat) findViewById(R.id.loginButton);
         ImageView settingsImgView = (ImageView) findViewById(R.id.settingsImg);
-
-        Intent cloudFitServiceIntent = new Intent(LoginActivity.this, CloudFitService.class);
-        bindService(cloudFitServiceIntent, cloudFitServiceConnection, Context.BIND_AUTO_CREATE);
 
         userTextField = userMaterialTextField.getEditText();
         passTextField = passMaterialTextField.getEditText();
@@ -160,6 +159,11 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
 
                 if (permissionsGranted) {
                     checkCloudFitDatabase();
+                    Intent cloudFitServiceIntent = new
+                            Intent(LoginActivity.this, CloudFitService.class);
+                    bindService(cloudFitServiceIntent, cloudFitServiceConnection,
+                            Context.BIND_AUTO_CREATE);
+                    cloudFitServiceBinded = true;
                 } else {
                     Toast.makeText(LoginActivity.this, "Permisos insuficientes",
                             Toast.LENGTH_LONG).show();
@@ -172,8 +176,8 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
 
     @Override
     protected void onDestroy() {
-        unbindService(cloudFitServiceConnection);
-        db.close();
+        if (cloudFitServiceBinded) unbindService(cloudFitServiceConnection);
+        if (db != null) db.close();
         super.onDestroy();
     }
 
@@ -208,6 +212,11 @@ public class LoginActivity extends com.blunderer.materialdesignlibrary.activitie
             Log.d(TAG, "Permissions requested");
         } else {
             checkCloudFitDatabase();
+            Intent cloudFitServiceIntent = new
+                    Intent(LoginActivity.this, CloudFitService.class);
+            bindService(cloudFitServiceIntent, cloudFitServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+            cloudFitServiceBinded = true;
         }
     }
 
